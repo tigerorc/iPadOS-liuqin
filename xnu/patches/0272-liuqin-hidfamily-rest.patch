@@ -9624,7 +9624,7 @@ diff --git a/iokit/Kernel/arm/hid/IOHIDInterface.cpp b/iokit/Kernel/arm/hid/IOHI
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/IOHIDInterface.cpp
-@@ -0,0 +1,1015 @@
+@@ -0,0 +1,1029 @@
 +/*
 + *
 + * @APPLE_LICENSE_HEADER_START@
@@ -10637,6 +10637,20 @@ new file mode 100644
 +exit:
 +    OSSafeReleaseNULL(dict);
 +    return result;
++}
++
++/* LIUQIN: IOHIDInterface::serializeDebugState is installed as the debug
++ * serializer at the top of this file, but its only Apple definition sits in
++ * the DriverKit half above (it reads DextDebugStats through a mapped
++ * IOMemoryDescriptor).  This kernel has no dext and no debug stats mapping,
++ * so the serializer reports "nothing to serialize".  Keeping the Apple
++ * implementation compiled out avoids both the DriverKit dependency and the
++ * undefined-symbol error run 41883914072 hit. */
++bool
++IOHIDInterface::serializeDebugState(void *ref __unused,
++                                    OSSerialize *serializer __unused)
++{
++    return false;
 +}
 +
 +#endif /* LIUQIN: no DriverKit/IOUserServer here */

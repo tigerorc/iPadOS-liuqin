@@ -10694,6 +10694,36 @@ new file mode 100644
 +
 +#endif /* __LIUQIN_TARGETCONDITIONALS__ */
 
+diff --git a/iokit/Kernel/arm/hid/LiuqinHID.cpp b/iokit/Kernel/arm/hid/LiuqinHID.cpp
+index 53bfc83..60f948e 100644
+--- a/iokit/Kernel/arm/hid/LiuqinHID.cpp
++++ b/iokit/Kernel/arm/hid/LiuqinHID.cpp
+@@ -466,6 +466,15 @@ liuqin_hid_matchtest(void)
+ 	OSSafeReleaseNULL(cls);
+ }
+ 
++#if 0 /* LIUQIN: superseded by the real IOHIDFamily device half.
++       *
++       * These probe classes predate the vendored Apple IOHIDDevice.cpp /
++       * IOHIDLibUserClient.cpp (patches 0270/0272).  The probe deliberately
++       * named its class IOHIDDevice so backboardd's `IOProviderClass =
++       * IOHIDDevice` match would hit it; now that the real class is compiled
++       * in, keeping this one produces duplicate symbols (run 41888767388
++       * reported 17 of them: IOHIDDevice::start, ::metaClass, ::gMetaClass,
++       * vtable for IOHIDDevice, ...).  The real device half takes over. */
+ /*
+  * Probe: does the userland's HID stack open IOHIDDevice services at all?
+  *
+@@ -666,6 +675,8 @@ IOHIDDevice::getProperty(const char *aKey) const
+ 	return super::getProperty(aKey);
+ }
+ 
++#endif /* LIUQIN: probe classes superseded by IOHIDFamily */
++
+ /*
+  * The userland's HID stack contains the class name "IOHIDEventSystem"; nothing
+  * in this kernel publishes such a service.  Publish a stub with that name and a
+
 diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
 --- a/iokit/conf/files.arm64
 +++ b/iokit/conf/files.arm64

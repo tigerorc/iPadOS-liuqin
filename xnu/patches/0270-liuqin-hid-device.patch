@@ -361,11 +361,131 @@ new file mode 100644
 +#endif
 +#endif /* !_IOKIT_HID_IOHIDDESCRIPTORPARSERPRIVATE_H */
 
+diff --git a/iokit/Kernel/arm/hid/TargetConditionals.h b/iokit/Kernel/arm/hid/TargetConditionals.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/Kernel/arm/hid/TargetConditionals.h
+@@ -0,0 +1,35 @@
++/*
++ * LIUQIN: private TargetConditionals.h for the vendored IOHIDFamily sources.
++ *
++ * Those sources gate macOS-versus-embedded branches with
++ * #include "TargetConditionals.h" and then test TARGET_OS_OSX /
++ * TARGET_OS_IPHONE / TARGET_OS_DRIVERKIT.  xnu builds with -nostdinc, so the
++ * SDK copy is not reachable.
++ *
++ * This copy lives NEXT TO the HID sources and is reached only through the
++ * quoted form, deliberately NOT through <...>: run 41865070136 showed that a
++ * TargetConditionals.h in EXTERNAL_HEADERS (on every translation unit's
++ * include path) flips TARGET_OS_OSX for some TUs and not others, which made
++ * pe_init.c compile out iBoot_Stage_2_version while model_dep.c still
++ * referenced it.
++ *
++ * Values: this port is neither macOS nor iPhone nor DriverKit, so every
++ * platform gate is 0 and the embedded branches that need IOHIDSystem (which
++ * iOS does not have) stay unbuilt.
++ */
++#ifndef __LIUQIN_TARGETCONDITIONALS__
++#define __LIUQIN_TARGETCONDITIONALS__
++
++#define TARGET_OS_MAC               0
++#define TARGET_OS_OSX               0
++#define TARGET_OS_IPHONE            0
++#define TARGET_OS_IOS               0
++#define TARGET_OS_TV                0
++#define TARGET_OS_WATCH             0
++#define TARGET_OS_DRIVERKIT         0
++#define TARGET_OS_SIMULATOR         0
++#define TARGET_OS_EMBEDDED          0
++#define TARGET_OS_MACCATALYST       0
++#define TARGET_OS_BRIDGE            0
++
++#endif /* __LIUQIN_TARGETCONDITIONALS__ */
+diff --git a/iokit/IOKit/hid/TargetConditionals.h b/iokit/IOKit/hid/TargetConditionals.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hid/TargetConditionals.h
+@@ -0,0 +1,34 @@
++/*
++ * LIUQIN: private TargetConditionals.h for the vendored IOHIDFamily headers.
++ *
++ * Those headers gate macOS-versus-embedded branches on TARGET_OS_OSX /
++ * TARGET_OS_IPHONE / TARGET_OS_DRIVERKIT.  xnu builds with -nostdinc, so the
++ * SDK copy is not reachable.
++ *
++ * This copy sits BESIDE each vendored header and is reached only through the
++ * quoted include form, deliberately NOT through <...>: run 41865070136 showed
++ * that a TargetConditionals.h on a shared include path (EXTERNAL_HEADERS)
++ * flips TARGET_OS_OSX for some translation units and not others, which made
++ * pe_init.c compile out iBoot_Stage_2_version while model_dep.c still
++ * referenced it.
++ *
++ * Values: this port is neither macOS nor iPhone nor DriverKit, so every
++ * platform gate is 0 and the branches that would need IOHIDSystem (absent on
++ * iOS) stay unbuilt.
++ */
++#ifndef __LIUQIN_TARGETCONDITIONALS__
++#define __LIUQIN_TARGETCONDITIONALS__
++
++#define TARGET_OS_MAC               0
++#define TARGET_OS_OSX               0
++#define TARGET_OS_IPHONE            0
++#define TARGET_OS_IOS               0
++#define TARGET_OS_TV                0
++#define TARGET_OS_WATCH             0
++#define TARGET_OS_DRIVERKIT         0
++#define TARGET_OS_SIMULATOR         0
++#define TARGET_OS_EMBEDDED          0
++#define TARGET_OS_MACCATALYST       0
++#define TARGET_OS_BRIDGE            0
++
++#endif /* __LIUQIN_TARGETCONDITIONALS__ */
+
+diff --git a/iokit/IOKit/hidsystem/TargetConditionals.h b/iokit/IOKit/hidsystem/TargetConditionals.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/TargetConditionals.h
+@@ -0,0 +1,34 @@
++/*
++ * LIUQIN: private TargetConditionals.h for the vendored IOHIDFamily headers.
++ *
++ * Those headers gate macOS-versus-embedded branches on TARGET_OS_OSX /
++ * TARGET_OS_IPHONE / TARGET_OS_DRIVERKIT.  xnu builds with -nostdinc, so the
++ * SDK copy is not reachable.
++ *
++ * This copy sits BESIDE each vendored header and is reached only through the
++ * quoted include form, deliberately NOT through <...>: run 41865070136 showed
++ * that a TargetConditionals.h on a shared include path (EXTERNAL_HEADERS)
++ * flips TARGET_OS_OSX for some translation units and not others, which made
++ * pe_init.c compile out iBoot_Stage_2_version while model_dep.c still
++ * referenced it.
++ *
++ * Values: this port is neither macOS nor iPhone nor DriverKit, so every
++ * platform gate is 0 and the branches that would need IOHIDSystem (absent on
++ * iOS) stay unbuilt.
++ */
++#ifndef __LIUQIN_TARGETCONDITIONALS__
++#define __LIUQIN_TARGETCONDITIONALS__
++
++#define TARGET_OS_MAC               0
++#define TARGET_OS_OSX               0
++#define TARGET_OS_IPHONE            0
++#define TARGET_OS_IOS               0
++#define TARGET_OS_TV                0
++#define TARGET_OS_WATCH             0
++#define TARGET_OS_DRIVERKIT         0
++#define TARGET_OS_SIMULATOR         0
++#define TARGET_OS_EMBEDDED          0
++#define TARGET_OS_MACCATALYST       0
++#define TARGET_OS_BRIDGE            0
++
++#endif /* __LIUQIN_TARGETCONDITIONALS__ */
+
 diff --git a/iokit/Kernel/arm/hid/IOHIDDevice.cpp b/iokit/Kernel/arm/hid/IOHIDDevice.cpp
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/IOHIDDevice.cpp
-@@ -0,0 +1,2686 @@
+@@ -0,0 +1,2685 @@
 +/*
 + *
 + * @APPLE_LICENSE_HEADER_START@
@@ -391,7 +511,7 @@ new file mode 100644
 + */
 +
 +#include <AssertMacros.h>
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +
 +#include <IOKit/IOLib.h>    // IOMalloc*/IOFree*
 +#include <IOKit/IOBufferMemoryDescriptor.h>
@@ -3051,7 +3171,6 @@ new file mode 100644
 +
 +
 +#endif /* LIUQIN: no DriverKit/IOUserServer on this kernel */
-+
 diff --git a/iokit/Kernel/arm/hid/IOHIDDevice.h b/iokit/Kernel/arm/hid/IOHIDDevice.h
 new file mode 100644
 --- /dev/null
@@ -3084,7 +3203,7 @@ new file mode 100644
 +#ifndef _IOKIT_HID_IOHIDDEVICE_H
 +#define _IOKIT_HID_IOHIDDEVICE_H
 +
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +#include <IOKit/IOService.h>
 +#include <IOKit/IOMessage.h>
 +#include <IOKit/IOBufferMemoryDescriptor.h>
@@ -3894,7 +4013,6 @@ new file mode 100644
 +};
 +
 +#endif /* !_IOKIT_HID_IOHIDDEVICE_H */
-
 diff --git a/iokit/Kernel/arm/hid/IOHIDDeviceElementContainer.cpp b/iokit/Kernel/arm/hid/IOHIDDeviceElementContainer.cpp
 new file mode 100644
 --- /dev/null
@@ -8373,7 +8491,7 @@ new file mode 100644
 + * @APPLE_LICENSE_HEADER_END@
 + */
 +
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +
 +#include <sys/systm.h>
 +#include <sys/proc.h>
@@ -10584,7 +10702,6 @@ new file mode 100644
 +        fGate->commandWakeup(queue_first(&fBlockedReports));
 +    }
 +}
-
 diff --git a/iokit/Kernel/arm/hid/IOHIDLibUserClient.h b/iokit/Kernel/arm/hid/IOHIDLibUserClient.h
 new file mode 100644
 --- /dev/null
@@ -11339,7 +11456,7 @@ new file mode 100644
 +
 +#else
 +
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +
 +#if TARGET_OS_DRIVERKIT
 +#include <DriverKit/IOTypes.h>
@@ -12292,7 +12409,6 @@ new file mode 100644
 +
 +
 +#endif
-
 diff --git a/iokit/IOKit/hidsystem/IOHIDevice.h b/iokit/IOKit/hidsystem/IOHIDevice.h
 new file mode 100644
 --- /dev/null
@@ -13407,7 +13523,7 @@ new file mode 100644
 +#ifndef	_IOHIDSYSTEM_H
 +#define _IOHIDSYSTEM_H
 +
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +#include <IOKit/IOTimerEventSource.h>
 +#include <IOKit/IOInterruptEventSource.h>
 +#include <IOKit/IOService.h>
@@ -13979,7 +14095,6 @@ new file mode 100644
 +};
 +
 +#endif /* !_IOHIDSYSTEM_H */
-
 diff --git a/iokit/IOKit/hidsystem/IOHIDWorkLoop.h b/iokit/IOKit/hidsystem/IOHIDWorkLoop.h
 new file mode 100644
 --- /dev/null
@@ -15112,7 +15227,7 @@ new file mode 100644
 +#ifndef IOHIDDeviceTypes_h
 +#define IOHIDDeviceTypes_h
 +
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +
 +#if TARGET_OS_DRIVERKIT
 +#include <DriverKit/IOTypes.h>
@@ -15393,7 +15508,6 @@ new file mode 100644
 +#define kIOHIDDeviceMaxAsyncRequestTimeout     1200000ULL
 +
 +#endif /* IOHIDDeviceTypes_h */
-
 diff --git a/iokit/IOKit/hid/IOHIDDescriptorParser.h b/iokit/IOKit/hid/IOHIDDescriptorParser.h
 new file mode 100644
 --- /dev/null
@@ -15446,7 +15560,7 @@ new file mode 100644
 +
 +#else
 +
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +
 +#if TARGET_OS_DRIVERKIT
 +#include <DriverKit/IOTypes.h>
@@ -16399,7 +16513,6 @@ new file mode 100644
 +
 +
 +#endif
-
 diff --git a/iokit/IOKit/graphics/IOGraphicsDevice.h b/iokit/IOKit/graphics/IOGraphicsDevice.h
 new file mode 100644
 --- /dev/null
@@ -19647,7 +19760,7 @@ new file mode 100644
 +#ifndef _IOKIT_IOHIDEVENTTYPES_H
 +#define _IOKIT_IOHIDEVENTTYPES_H /* { */
 +
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +
 +#if TARGET_OS_DRIVERKIT
 +#include <DriverKit/IOTypes.h>
@@ -20416,7 +20529,6 @@ new file mode 100644
 +};
 +
 +#endif /* _IOKIT_HID_IOHIDEVENTTYPES_H } */
-
 diff --git a/iokit/IOKit/hid/IOHIDEventData.h b/iokit/IOKit/hid/IOHIDEventData.h
 new file mode 100644
 --- /dev/null
@@ -23343,7 +23455,7 @@ new file mode 100644
 +
 +#else
 +
-+#include <TargetConditionals.h>
++#include "TargetConditionals.h"
 +
 +#if TARGET_OS_DRIVERKIT
 +#include <DriverKit/IOTypes.h>
@@ -24296,7 +24408,6 @@ new file mode 100644
 +
 +
 +#endif
-
 diff --git a/iokit/IOKit/hidsystem/IOLLEvent.h b/iokit/IOKit/hidsystem/IOLLEvent.h
 new file mode 100644
 --- /dev/null

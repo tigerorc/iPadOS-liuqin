@@ -11293,38 +11293,6 @@ new file mode 100644
 +#define RETAIN_ON_STACK(X) OSStackRetain  _ ## X ## _retained(X, true)
 +
 +#endif
-
-diff --git a/EXTERNAL_HEADERS/TargetConditionals.h b/EXTERNAL_HEADERS/TargetConditionals.h
-new file mode 100644
---- /dev/null
-+++ b/EXTERNAL_HEADERS/TargetConditionals.h
-@@ -0,0 +1,25 @@
-+/*
-+ * LIUQIN: minimal TargetConditionals.h.
-+ *
-+ * Apple's IOHIDDevice.cpp and IOHIDLibUserClient.cpp include it to gate macOS
-+ * versus embedded code paths. xnu-8796 builds this port as plain arm64 with
-+ * MACHINE_CONFIG=LIUQIN, so only TARGET_OS_OSX / TARGET_OS_IPHONE matter, and
-+ * both are 0: this is neither a Mac nor an iPhone platform as far as those
-+ * sources' branches are concerned (the iOS-only paths they guard need
-+ * IOHIDSystem, which this kernel does not have).
-+ */
-+#ifndef __TARGETCONDITIONALS__
-+#define __TARGETCONDITIONALS__
-+
-+#define TARGET_OS_MAC               1
-+#define TARGET_OS_OSX               0
-+#define TARGET_OS_IPHONE            0
-+#define TARGET_OS_IOS               0
-+#define TARGET_OS_TV                0
-+#define TARGET_OS_WATCH             0
-+#define TARGET_OS_DRIVERKIT         0
-+#define TARGET_OS_SIMULATOR         0
-+#define TARGET_OS_EMBEDDED          0
-+#define TARGET_OS_MACCATALYST       0
-+
-+#endif /* __TARGETCONDITIONALS__ */
-
 diff --git a/iokit/IOKit/hidsystem/IOHIDDescriptorParser.h b/iokit/IOKit/hidsystem/IOHIDDescriptorParser.h
 new file mode 100644
 --- /dev/null

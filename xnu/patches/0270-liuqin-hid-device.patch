@@ -408,10 +408,10 @@ new file mode 100644
 +#include <stdatomic.h>
 +#include <libkern/c++/OSBoundedArrayRef.h>
 +
-+#include "IOHIKeyboard.h"
++#include <IOKit/hidsystem/IOHIKeyboard.h>
 +/* LIUQIN: no-ops for the macOS-only names this file uses. */
 +#include "LiuqinHIDMacOSStubs.h"
-+#include "IOHIPointing.h"
++#include <IOKit/hidsystem/IOHIPointing.h>
 +
 +#include <IOKit/hidsystem/IOHIDShared.h>
 +
@@ -25848,9 +25848,10 @@ new file mode 100644
 
 diff --git a/iokit/HIDDriverKit/IOHIDDevice.h b/iokit/HIDDriverKit/IOHIDDevice.h
 new file mode 100644
+index 0000000..71d8fe9
 --- /dev/null
 +++ b/iokit/HIDDriverKit/IOHIDDevice.h
-@@ -0,0 +1,21 @@
+@@ -0,0 +1,45 @@
 +/*
 + * LIUQIN: minimal HIDDriverKit/IOHIDDevice.h.
 + *
@@ -25859,62 +25860,177 @@ new file mode 100644
 + * IOHIDDevice.h includes <HIDDriverKit/IOHIDDevice.h> unconditionally, before
 + * any DriverKit conditional.
 + *
-+ * This kernel builds the in-kernel IOHIDDevice (class IOHIDDevice : IOService,
-+ * declared later in the same header). Nothing on this port uses the DriverKit
-+ * flavour: HIDDriverKit exists for dexts, and this device has no dext. So the
-+ * include only has to resolve, and a guard is enough.
++ * Why this is not just a guard any more (run 41840917035):
++ *
++ *   IOHIDDevice.h:80: error: unknown type name 'IOHIDDevice_Methods'
++ *
++ * The kernel IOHIDDevice.h says OSDeclareDefaultStructorsWithDispatch, which
++ * pastes the bare tokens "IOHIDDevice_Methods IOHIDDevice_KernelMethods" into
++ * the class body. In Apple's real build those tokens are MACROS, #defined by
++ * the iig-generated HIDDriverKit/IOHIDDevice.h that the IOHIDFamily project
++ * installs into the kernel SDK (same pattern as <DriverKit/IOService.h>,
++ * whose iig output #defines IOService_Methods / IOService_KernelMethods --
++ * see EXPORT_HDRS/iokit/DriverKit/IOService.h:742,1262 in any build tree).
++ *
++ * Our vendored IOHIDDevice.cpp does not implement Dispatch() or any _Impl
++ * method (those live in Apple's IOHIDDevice.iig.cpp, which we did not vendor),
++ * so both macros must expand to nothing. An empty expansion is exactly what
++ * iig emits for a class with no callable remote methods, and the class below
++ * still gets its Dispatch() from IOService.
 + */
 +#ifndef LIUQIN_HIDDRIVERKIT_IOHIDDEVICE_H
 +#define LIUQIN_HIDDRIVERKIT_IOHIDDEVICE_H
 +
-+/* DriverKit's IOHIDDevice is a separate, userspace-side class; the kernel
-+ * header only needs this include to succeed. */
++/* The tokens OSDeclareDefaultStructorsWithDispatch(IOHIDDevice) pastes into
++ * the class body. Empty: this kernel's IOHIDDevice has no DriverKit methods
++ * (see the comment above). */
++#define IOHIDDevice_Methods
++#define IOHIDDevice_KernelMethods
++
++/* IOHIDDevice.h declares completeReport(OSAction *, ...); the generated
++ * header would pull <DriverKit/OSObject.h> in, a forward declaration keeps
++ * this stub free of DriverKit include-order requirements. */
++class OSAction;
++
++/* DriverKit's IOHIDDevice is a separate, userspace-side class; nothing on
++ * this port uses it (no dext). Forward-declared for name lookups only. */
 +class IOHIDDeviceDriverKit;
 +
 +#endif /* LIUQIN_HIDDRIVERKIT_IOHIDDEVICE_H */
-
+diff --git a/iokit/HIDDriverKit/IOHIDInterface.h b/iokit/HIDDriverKit/IOHIDInterface.h
+new file mode 100644
+index 0000000..e912d78
+--- /dev/null
++++ b/iokit/HIDDriverKit/IOHIDInterface.h
+@@ -0,0 +1,19 @@
++/*
++ * LIUQIN: minimal HIDDriverKit/IOHIDInterface.h.
++ *
++ * Same situation as HIDDriverKit/IOHIDDevice.h: the kernel
++ * iokit/Kernel/arm/hid/IOHIDInterface.h includes this path and then uses
++ * OSDeclareDefaultStructorsWithDispatch(IOHIDInterface), so the pasted tokens
++ * IOHIDInterface_Methods / IOHIDInterface_KernelMethods must be macros. The
++ * vendored sources never implement DriverKit methods on IOHIDInterface
++ * either, so both expand to nothing.
++ */
++#ifndef LIUQIN_HIDDRIVERKIT_IOHIDINTERFACE_H
++#define LIUQIN_HIDDRIVERKIT_IOHIDINTERFACE_H
++
++#define IOHIDInterface_Methods
++#define IOHIDInterface_KernelMethods
++
++class OSAction;
++
++#endif /* LIUQIN_HIDDRIVERKIT_IOHIDINTERFACE_H */
+diff --git a/iokit/IOKit/hid/IOHIDDevice.h b/iokit/IOKit/hid/IOHIDDevice.h
+new file mode 100644
+index 0000000..db4c7f3
+--- /dev/null
++++ b/iokit/IOKit/hid/IOHIDDevice.h
+@@ -0,0 +1,15 @@
++/*
++ * LIUQIN: path-shim for <IOKit/hid/IOHIDDevice.h>.
++ *
++ * The vendored IOHIDDevice.cpp (run 41840917035) includes the kernel class
++ * header by its INSTALLED path, <IOKit/hid/IOHIDDevice.h>, while this tree
++ * keeps the file at iokit/Kernel/arm/hid/IOHIDDevice.h. On macOS the SDK
++ * copy and the kernel source copy are the same header, so this shim simply
++ * forwards.
++ */
++#ifndef LIUQIN_IOKIT_HID_IOHIDDEVICE_H
++#define LIUQIN_IOKIT_HID_IOHIDDEVICE_H
++
++#include "../../Kernel/arm/hid/IOHIDDevice.h"
++
++#endif /* LIUQIN_IOKIT_HID_IOHIDDEVICE_H */
 diff --git a/iokit/IOKit/hid/LiuqinAppleVendorUsages.h b/iokit/IOKit/hid/LiuqinAppleVendorUsages.h
 new file mode 100644
+index 0000000..dfbe715
 --- /dev/null
 +++ b/iokit/IOKit/hid/LiuqinAppleVendorUsages.h
-@@ -0,0 +1,22 @@
+@@ -0,0 +1,35 @@
 +/*
-+ * LIUQIN: the AppleVendor usage identifiers IOHIDElementPrivate.cpp compares
++ * LIUQIN: the AppleVendor usage identifiers the vendored HID sources compare
 + * against. The AppleHIDUsageTables.h this tree ships is a licence-only stub,
-+ * so these were missing. Values are the ones Apple's usage tables define on
-+ * the vendor-defined page (0xff00).
++ * so these were missing.
++ *
++ * Values on page 0xff00 follow Apple's last published table
++ * (IOHIDFamily-1035.70.7 AppleHIDUsageTables.h, mirrored by darlinghq and
++ * MacKernelSDK): Message = 0x0023, Payload = 0x0025. The earlier revision of
++ * this stub guessed 0x0001/0x0002 -- those are actually TopCase and Display,
++ * which would misroute any element that legitimately used them.
++ *
++ * kHIDUsage_AppleVendor_MultipleInterfaces is not in any published table
++ * (every IOHIDFamily tag from 1090 to 2238 ships the stub). IOHIDDevice.cpp
++ * only compares the first top-level collection's usage pair against it to set
++ * kIOHIDMultipleInterfaceEnabledKey; the constant is given a value above
++ * 0xFFFF so it can never match a real on-the-wire usage (HID usages are
++ * 16-bit) and the comparison is inert.
 + */
 +#ifndef LIUQIN_APPLE_VENDOR_USAGES_H
 +#define LIUQIN_APPLE_VENDOR_USAGES_H
 +
-+#include <IOKit/hid/IOHIDUsageTables.h>
-+
 +#ifndef kHIDPage_AppleVendor
 +#define kHIDPage_AppleVendor                    0xff00
 +#endif
 +#ifndef kHIDUsage_AppleVendor_Message
-+#define kHIDUsage_AppleVendor_Message           0x0001
++#define kHIDUsage_AppleVendor_Message           0x0023
 +#endif
 +#ifndef kHIDUsage_AppleVendor_Payload
-+#define kHIDUsage_AppleVendor_Payload           0x0002
++#define kHIDUsage_AppleVendor_Payload           0x0025
++#endif
++#ifndef kHIDUsage_AppleVendor_MultipleInterfaces
++#define kHIDUsage_AppleVendor_MultipleInterfaces 0x10000
 +#endif
 +
 +#endif /* LIUQIN_APPLE_VENDOR_USAGES_H */
-
+diff --git a/iokit/IOKit/hidsystem/IOHIDUsageTables.h b/iokit/IOKit/hidsystem/IOHIDUsageTables.h
+new file mode 100644
+index 0000000..67c6304
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIDUsageTables.h
+@@ -0,0 +1,14 @@
++/*
++ * LIUQIN: path-shim for <IOKit/hidsystem/IOHIDUsageTables.h>.
++ *
++ * The vendored IOHIDLibUserClient.cpp:48 includes the usage tables by the
++ * legacy hidsystem path (run 41840917035: 'IOKit/hidsystem/IOHIDUsageTables.h'
++ * file not found). This tree carries the header at IOKit/hid; the hidsystem
++ * form used to be an install-time alias in older IOHIDFamily drops.
++ */
++#ifndef LIUQIN_IOKIT_HIDSYSTEM_IOHIDUSAGETABLES_H
++#define LIUQIN_IOKIT_HIDSYSTEM_IOHIDUSAGETABLES_H
++
++#include "../hid/IOHIDUsageTables.h"
++
++#endif /* LIUQIN_IOKIT_HIDSYSTEM_IOHIDUSAGETABLES_H */
 diff --git a/iokit/Kernel/arm/hid/AppleHIDUsageTables.h b/iokit/Kernel/arm/hid/AppleHIDUsageTables.h
+index c00cbd4..ce9fbd7 100644
 --- a/iokit/Kernel/arm/hid/AppleHIDUsageTables.h
 +++ b/iokit/Kernel/arm/hid/AppleHIDUsageTables.h
-@@ -22,0 +23,11 @@
+@@ -20,3 +20,23 @@
+  * 
+  * @APPLE_LICENSE_HEADER_END@
+  */
 +
-+/* LIUQIN: vendor usage page the HID element code compares against. */
++/* LIUQIN: AppleVendor page usages the vendored HID sources compare against
++ * (IOHIDElementPrivate.cpp, IOHIDDevice.cpp). Values follow Apple's last
++ * published table (IOHIDFamily-1035.70.7): Message = 0x0023,
++ * Payload = 0x0025 -- NOT 0x0001/0x0002 (those are TopCase/Display).
++ * MultipleInterfaces appears in no published table; it only feeds an
++ * equality check on the first top-level collection, so it gets an
++ * un-matchable >0xFFFF value (usages are 16-bit on the wire). */
 +#ifndef kHIDPage_AppleVendor
 +#define kHIDPage_AppleVendor                    0xff00
 +#endif
 +#ifndef kHIDUsage_AppleVendor_Message
-+#define kHIDUsage_AppleVendor_Message           0x0001
++#define kHIDUsage_AppleVendor_Message           0x0023
 +#endif
 +#ifndef kHIDUsage_AppleVendor_Payload
-+#define kHIDUsage_AppleVendor_Payload           0x0002
++#define kHIDUsage_AppleVendor_Payload           0x0025
++#endif
++#ifndef kHIDUsage_AppleVendor_MultipleInterfaces
++#define kHIDUsage_AppleVendor_MultipleInterfaces 0x10000
 +#endif
 diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
 --- a/iokit/conf/files.arm64

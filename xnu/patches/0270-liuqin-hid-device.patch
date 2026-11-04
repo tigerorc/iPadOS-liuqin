@@ -365,7 +365,7 @@ diff --git a/iokit/Kernel/arm/hid/IOHIDDevice.cpp b/iokit/Kernel/arm/hid/IOHIDDe
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/IOHIDDevice.cpp
-@@ -0,0 +1,2691 @@
+@@ -0,0 +1,2686 @@
 +/*
 + *
 + * @APPLE_LICENSE_HEADER_START@
@@ -1414,12 +1414,10 @@ new file mode 100644
 +        _seizedClient = client;
 +        messageClients(kIOMessageServiceIsRequestingClose, (void*)(intptr_t)options);
 +
-+        IOHIKeyboard * keyboard = OSDynamicCast(IOHIKeyboard, getProvider());
-+        IOHIPointing * pointing = OSDynamicCast(IOHIPointing, getProvider());
-+        if (keyboard) {
-+            keyboard->IOHIKeyboard::message(kIOHIDSystemDeviceSeizeRequestMessage, this, (void *)true);
-+        } else if (pointing) {
-+            pointing->IOHIPointing::message(kIOHIDSystemDeviceSeizeRequestMessage, this, (void *)true);
++        /* LIUQIN: IOHIKeyboard/IOHIPointing are macOS IOHIDSystem classes
++         * that iOS does not have.  This port's provider is a digitizer, which
++         * never seizes, so the request is dropped instead of naming them. */
++        if (getProvider() && false) {
 +        }
 +    }
 +
@@ -1443,12 +1441,8 @@ new file mode 100644
 +        if (client == _seizedClient) {
 +            _seizedClient = NULL;
 +
-+            IOHIKeyboard * keyboard = OSDynamicCast(IOHIKeyboard, getProvider());
-+            IOHIPointing * pointing = OSDynamicCast(IOHIPointing, getProvider());
-+            if (keyboard) {
-+                keyboard->IOHIKeyboard::message(kIOHIDSystemDeviceSeizeRequestMessage, this, (void *)false);
-+            } else if (pointing) {
-+                pointing->IOHIPointing::message(kIOHIDSystemDeviceSeizeRequestMessage, this, (void *)false);
++            /* LIUQIN: see the note in handleOpen(); nothing to un-seize. */
++            if (getProvider() && false) {
 +            }
 +        }
 +
@@ -3057,7 +3051,7 @@ new file mode 100644
 +
 +
 +#endif /* LIUQIN: no DriverKit/IOUserServer on this kernel */
-
++
 diff --git a/iokit/Kernel/arm/hid/IOHIDDevice.h b/iokit/Kernel/arm/hid/IOHIDDevice.h
 new file mode 100644
 --- /dev/null

@@ -10695,7 +10695,7 @@ new file mode 100644
 +#endif /* __LIUQIN_TARGETCONDITIONALS__ */
 
 diff --git a/iokit/Kernel/arm/hid/LiuqinHID.cpp b/iokit/Kernel/arm/hid/LiuqinHID.cpp
-index 53bfc83..f9a4b5f 100644
+index 53bfc83..66cce95 100644
 --- a/iokit/Kernel/arm/hid/LiuqinHID.cpp
 +++ b/iokit/Kernel/arm/hid/LiuqinHID.cpp
 @@ -466,6 +466,16 @@ liuqin_hid_matchtest(void)
@@ -10715,7 +10715,16 @@ index 53bfc83..f9a4b5f 100644
  /*
   * Probe: does the userland's HID stack open IOHIDDevice services at all?
   *
-@@ -726,25 +736,13 @@ IOHIDEventSystem::newUserClient(task_t owningTask, void *securityID, UInt32 type
+@@ -666,6 +676,8 @@ IOHIDDevice::getProperty(const char *aKey) const
+ 	return super::getProperty(aKey);
+ }
+ 
++#endif /* LIUQIN: probe classes superseded by IOHIDFamily */
++
+ /*
+  * The userland's HID stack contains the class name "IOHIDEventSystem"; nothing
+  * in this kernel publishes such a service.  Publish a stub with that name and a
+@@ -726,27 +738,25 @@ IOHIDEventSystem::newUserClient(task_t owningTask, void *securityID, UInt32 type
  	}
  	IOLog("LIUQIN HID: IOHIDEventSystem newUserClient type 0x%x by %s\n",
  	    (unsigned)type, pname);
@@ -10739,16 +10748,28 @@ index 53bfc83..f9a4b5f 100644
 -	*handler = client;
 -	return kIOReturnSuccess;
 +	/* LIUQIN: the logging client lived in the retired probe block.  This
-+	 * stub is not a HID device, so there is no HID client to hand out; keep
-+	 * the connect log above (it is what tells us whether the userland's HID
-+	 * stack reaches this object) and let IOService answer. */
++	 * stub is not a HID device, so there is no HID client to hand out; the
++	 * connect-type log above is still what tells us whether the userland's
++	 * HID stack reaches this object. */
 +	(void)client;
 +	return super::newUserClient(owningTask, securityID, type, properties,
 +	    handler);
  }
  
++#if 0 /* LIUQIN: probe classes, superseded by the real IOHIDFamily device half.
++       *
++       * These predate the vendored Apple IOHIDDevice.cpp / IOHIDLibUserClient.cpp
++       * (patches 0270/0272).  The probe deliberately named its class IOHIDDevice
++       * so backboardd's `IOProviderClass = IOHIDDevice` match would hit it; with
++       * the real class now compiled in, keeping this produces duplicate symbols
++       * (run 41888767388 reported 17: IOHIDDevice::start, ::metaClass,
++       * ::gMetaClass, vtable for IOHIDDevice, ...).  It also defined
++       * AppleMultitouchDevice and LiuqinHIDDeviceUserClient, whose roles the
++       * real IOHIDDevice and IOHIDLibUserClient now fill. */
  IOReturn
-@@ -788,6 +786,8 @@ IOHIDDevice::newUserClient(task_t owningTask, void *securityID, UInt32 type,
+ IOHIDDevice::newUserClient(task_t owningTask, void *securityID, UInt32 type,
+     OSDictionary *properties, IOUserClient **handler)
+@@ -788,6 +798,8 @@ IOHIDDevice::newUserClient(task_t owningTask, void *securityID, UInt32 type,
  	return super::newUserClient(owningTask, securityID, type, properties, handler);
  }
  
@@ -10757,7 +10778,7 @@ index 53bfc83..f9a4b5f 100644
  /*
   * backboardd's HID notifier queues services that already exist when it is
   * registered and only "pings" for services that first-match after the client
-@@ -825,27 +825,10 @@ liuqin_hid_relaunch_fired(OSObject *owner __unused, IOTimerEventSource *sender _
+@@ -825,27 +837,9 @@ liuqin_hid_relaunch_fired(OSObject *owner __unused, IOTimerEventSource *sender _
  			sys->release();
  		}
  	}
@@ -10783,9 +10804,8 @@ index 53bfc83..f9a4b5f 100644
 -		}
 -	}
 +	/* LIUQIN: AppleMultitouchDevice was part of the retired probe block.  The
-+	 * real IOHIDDevice half (0270/0272) now publishes the device, and the
-+	 * event service is attached to it by the touch driver, so nothing is
-+	 * relaunched here. */
++	 * real IOHIDDevice half (0270/0272) publishes the device and the touch
++	 * driver attaches its event service to it, so nothing is relaunched here. */
  
  	touch = OSTypeAlloc(LiuqinHIDTouch);
  	if (touch && touch->init() && touch->attach(nub) && touch->start(nub)) {

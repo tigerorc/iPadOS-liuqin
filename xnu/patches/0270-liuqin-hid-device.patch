@@ -31,6 +31,21 @@ descriptor the userland accepts. See docs/HID_DEVICE_PORT_PLAN.md for the
 remaining steps; this commit is the compile check for the vendored sources.
 
 
+LIUQIN NOTE (run 41860774776): every vendored .cpp now COMPILES. The link,
+however, needs the rest of IOHIDFamily, which this series does not vendor:
+  _HID{Open,Close}ReportDescriptor / _HIDGet{Capabilities,ButtonCapabilities,
+      ValueCapabilities,CollectionExtendedNodes}  (IOHIDDescriptorParser.c)
+  IOHIDInterface::withElements / ::metaClass           (IOHIDInterface.cpp)
+  IOHIDEventSource::HIDEventSource / lock / unlock     (IOHIDEventSource.cpp)
+  IOHIKeyboard/IOHIPointing metaClass + vtables        (macOS IOHIDSystem)
+  _MatchPropertyTable, _hid_trace, IOHIDDevice::MetaClass::Dispatch
+Stubming those out would link but would NOT deliver working touch (the report
+descriptor parser in particular), i.e. a green CI with a fake kernel. Instead
+the seven .cpp files stay vendored here but are NOT added to
+iokit/conf/files.arm64, so the kernel links with the previously working
+configuration. Real bring-up needs the IOHIDFamily component port as a whole;
+see NOTES.md for the full symbol list and the next-step plan.
+
 diff --git a/iokit/Kernel/arm/hid/IOHIDDescriptorParserPrivate.h b/iokit/Kernel/arm/hid/IOHIDDescriptorParserPrivate.h
 new file mode 100644
 --- /dev/null
@@ -3127,7 +3142,7 @@ new file mode 100644
 +class IOHIDDevice : public IOService
 +#endif
 +{
-+    OSDeclareDefaultStructorsWithDispatch ( IOHIDDevice )
++    OSDeclareDefaultStructors ( IOHIDDevice )
 +
 +    friend class IOHIDLibUserClient;
 +    friend class IOHIDDeviceShim;
@@ -8086,7 +8101,7 @@ new file mode 100644
 +class IOHIDInterface : public IOService
 +#endif
 +{
-+    OSDeclareDefaultStructorsWithDispatch( IOHIDInterface )
++    OSDeclareDefaultStructors( IOHIDInterface )
 +    
 +public:
 +
@@ -26117,22 +26132,3 @@ new file mode 100644
 +__END_DECLS
 +
 +#endif /* LIUQIN_IPC_PORT_H */
-
-diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
---- a/iokit/conf/files.arm64
-+++ b/iokit/conf/files.arm64
-@@ -16,7 +16,14 @@
- iokit/Kernel/arm/hid/IOHIDEvent.cpp                              optional iokitcpp
- iokit/Kernel/arm/hid/IOHIDEventServiceQueue.cpp                  optional iokitcpp
- iokit/Kernel/arm/hid/IOHIDEventServiceUserClient.cpp             optional iokitcpp
- iokit/Kernel/arm/hid/LiuqinHID.cpp                                optional iokitcpp
-+iokit/Kernel/arm/hid/IOHIDDevice.cpp                                   optional iokitcpp
-+iokit/Kernel/arm/hid/IOHIDElementPrivate.cpp                           optional iokitcpp
-+iokit/Kernel/arm/hid/IOHIDElementContainer.cpp                         optional iokitcpp
-+iokit/Kernel/arm/hid/IOHIDEventQueue.cpp                               optional iokitcpp
-+iokit/Kernel/arm/hid/IOHIDReportElementQueue.cpp                       optional iokitcpp
-+iokit/Kernel/arm/hid/IOHIDDeviceElementContainer.cpp                   optional iokitcpp
-+iokit/Kernel/arm/hid/IOHIDLibUserClient.cpp                            optional iokitcpp
- iokit/NativeAdreno/LiuqinStubs.cpp                            optional iokitcpp
- iokit/NativeAdreno/NativeAdrenoAccelerator.cpp                            optional iokitcpp
- iokit/NativeAdreno/NativeAdrenoBoard.cpp                            optional iokitcpp

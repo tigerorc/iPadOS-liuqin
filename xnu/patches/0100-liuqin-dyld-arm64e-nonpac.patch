@@ -4,11 +4,11 @@ The iPadOS 16.6.1 (20G81) shared cache is built with
 DYLD_CHAINED_PTR_ARM64E_USERLAND24 (pointer_format 12). Every cache page that
 carries fixups goes through vm_dyld_pager.c fixup_page() on first fault, and
 that function only routed arm64e formats to fixupPageAuth64() under
-`#if defined(HAS_APPLE_PAC)`. A kernel built as plain arm64 (no FEAT_PAuth,
-which is what this port builds) therefore fell into
+#if defined(HAS_APPLE_PAC). A kernel built as plain arm64 (no FEAT_PAuth, which
+is what this port builds) therefore fell into
 
     default:
-        printf("%s(): unknown pointer_format %d", __func__, hdr->mwli_pointer_format);
+        printf("%s(): unknown pointer_format %d\n", __func__, hdr->mwli_pointer_format);
         return KERN_FAILURE;
 
 The page-in then fails, dyld takes the fault on the still-unmapped page, and
@@ -21,40 +21,44 @@ launchd dies before main() runs:
 That is the launchd SIGBUS: not UFS, not the shared-region base, not the root
 files. The fixups are ordinary rebases and binds -- only pointer signing needs
 PAC -- so apply them on non-PAC builds too, and have signPointer() store the
-unsigned target, which is what a CPU without FEAT_PAuth requires (nothing on
-it verifies the signature, and the ptrauth builtins do not exist in that
-compile).
+unsigned target, which is what a CPU without FEAT_PAuth requires (nothing on it
+verifies the signature, and the signing builtins do not exist in that compile).
+
+Note ptrauth.h is included unconditionally now: it declares the ptrauth_key
+enum the arm64e walk needs, and defines the signing builtins only as macros
+that a non-PAC compile never expands.
 
 diff --git a/osfmk/vm/vm_dyld_pager.c b/osfmk/vm/vm_dyld_pager.c
 --- a/osfmk/vm/vm_dyld_pager.c
 +++ b/osfmk/vm/vm_dyld_pager.c
-@@ -425,7 +425,16 @@
+@@ -58,8 +58,13 @@
+ 
+ #include <sys/kdebug_triage.h>
+ #include <mach-o/fixup-chains.h>
+-#if defined(HAS_APPLE_PAC)
++/*
++ * ptrauth.h declares the ptrauth_key enum, which the arm64e fixup walk needs
++ * even when the build has no FEAT_PAuth (only the signing builtins it also
++ * declares are unavailable then).
++ */
+ #include <ptrauth.h>
++#if defined(HAS_APPLE_PAC)
+ #include <arm/misc_protos.h>
+ #endif /* defined(HAS_APPLE_PAC) */
+ 
+@@ -425,7 +430,6 @@
  	return KERN_SUCCESS;
  }
  
 -#if defined(HAS_APPLE_PAC)
-+#if !defined(HAS_APPLE_PAC)
-+/*
-+ * ptrauth_key and the signing builtins exist only in an arm64e (PAC) compile,
-+ * but the fixup walk still decodes the key field of an arm64e chain.
-+ */
-+typedef unsigned int ptrauth_key;
-+#define ptrauth_key_asia  0
-+#define ptrauth_key_asda  1
-+#endif /* !defined(HAS_APPLE_PAC) */
-+
  /*
   * Sign a pointer needed for fixups.
   */
-@@ -445,6 +454,19 @@
+@@ -445,6 +449,15 @@
  		return KERN_SUCCESS;
  	}
  
 +#if !defined(HAS_APPLE_PAC)
-+	/*
-+	 * No FEAT_PAuth: the signature cannot be produced and this CPU never
-+	 * checks it, so store the arm64e chain's target unchanged.
-+	 */
 +	(void)loc;
 +	(void)addrDiv;
 +	(void)diversity;
@@ -66,7 +70,7 @@ diff --git a/osfmk/vm/vm_dyld_pager.c b/osfmk/vm/vm_dyld_pager.c
  	uint64_t extendedDiscriminator = diversity;
  	if (addrDiv) {
  		extendedDiscriminator = __builtin_ptrauth_blend_discriminator(loc, extendedDiscriminator);
-@@ -465,6 +487,7 @@
+@@ -465,6 +478,7 @@
  		return KERN_FAILURE;
  	}
  	return KERN_SUCCESS;
@@ -74,7 +78,7 @@ diff --git a/osfmk/vm/vm_dyld_pager.c b/osfmk/vm/vm_dyld_pager.c
  }
  
  /*
-@@ -563,7 +586,6 @@
+@@ -563,7 +577,6 @@
  	} while (delta != 0);
  	return KERN_SUCCESS;
  }
@@ -82,7 +86,7 @@ diff --git a/osfmk/vm/vm_dyld_pager.c b/osfmk/vm/vm_dyld_pager.c
  
  
  /*
-@@ -649,7 +671,6 @@
+@@ -649,7 +662,6 @@
  	 * Route to the appropriate fixup routine
  	 */
  	switch (hdr->mwli_pointer_format) {
@@ -90,7 +94,7 @@ diff --git a/osfmk/vm/vm_dyld_pager.c b/osfmk/vm/vm_dyld_pager.c
  	case DYLD_CHAINED_PTR_ARM64E:
  		fixupPageAuth64(userVA, contents, end_contents, pager, segInfo, pageIndex, false);
  		break;
-@@ -657,7 +678,6 @@
+@@ -657,7 +669,6 @@
  	case DYLD_CHAINED_PTR_ARM64E_USERLAND24:
  		fixupPageAuth64(userVA, contents, end_contents, pager, segInfo, pageIndex, true);
  		break;

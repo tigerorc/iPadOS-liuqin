@@ -409,6 +409,8 @@ new file mode 100644
 +#include <libkern/c++/OSBoundedArrayRef.h>
 +
 +#include "IOHIKeyboard.h"
++/* LIUQIN: no-ops for the macOS-only names this file uses. */
++#include "LiuqinHIDMacOSStubs.h"
 +#include "IOHIPointing.h"
 +
 +#include <IOKit/hidsystem/IOHIDShared.h>
@@ -7965,7 +7967,7 @@ new file mode 100644
 +* @discussion
 +* As per HID spec  unit and unit exponent can be associated with given value.
 +* Example :
-+* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闁炽儻鎷�2 cm).
++* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倷鑳堕崑銊╁磿婵犳艾绠�闁跨噦鎷�2 cm).
 +* This function converts value based on unit and unit exponent to IOFixed. Currently
 +* it only supports unit as length in cm.
 +*
@@ -12305,6 +12307,1693 @@ new file mode 100644
 +
 +
 +#endif
+
+diff --git a/iokit/IOKit/hidsystem/IOHIDevice.h b/iokit/IOKit/hidsystem/IOHIDevice.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIDevice.h
+@@ -0,0 +1,75 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2009 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++/* 	Copyright (c) 1992 NeXT Computer, Inc.  All rights reserved. 
++ *
++ * IOHIDevice.h - Common Event Source object class.
++ *
++ * HISTORY
++ * 22 May 1992    Mike Paquette at NeXT
++ *      Created. 
++ * 4  Aug 1993	  Erik Kay at NeXT
++ *	API cleanup
++ * 5  Aug 1993	  Erik Kay at NeXT
++ *	added ivar space for future expansion
++ */
++
++#ifndef _IOHIDEVICE_H
++#define _IOHIDEVICE_H
++
++#include <IOKit/IOService.h>
++#include <IOKit/IOLocks.h>
++
++typedef enum {
++  kHIUnknownDevice          = 0,
++  kHIKeyboardDevice         = 1,
++  kHIRelativePointingDevice = 2
++} IOHIDKind;
++
++#if defined(KERNEL) && !defined(KERNEL_PRIVATE)
++class __deprecated_msg("Use DriverKit") IOHIDevice : public IOService
++#else
++class IOHIDevice : public IOService
++#endif
++{
++  OSDeclareDefaultStructors(IOHIDevice);
++
++public:
++  virtual bool init(OSDictionary * properties = 0) APPLE_KEXT_OVERRIDE;
++  virtual void free(void) APPLE_KEXT_OVERRIDE;
++  virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
++  virtual bool open(  IOService *    forClient,
++                      IOOptionBits   options = 0,
++                      void *         arg = 0 ) APPLE_KEXT_OVERRIDE;
++
++  virtual UInt32    deviceType();
++  virtual IOHIDKind hidKind();
++  virtual UInt32    interfaceID();
++  virtual bool 	    updateProperties(void);
++  virtual IOReturn  setProperties( OSObject * properties ) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn  setParamProperties(OSDictionary * dict);
++  virtual UInt64    getGUID();
++  
++  static SInt32		GenerateKey(OSObject *object);
++};
++
++#endif /* !_IOHIDEVICE_H */
+
+diff --git a/iokit/IOKit/hidsystem/IOHIDTypes.h b/iokit/IOKit/hidsystem/IOHIDTypes.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIDTypes.h
+@@ -0,0 +1,182 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2003 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++/******************************************************************************
++	ev_types.h
++	Data types for the events status driver.
++	This file contains public API.
++	mpaque 11Oct91
++	
++	Copyright 1991 NeXT Computer, Inc.
++	Copyright 1997-2011 Apple, Inc.
++	
++	Modified:
++	
++******************************************************************************/
++
++#ifndef _DEV_EV_TYPES_H
++#define _DEV_EV_TYPES_H
++
++#include <mach/boolean.h>
++#include <libkern/OSAtomic.h>
++#include <IOKit/graphics/IOGraphicsTypes.h>
++
++// This should be removed, but is being used by others
++// <rdar://problem/8917741> IOHIDFamily-355 causes projects to fail to build with 'ev_lock_data_t' does not name a type
++#include <IOKit/IOSharedLock.h>
++
++/* Shared memory versions */
++#define EVENT_SYSTEM_VERSION   2
++
++/* Maximum length of SetMouseScaling arrays */
++#define NX_MAXMOUSESCALINGS 20
++
++typedef struct evsioKeymapping		/* Match old struct names in kernel */
++{
++    int size;
++    char *mapping;
++} NXKeyMapping;
++
++typedef struct evsioMouseScaling	/* Match old struct names in kernel */
++{
++    int numScaleLevels;
++    short scaleThresholds[NX_MAXMOUSESCALINGS];
++    short scaleFactors[NX_MAXMOUSESCALINGS];
++} NXMouseScaling;
++
++typedef enum {
++    NX_OneButton,
++    NX_LeftButton,
++    NX_RightButton
++} NXMouseButton;
++
++// IOFixedPoint32 is a 24.8 format
++typedef struct __IOFixedPoint32 {
++    int32_t     x;
++    int32_t     y;
++} IOFixedPoint32;
++
++/*
++ * NXEventSystemInfo() information structures.  These are designed to
++ * allow for expansion.
++ *
++ * The current implementation of NXEventSystemInfo() uses an ioctl call.
++ * THIS WILL CHANGE.
++ */
++ 
++/*
++ * Generic query max size and typedefs.
++ *
++ *	The maximum size is selected to support anticipated future extensions
++ *	of request flavors.  Certain flavors planned for future releases may 
++ *	require roughtly 800 ints to represent.  We allow a little extra, in
++ *	case further growth is needed.
++ */
++typedef int *NXEventSystemInfoType;
++#define NX_EVS_INFO_MAX		(1024)	/* Max array size */
++typedef int NXEventSystemInfoData[NX_EVS_INFO_MAX];
++
++/* Event System Devices query */
++#define NX_EVS_DEVICE_MAX	16
++
++	/* Interface types */
++#define NX_EVS_DEVICE_INTERFACE_OTHER		0
++#define NX_EVS_DEVICE_INTERFACE_NeXT		1 // NeXT custom, in older sys
++#define NX_EVS_DEVICE_INTERFACE_ADB		2 // NeXT/fruit keybds/mice
++#define NX_EVS_DEVICE_INTERFACE_ACE		3 // For x86 PC keyboards
++#define NX_EVS_DEVICE_INTERFACE_SERIAL_ACE	4 // For PC serial mice 
++#define NX_EVS_DEVICE_INTERFACE_BUS_ACE		5 // For PC bus mice 
++#define NX_EVS_DEVICE_INTERFACE_HIL		6 // For HIL hp keyboard 
++#define NX_EVS_DEVICE_INTERFACE_TYPE5		7 // For Sun Type5 keyboard
++
++/*
++ * Note! if any new interface types are added above, the following
++ * definition of the number of interfaces supported must reflect this.
++ * This is used in the libkeymap project (storemap.c module) which needs
++ * to be cognizant of the number of new devices coming online
++ * via support for heterogeneous architecture platforms.
++ * e.g., PCs, HP's HIL, Sun's Type5 keyboard,...
++ */
++#define NUM_SUPPORTED_INTERFACES	(NX_EVS_DEVICE_INTERFACE_TYPE5 + 1)
++					// Other, NeXT, ADB, ACE,...
++
++	/* Device types */
++#define NX_EVS_DEVICE_TYPE_OTHER	0
++#define NX_EVS_DEVICE_TYPE_KEYBOARD	1
++#define NX_EVS_DEVICE_TYPE_MOUSE	2	// Relative position devices
++#define NX_EVS_DEVICE_TYPE_TABLET	3	// Absolute position devices
++
++typedef struct {
++	int	interface;	/* NeXT, ADB, other */
++	int	interface_addr;	/* Device address on the interface */
++	int	dev_type;	/* Keyboard, mouse, tablet, other */
++	int	id;		/* manufacturer's device handler ID */
++} NXEventSystemDevice;
++
++typedef struct {
++	NXEventSystemDevice	dev[NX_EVS_DEVICE_MAX];
++} NXEventSystemDeviceList;
++
++#define __OLD_NX_EVS_DEVICE_INFO		1
++#define NX_EVS_DEVICE_INFO			"Evs_EventDeviceInfo"
++#define NX_EVS_DEVICE_INFO_COUNT \
++	(sizeof (NXEventSystemDeviceList) / sizeof (int))
++
++/*
++ * Types used in evScreen protocol compliant operations.
++ */
++
++typedef enum {EVNOP, EVHIDE, EVSHOW, EVMOVE, EVLEVEL} EvCmd; /* Cursor state */
++
++#define EV_SCREEN_MIN_BRIGHTNESS	0
++#define EV_SCREEN_MAX_BRIGHTNESS	64
++/* Scale should lie between MIN_BRIGHTNESS and MAX_BRIGHTNESS */
++#define EV_SCALE_BRIGHTNESS( scale, datum ) \
++	((((UInt32)(datum))*((UInt32)scale)) >> 6)
++
++/*
++ * Definition of a tick, as a time in milliseconds. This controls how
++ * often the event system periodic jobs are run.  All actual tick times
++ * are derived from the nanosecond timer.  These values are typically used
++ * as part of computing mouse velocity for acceleration purposes.
++ */
++#define EV_TICK_TIME		16			/* 16 milliseconds */
++#define EV_TICKS_PER_SEC	(1000/EV_TICK_TIME)	/* ~ 62 Hz */
++
++/* Mouse Button bits, as passed from an EventSrc to the Event Driver */
++#define EV_RB			(0x01)
++#define EV_LB			(0x04)
++#define EV_MOUSEBUTTONMASK	(EV_LB | EV_RB)
++
++/* Tablet Pressure Constants, as passed from an EventSrc to the Event Driver */
++#define EV_MINPRESSURE 0
++#define EV_MAXPRESSURE 255
++
++/* Cursor size in pixels */
++#define EV_CURSOR_WIDTH		16
++#define EV_CURSOR_HEIGHT	16
++
++
++#define kAppleOnboardGUID 	0x0610000000000000ULL
++
++#endif /* !_DEV_EV_TYPES_H */
++
+
+diff --git a/iokit/IOKit/hidsystem/IOHIKeyboardMapper.h b/iokit/IOKit/hidsystem/IOHIKeyboardMapper.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIKeyboardMapper.h
+@@ -0,0 +1,247 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2003 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++#ifndef _IOHIKEYBOARDMAPPER_H
++#define _IOHIKEYBOARDMAPPER_H
++
++#include <IOKit/hidsystem/ev_keymap.h>
++#include <IOKit/hidsystem/IOLLEvent.h>
++#include <IOKit/IOTimerEventSource.h>
++#include <IOKit/IOInterruptEventSource.h>
++
++class IOHIKeyboard;
++class IOHIDSystem;
++
++/*
++ * Key ip/down state is tracked in a bit list.  Bits are set
++ * for key-down, and cleared for key-up.  The bit vector and macros
++ * for it's manipulation are defined here.
++ */
++
++typedef	UInt32 * kbdBitVector;
++
++#define EVK_BITS_PER_UNIT	32
++#define EVK_BITS_MASK		31
++#define EVK_BITS_SHIFT		5	// 1<<5 == 32, for cheap divide
++
++#define EVK_KEYDOWN(n, bits) \
++	(bits)[((n)>>EVK_BITS_SHIFT)] |= (1 << ((n) & EVK_BITS_MASK))
++
++#define EVK_KEYUP(n, bits) \
++	(bits)[((n)>>EVK_BITS_SHIFT)] &= ~(1 << ((n) & EVK_BITS_MASK))
++
++#define EVK_IS_KEYDOWN(n, bits) \
++	(((bits)[((n)>>EVK_BITS_SHIFT)] & (1 << ((n) & EVK_BITS_MASK))) != 0)
++
++/* the maximum number of modifier keys sticky keys can hold at once */
++#define kMAX_MODIFIERS					5
++
++/* the number of shift keys in a row that must be depressed to toggle state */
++#define kNUM_SHIFTS_TO_ACTIVATE			5
++
++/* the number of milliseconds all the shifts must be pressed in - 30 seconds (30000 mS)*/
++#define kDEFAULT_SHIFTEXPIREINTERVAL	30000
++
++
++// sticky keys state flags
++enum
++{
++    kState_Disabled_Flag        = 0x0001,	// disabled and will do nothing until this is changed
++    kState_ShiftActivates_Flag	= 0x0002,	// the 'on' gesture (5 shifts) will activate
++    kState_On                   = 0x0004,	// currently on, will hold down modifiers when pressed
++    kState_On_ModifiersDown     = 0x0008,	// one or more modifiers being held down
++    kState_Mask                 = 0x00FF,	// mask for all states
++};
++
++typedef struct _stickyKeys_ToggleInfo
++{
++	// size of this allocation
++	IOByteCount		size;
++
++	// which modifier key we are tracking (using NX_WHICHMODMASK)
++	unsigned		toggleModifier;
++
++	// the number of times the modifier must be pressed to toggle
++	unsigned		repetitionsToToggle;
++
++	// how long the user has to press the modifier repetitionsToToggle times
++	// the default is 30 seconds
++	AbsoluteTime	expireInterval;
++
++	// the number of times the modifier used within the alloted time
++	unsigned		currentCount;
++
++	// the times that the last shift must occer for this one to be used
++	// this array will actually be of size repetitionsToToggle
++	AbsoluteTime	deadlines[1];
++} StickyKeys_ToggleInfo;
++
++// Flags for each sticky key modifier
++// This will allow for chording of keys
++// and for key locking
++enum
++{
++    kModifier_DidPerformModifiy	= 0x01,
++    kModifier_DidKeyUp		= 0x02,
++    kModifier_Locked		= 0x04,
++};
++typedef struct _stickyKeys_ModifierInfo
++{
++	UInt8		key;		// Key code of the sticky modifier
++        UInt8		state;		// The state of the sticky modifier
++        UInt8		leftModBit;	// System Mod bit of the sticky modifier
++} StickyKeys_ModifierInfo;
++
++class IOHIDKeyboardDevice;
++
++class __kpi_deprecated ("Use DriverKit") IOHIKeyboardMapper : public OSObject
++{
++  OSDeclareDefaultStructors(IOHIKeyboardMapper);
++
++private:
++	IOHIKeyboard *		_delegate;					// KeyMap delegate
++	bool				_mappingShouldBeFreed;		// true if map can be IOFree'd
++	NXParsedKeyMapping	_parsedMapping;				// current system-wide keymap
++	
++	// binary compatibility padding
++    struct ExpansionData { 
++    
++        // This is for sticky keys
++        kbdBitVector		cached_KeyBits;
++        
++        UInt32		specialKeyModifierFlags;
++        
++        SInt32      modifierSwap_Modifiers[NX_NUMMODIFIERS];
++		
++		unsigned char * cachedAlphaLockModDefs;
++    };
++    ExpansionData * _reserved;				    // Reserved for future use.  (Internal use only)
++    
++public:
++	static IOHIKeyboardMapper * keyboardMapper(
++										IOHIKeyboard * delegate,
++										const UInt8 *  mapping,
++										UInt32         mappingLength,
++										bool           mappingShouldBeFreed );
++	
++	virtual bool init(IOHIKeyboard * delegate,
++					const UInt8 *  mapping,
++					  UInt32         mappingLength,
++					  bool           mappingShouldBeFreed);
++	virtual void free(void) APPLE_KEXT_OVERRIDE;
++	
++	virtual const UInt8 *   mapping();
++	virtual UInt32          mappingLength();
++	virtual bool 		  	serialize(OSSerialize *s) const APPLE_KEXT_OVERRIDE;
++	
++	virtual void 		translateKeyCode(UInt8 key, bool keyDown, kbdBitVector keyBits);
++	virtual UInt8  		getParsedSpecialKey(UInt8 logical);   //retrieve a key from _parsedMapping
++
++	virtual	void		setKeyboardTarget (IOService * keyboardTarget);
++	
++	virtual bool 	    updateProperties (void);
++	virtual IOReturn  	setParamProperties (OSDictionary * dict);
++	
++	// keyEventPostProcess is called while a lock is not held, so a recursive
++	// call back into HIKeyboard is possible
++	virtual void 	    keyEventPostProcess (void);
++
++private:
++	static void makeNumberParamProperty( OSDictionary * dict, const char * key,
++                            unsigned long long number, unsigned int bits );
++
++
++	virtual bool parseKeyMapping(const UInt8 *        mapping,
++								 UInt32               mappingLength,
++							     NXParsedKeyMapping * parsedMapping) const;
++	
++	virtual void calcModBit(int bit, kbdBitVector keyBits);
++	virtual void doModCalc(int key, kbdBitVector keyBits);
++	virtual void doCharGen(int keyCode, bool down);
++
++	/* sticky keys functionality */
++private:
++	// original translateKeyCode
++	void rawTranslateKeyCode (UInt8 key, bool keyDown, kbdBitVector keyBits);
++  
++	// post special keyboard events thru the event system
++	void postKeyboardSpecialEvent (unsigned subtype, unsigned eventType=NX_SYSDEFINED);
++
++private:
++        
++private:
++public:
++    OSMetaClassDeclareReservedUsed(IOHIKeyboardMapper,  0);
++    virtual IOReturn message( UInt32 type, IOService * provider, void * argument = 0 );
++
++	// binary compatibility padding
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  1);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  2);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  3);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  4);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  5);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  6);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  7);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  8);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper,  9);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper, 10);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper, 11);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper, 12);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper, 13);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper, 14);
++    OSMetaClassDeclareReservedUnused(IOHIKeyboardMapper, 15);
++};
++
++#endif // _IOHIKEYBOARDMAPPER_H
++
++/*
++ * HISTORICAL NOTE:
++ *   The "delegate" object had to respond to the following protocol;
++ *   this protocol has since been merged into the IOHIKeyboard class.
++ *
++ * @protocol KeyMapDelegate
++ *
++ * - keyboardEvent	:(unsigned)eventType
++ * 	flags	:(unsigned)flags
++ *	keyCode	:(unsigned)keyCode
++ *	charCode:(unsigned)charCode
++ *	charSet	:(unsigned)charSet
++ *	originalCharCode:(unsigned)origCharCode
++ *	originalCharSet:(unsigned)origCharSet;
++ * 
++ * - keyboardSpecialEvent:(unsigned)eventType
++ *	flags	 :(unsigned)flags
++ *	keyCode	:(unsigned)keyCode
++ *	specialty:(unsigned)flavor;
++ *
++ * - updateEventFlags:(unsigned)flags;	// Does not generate events
++ *
++ * - (unsigned)eventFlags;		// Global event flags
++ * - (unsigned)deviceFlags;		// per-device event flags
++ * - setDeviceFlags:(unsigned)flags;	// Set device event flags
++ * - (bool)alphaLock;			// current alpha-lock state
++ * - setAlphaLock:(bool)val;		// Set current alpha-lock state
++ * - (bool)charKeyActive;		// Is a character gen. key down?
++ * - setCharKeyActive:(bool)val;	// Note that a char gen key is down.
++ *
++ * @end
++ */
+
+diff --git a/iokit/IOKit/hidsystem/IOHIKeyboard.h b/iokit/IOKit/hidsystem/IOHIKeyboard.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIKeyboard.h
+@@ -0,0 +1,277 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2003 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++/* 	Copyright (c) 1992 NeXT Computer, Inc.  All rights reserved. 
++ *
++ * EventSrcPCKeyboard.h - PC Keyboard EventSrc subclass definition
++ *
++ * HISTORY
++ * 28 Aug 1992    Joe Pasqua
++ *      Created. 
++ */
++
++#ifndef _IOHIKEYBOARD_H
++#define _IOHIKEYBOARD_H
++
++#include <IOKit/hidsystem/IOHIDevice.h>
++#include <IOKit/hidsystem/IOHIKeyboardMapper.h>
++
++/* Start Action Definitions */
++
++/*
++ * HISTORICAL NOTE:
++ *   The following entry points were part of the IOHIKeyboardEvents
++ *   protocol.
++ */
++
++typedef void (*KeyboardEventAction)(       OSObject * target,
++                    /* eventFlags  */      unsigned   eventType,
++                    /* flags */            unsigned   flags,
++                    /* keyCode */          unsigned   key,
++                    /* charCode */         unsigned   charCode,
++                    /* charSet */          unsigned   charSet,
++                    /* originalCharCode */ unsigned   origCharCode,
++                    /* originalCharSet */  unsigned   origCharSet,
++                    /* keyboardType */     unsigned   keyboardType,
++                    /* repeat */           bool       repeat,
++                    /* atTime */           AbsoluteTime ts);
++
++typedef void (*KeyboardSpecialEventAction)(OSObject * target,
++                    /* eventType */        unsigned   eventType,
++                    /* flags */            unsigned   flags,
++                    /* keyCode */          unsigned   key,
++                    /* specialty */        unsigned   flavor,
++                    /* source id */        UInt64     guid,
++                    /* repeat */           bool       repeat,
++                    /* atTime */           AbsoluteTime ts);
++
++typedef void (*UpdateEventFlagsAction)(    OSObject * target,
++                     /* flags */           unsigned   flags);
++
++/* Event Callback Definitions */
++
++typedef void (*KeyboardEventCallback)(
++                    /* target */           OSObject * target,
++                    /* eventFlags  */      unsigned   eventType,
++                    /* flags */            unsigned   flags,
++                    /* keyCode */          unsigned   key,
++                    /* charCode */         unsigned   charCode,
++                    /* charSet */          unsigned   charSet,
++                    /* originalCharCode */ unsigned   origCharCode,
++                    /* originalCharSet */  unsigned   origCharSet,
++                    /* keyboardType */     unsigned   keyboardType,
++                    /* repeat */           bool       repeat,
++                    /* atTime */           AbsoluteTime ts,
++                    /* sender */           OSObject * sender,
++                    /* refcon */           void *     refcon);
++
++typedef void (*KeyboardSpecialEventCallback)(
++                    /* target */           OSObject * target,
++                    /* eventType */        unsigned   eventType,
++                    /* flags */            unsigned   flags,
++                    /* keyCode */          unsigned   key,
++                    /* specialty */        unsigned   flavor,
++                    /* source id */        UInt64     guid,
++                    /* repeat */           bool       repeat,
++                    /* atTime */           AbsoluteTime ts,
++                    /* sender */           OSObject * sender,
++                    /* refcon */           void *     refcon);
++                    
++typedef void (*UpdateEventFlagsCallback)(
++                    /* target */           OSObject * target,
++                    /* flags */            unsigned   flags,
++                    /* sender */           OSObject * sender,
++                    /* refcon */           void *     refcon);
++
++/* End Action Definitions */
++
++/* Default key repeat parameters */
++#define EV_DEFAULTINITIALREPEAT 500000000ULL    // 1/2 sec in nanoseconds
++#define EV_DEFAULTKEYREPEAT     83333333ULL     // 1/12 sec in nanoseconds
++#define EV_MINKEYREPEAT         16700000ULL     // 1/60 sec
++
++#if defined(KERNEL) && !defined(KERNEL_PRIVATE)
++class __deprecated_msg("Use DriverKit") IOHIKeyboard : public IOHIDevice
++#else
++class IOHIKeyboard : public IOHIDevice
++#endif
++{
++    OSDeclareDefaultStructors(IOHIKeyboard);
++
++    friend class IOHIDKeyboardDevice;
++    friend class IOHIDKeyboardEventDevice;
++    friend class IOHIDKeyboard;
++    friend class IOHIDConsumer;
++
++protected:
++    IOLock *	         _deviceLock;	// Lock for all device access
++    IOHIKeyboardMapper * _keyMap;	// KeyMap instance
++
++    // The following fields describe the kind of keyboard
++    UInt32		_interfaceType;
++    UInt32		_deviceType;
++
++    // The following fields describe the state of the keyboard
++    UInt32 *	_keyState;		// kbdBitVector
++    IOByteCount _keyStateSize;		// kbdBitVector allocated size
++    unsigned	_eventFlags;		// Current eventFlags
++    bool	_alphaLock;		// true means alpha lock is on
++    bool	_numLock;		// true means num lock is on
++    bool	_charKeyActive;		// true means char gen. key active
++
++    // The following fields are used in performing key repeats
++    bool 	_isRepeat;		// true means we're generating repeat
++    unsigned	_codeToRepeat;		// What we are repeating
++    bool	_calloutPending;	// true means we've sched. a callout
++    AbsoluteTime	_lastEventTime;		// Time last event was dispatched
++    AbsoluteTime	_downRepeatTime;	// Time when we should next repeat
++    AbsoluteTime	_keyRepeat;		// Delay between key repeats
++    AbsoluteTime	_initialKeyRepeat;	// Delay before initial key repeat
++    UInt64		_guid;
++
++    OSObject *                 _keyboardEventTarget;
++    KeyboardEventAction        _keyboardEventAction;
++    OSObject *                 _keyboardSpecialEventTarget;
++    KeyboardSpecialEventAction _keyboardSpecialEventAction;
++    OSObject *                 _updateEventFlagsTarget;
++    UpdateEventFlagsAction     _updateEventFlagsAction;
++    
++    UInt16      _lastUsagePage;
++    UInt16      _lastUsage;
++
++protected:
++  virtual void dispatchKeyboardEvent(unsigned int keyCode,
++		     /* direction */ bool         goingDown,
++		     /* timeStamp */ AbsoluteTime time);
++    void    setLastPageAndUsage(UInt16 usagePage, UInt16 usage);
++    void    getLastPageAndUsage(UInt16 &usagePage, UInt16 &usage);
++    void    clearLastPageAndUsage();
++
++public:
++  virtual bool init(OSDictionary * properties = 0) APPLE_KEXT_OVERRIDE;
++  virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
++  virtual void stop(IOService * provider) APPLE_KEXT_OVERRIDE;
++  virtual void free(void) APPLE_KEXT_OVERRIDE;
++
++  virtual bool open(IOService *                client,
++		    IOOptionBits	       options,
++                    KeyboardEventAction        keAction,
++                    KeyboardSpecialEventAction kseAction,
++                    UpdateEventFlagsAction     uefAction);
++                    
++  bool open(        IOService *                  client,
++		    IOOptionBits	         options,
++                    void *,
++                    KeyboardEventCallback        keCallback,
++                    KeyboardSpecialEventCallback kseCallback,
++                    UpdateEventFlagsCallback     uefCallback);
++
++  virtual void close(IOService * client, IOOptionBits ) APPLE_KEXT_OVERRIDE;
++
++  virtual IOReturn message( UInt32 type, IOService * provider,
++                    void * argument = 0 ) APPLE_KEXT_OVERRIDE;
++
++  virtual IOHIDKind hidKind( void ) APPLE_KEXT_OVERRIDE;
++  virtual bool 	    updateProperties( void ) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn  setParamProperties(OSDictionary * dict) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn  setProperties( OSObject * properties ) APPLE_KEXT_OVERRIDE;
++  
++  inline  bool	    isRepeat() {return _isRepeat;}
++
++protected: // for subclasses to implement
++  virtual const unsigned char * defaultKeymapOfLength(UInt32 * length);
++  virtual void setAlphaLockFeedback(bool val);
++  virtual void setNumLockFeedback(bool val);
++  virtual UInt32 maxKeyCodes();
++
++
++private:
++  virtual bool resetKeyboard();
++  virtual void scheduleAutoRepeat();
++  static void _autoRepeat(void * arg, void *);
++  virtual void autoRepeat();
++  virtual void setRepeat(unsigned eventType, unsigned keyCode);
++  void setRepeatMode(bool repeat);
++  static void _createKeyboardNub(thread_call_param_t param0, thread_call_param_t param1);
++
++/*
++ * HISTORICAL NOTE:
++ *   The following methods were part of the KeyMapDelegate protocol;
++ *   the declarations have now been merged directly into this class.
++ */
++
++public:
++  virtual void keyboardEvent(unsigned eventType,
++      /* flags */            unsigned flags,
++      /* keyCode */          unsigned keyCode,
++      /* charCode */         unsigned charCode,
++      /* charSet */          unsigned charSet,
++      /* originalCharCode */ unsigned origCharCode,
++      /* originalCharSet */  unsigned origCharSet);
++
++  virtual void keyboardSpecialEvent(unsigned eventType,
++		    /* flags */     unsigned flags,
++		    /* keyCode */   unsigned keyCode,
++		    /* specialty */ unsigned flavor);
++
++  virtual void updateEventFlags(unsigned flags); // Does not generate events
++
++  virtual unsigned eventFlags();           // Global event flags
++  virtual unsigned deviceFlags();          // per-device event flags
++  virtual void setDeviceFlags(unsigned flags); // Set device event flags
++  virtual bool alphaLock();                // current alpha-lock state
++  virtual void setAlphaLock(bool val);     // Set current alpha-lock state
++  virtual bool numLock();                
++  virtual void setNumLock(bool val);     
++  virtual bool charKeyActive();            // Is a character gen. key down?
++  virtual void setCharKeyActive(bool val); // Note that a char gen key is down.
++  virtual bool doesKeyLock(unsigned key);  //does key lock physically
++  virtual unsigned getLEDStatus();  //check hardware for LED status
++
++private:
++  static void _keyboardEvent( IOHIKeyboard * self,
++			     unsigned   eventType,
++      /* flags */            unsigned   flags,
++      /* keyCode */          unsigned   key,
++      /* charCode */         unsigned   charCode,
++      /* charSet */          unsigned   charSet,
++      /* originalCharCode */ unsigned   origCharCode,
++      /* originalCharSet */  unsigned   origCharSet,
++      /* keyboardType */     unsigned   keyboardType,
++      /* repeat */           bool       repeat,
++      /* atTime */           AbsoluteTime ts);
++  static void _keyboardSpecialEvent( 	
++                             IOHIKeyboard * self,
++                             unsigned   eventType,
++        /* flags */          unsigned   flags,
++        /* keyCode  */       unsigned   key,
++        /* specialty */      unsigned   flavor,
++        /* guid */           UInt64     guid,
++        /* repeat */         bool       repeat,
++        /* atTime */         AbsoluteTime ts);
++        
++  static void _updateEventFlags( IOHIKeyboard * self,
++				unsigned flags);  /* Does not generate events */
++
++};
++
++#endif /* !_IOHIKEYBOARD_H */
+
+diff --git a/iokit/IOKit/hidsystem/IOHIPointing.h b/iokit/IOKit/hidsystem/IOHIPointing.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIPointing.h
+@@ -0,0 +1,260 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2009 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++#ifndef _IOHIPOINTING_H
++#define _IOHIPOINTING_H
++
++#include <IOKit/hidsystem/IOHIPointing.h>
++#include <IOKit/hidsystem/IOHIDevice.h>
++#include <IOKit/hidsystem/IOHIDTypes.h>
++
++/* Start Action Definitions */
++
++/*
++ * HISTORICAL NOTE:
++ *   The following entry points were part of the IOHIPointingEvents
++ *   protocol.
++ */
++typedef void (*RelativePointerEventAction)(OSObject * target,
++                        /* buttons */      int        buttons,
++                        /* deltaX */       int        dx,
++                        /* deltaY */       int        dy,
++                        /* atTime */       AbsoluteTime ts);
++
++typedef void (*AbsolutePointerEventAction)(OSObject * target,
++                        /* buttons */      int        buttons,
++                        /* at */           IOGPoint * newLoc,
++                        /* withBounds */   IOGBounds *bounds,
++                        /* inProximity */  bool       proximity,
++                        /* withPressure */ int        pressure,
++                        /* withAngle */    int        stylusAngle,
++                        /* atTime */       AbsoluteTime ts);
++
++typedef void (*ScrollWheelEventAction)(OSObject * target,
++                                       short      deltaAxis1,
++                                       short      deltaAxis2,
++                                       short      deltaAxis3,
++                                       AbsoluteTime ts);
++
++/* Event Callback Definitions */
++
++typedef void (*RelativePointerEventCallback)(
++                        /* target */       OSObject * target,
++                        /* buttons */      int        buttons,
++                        /* deltaX */       int        dx,
++                        /* deltaY */       int        dy,
++                        /* atTime */       AbsoluteTime ts,
++                        /* sender */       OSObject * sender,
++                        /* refcon */       void *     refcon);
++
++typedef void (*AbsolutePointerEventCallback)(
++                        /* target */       OSObject * target,
++                        /* buttons */      int        buttons,
++                        /* at */           IOGPoint * newLoc,
++                        /* withBounds */   IOGBounds *bounds,
++                        /* inProximity */  bool       proximity,
++                        /* withPressure */ int        pressure,
++                        /* withAngle */    int        stylusAngle,
++                        /* atTime */       AbsoluteTime ts,
++                        /* sender */       OSObject * sender,
++                        /* refcon */       void *     refcon);
++
++typedef void (*ScrollWheelEventCallback)(
++                        /* target */       OSObject * target,
++                        /* delta1 */       short      deltaAxis1,
++                        /* delta2 */       short      deltaAxis2,
++                        /* delta3 */       short      deltaAxis3,
++                        /* fixedDelta1 */  IOFixed    fixedDelta1,
++                        /* fixedDelta2 */  IOFixed    fixedDelta2,
++                        /* fixedDelta3 */  IOFixed    fixedDelta3,
++                        /* pointDelta1 */  SInt32     pointDelta1,
++                        /* pointDelta2 */  SInt32     pointDelta2,
++                        /* pointDelta3 */  SInt32     pointDelta3,
++                        /* reserved */     SInt32     options,
++                        /* atTime */       AbsoluteTime ts,
++                        /* sender */       OSObject * sender,
++                        /* refcon */       void *     refcon);
++
++/* End Action Definitions */
++
++/* Default accel level parameters */
++#define EV_DEFAULTPOINTERACCELLEVEL 0x0000b000
++#define EV_DEFAULTSCROLLACCELLEVEL  0x00005000
++
++class IOHIDPointingDevice;
++struct ScrollAccelInfo;
++
++#if defined(KERNEL) && !defined(KERNEL_PRIVATE)
++class __deprecated_msg("Use DriverKit") IOHIPointing : public IOHIDevice
++#else
++class IOHIPointing : public IOHIDevice
++#endif
++{
++    OSDeclareDefaultStructors(IOHIPointing);
++    
++    friend class IOHITablet;
++    friend class IOHIDPointing;
++
++private:
++    IOLock *		_deviceLock;  // Lock for all device access
++    int			_buttonMode;  // The "handedness" of the pointer
++    IOFixed		_acceleration;
++    bool		_convertAbsoluteToRelative;
++    bool		_contactToMove;
++    bool		_hadContact;
++    IOGPoint    _previousLocation;
++    UInt8		_pressureThresholdToClick;	// A scale factor of 0 to 255 to determine how much pressure is necessary to generate a primary mouse click - a value of 255 means no click will be generated
++    void *		_scaleSegments;
++    IOItemCount		_scaleSegCount;
++    IOFixed		_fractX;
++    IOFixed		_fractY;
++
++    OSObject *                 _relativePointerEventTarget;
++    RelativePointerEventAction _relativePointerEventAction;
++    OSObject *                 _absolutePointerEventTarget;
++    AbsolutePointerEventAction _absolutePointerEventAction;
++    OSObject *                 _scrollWheelEventTarget;
++    ScrollWheelEventAction     _scrollWheelEventAction;
++    
++    struct ExpansionData;
++
++    ExpansionData *  _reserved;
++    
++    void    setPointingMode(UInt32 accelerateMode);
++    UInt32  getPointingMode ();
++    void    setScrollType(UInt32 scrollType);
++    UInt32  getScrollType();
++
++    void dispatchScrollWheelEventWithAccelInfo(
++                                SInt32              deltaAxis1,
++                                SInt32              deltaAxis2,
++                                SInt32              deltaAxis3,
++                                ScrollAccelInfo *   info,
++                                AbsoluteTime        ts);
++    
++    
++protected:
++  virtual void dispatchRelativePointerEvent(int        dx,
++                                            int        dy,
++                                            UInt32     buttonState,
++                                            AbsoluteTime ts);
++    
++  virtual void dispatchAbsolutePointerEvent(IOGPoint *	newLoc,
++                                            IOGBounds *	bounds,
++                                            UInt32	buttonState,
++                                            bool	proximity,
++                                            int		pressure,
++                                            int		pressureMin,
++                                            int		pressureMax,
++                                            int		stylusAngle,
++                                            AbsoluteTime	ts);
++
++  virtual void dispatchScrollWheelEvent(short deltaAxis1,
++                                        short deltaAxis2,
++                                        short deltaAxis3,
++                                        AbsoluteTime ts);
++
++public:
++  virtual bool init(OSDictionary * properties = 0) APPLE_KEXT_OVERRIDE;
++  virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
++  virtual void free(void) APPLE_KEXT_OVERRIDE;
++
++  virtual bool open(IOService *                client,
++		    IOOptionBits	       options,
++                    RelativePointerEventAction rpeAction,
++                    AbsolutePointerEventAction apeAction,
++                    ScrollWheelEventAction     sweAction);
++                    
++  bool open(        IOService *				client,
++                    IOOptionBits			options,
++                    void *,
++                    RelativePointerEventCallback	rpeCallback,
++                    AbsolutePointerEventCallback	apeCallback,
++                    ScrollWheelEventCallback		sweCallback);
++
++  virtual void close(IOService * client, IOOptionBits ) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn message( UInt32 type, IOService * provider,
++                              void * argument = 0 ) APPLE_KEXT_OVERRIDE;
++
++  virtual IOHIDKind hidKind(void) APPLE_KEXT_OVERRIDE;
++  virtual bool 	    updateProperties( void ) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn  setParamProperties( OSDictionary * dict ) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn  powerStateWillChangeTo( IOPMPowerFlags powerFlags,
++                        unsigned long newState, IOService * device) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn  powerStateDidChangeTo( IOPMPowerFlags powerFlags,
++                        unsigned long newState, IOService * device) APPLE_KEXT_OVERRIDE;
++
++protected: // for subclasses to implement
++  virtual OSData *    copyAccelerationTable();
++  virtual IOItemCount buttonCount();
++  virtual IOFixed     resolution();
++
++  // RY: Adding method to copy scroll wheel accel table.
++  // Unfortunately, we don't have any padding, so this
++  // is going to be non-virtual.
++  /*virtual*/ OSData * copyScrollAccelerationTable();
++
++private:
++  virtual bool resetPointer();
++  virtual void scalePointer(int * dxp, int * dyp);
++    virtual void setupForAcceleration(IOFixed accl);
++  
++  // RY: Adding methods to support scroll wheel accel.
++  // Unfortunately, we don't have any padding, so these
++  // are going to be non-virtual.
++  /*virtual*/ bool 	resetScroll();
++  /*virtual*/ void 	setupScrollForAcceleration(IOFixed accl);
++  
++  // RY: We have to make sure that subclasses that will 
++  // take advantage of this have their defined resolution 
++  // in their property table.
++  /*virtual*/ IOFixed	scrollResolutionForType(SInt32 type=-1);
++  /*virtual*/ IOFixed   scrollReportRate();
++  /*virtual*/ OSData *  copyScrollAccelerationTableForType(SInt32 type=-1);
++  
++private:
++  static void _relativePointerEvent( IOHIPointing * self,
++				    int        buttons,
++                       /* deltaX */ int        dx,
++                       /* deltaY */ int        dy,
++                       /* atTime */ AbsoluteTime ts);
++
++  /* Tablet event reporting */
++  static void _absolutePointerEvent(IOHIPointing * self,
++				    int        buttons,
++                 /* at */           IOGPoint * newLoc,
++                 /* withBounds */   IOGBounds *bounds,
++                 /* inProximity */  bool       proximity,
++                 /* withPressure */ int        pressure,
++                 /* withAngle */    int        stylusAngle,
++                 /* atTime */       AbsoluteTime ts);
++
++  /* Mouse scroll wheel event reporting */
++  static void _scrollWheelEvent(IOHIPointing *self,
++                                short deltaAxis1,
++                                short deltaAxis2,
++                                short deltaAxis3,
++                                AbsoluteTime ts);
++
++};
++
++#endif /* !_IOHIPOINTING_H */
+
+diff --git a/iokit/IOKit/hidsystem/IOHIDSystem.h b/iokit/IOKit/hidsystem/IOHIDSystem.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIDSystem.h
+@@ -0,0 +1,610 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ *
++ * Copyright (c) 1999-2009 Apple Computer, Inc.  All Rights Reserved.
++ *
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ *
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ *
++ * @APPLE_LICENSE_HEADER_END@
++ */
++/* 	Copyright (c) 1992 NeXT Computer, Inc.  All rights reserved.
++ *
++ * EventDriver.h - Exported Interface Event Driver object.
++ *
++ *		The EventDriver is a pseudo-device driver.
++ *
++ * HISTORY
++ * 19 Mar 1992    Mike Paquette at NeXT
++ *      Created.
++ * 4  Aug 1993	  Erik Kay at NeXT
++ *	API cleanup
++ */
++
++#ifndef	_IOHIDSYSTEM_H
++#define _IOHIDSYSTEM_H
++
++#include <TargetConditionals.h>
++#include <IOKit/IOTimerEventSource.h>
++#include <IOKit/IOInterruptEventSource.h>
++#include <IOKit/IOService.h>
++#include <IOKit/IOMessage.h>
++#include <IOKit/IOUserClient.h>
++#include <IOKit/IOCommandGate.h>
++#include <IOKit/IOBufferMemoryDescriptor.h>
++#include <IOKit/pwr_mgt/IOPM.h>
++#include "IOHIDWorkLoop.h"
++#include <IOKit/graphics/IOGraphicsDevice.h>
++#include <IOKit/hidsystem/IOHIDevice.h>
++#include <IOKit/hidsystem/IOHIDShared.h>
++#include <IOKit/hidsystem/IOHIDTypes.h>
++#include <IOKit/hidsystem/IOLLEvent.h>
++#include <IOKit/IOSharedDataQueue.h>
++#include <IOKit/hidsystem/ev_keymap.h>		/* For NX_NUM_SCANNED_SPECIALKEYS */
++
++// The following messages should be unique across the entire system
++#ifndef sub_iokit_hidsystem
++#define sub_iokit_hidsystem                     err_sub(14)
++#endif
++
++#define kIOHIDSystem508MouseClickMessage        iokit_family_msg(sub_iokit_hidsystem, 1)
++#define kIOHIDSystemDeviceSeizeRequestMessage	iokit_family_msg(sub_iokit_hidsystem, 2)
++#define kIOHIDSystem508SpecialKeyDownMessage    iokit_family_msg(sub_iokit_hidsystem, 3)
++// 4 is used by IOHIDSecurePrompt
++#define kIOHIDSystemActivityTickle              iokit_family_msg(sub_iokit_hidsystem, 5)
++#define kIOHIDSystemUserHidActivity             iokit_family_msg(sub_iokit_hidsystem, 6)
++
++class IOHistogramReporter;
++class IOHIDKeyboardDevice;
++class IOHIDPointingDevice;
++class IOHIDEvent;
++class IOFixedPoint64;
++struct _evScreen;
++
++typedef volatile _evScreen EVScreen;
++
++#if defined(KERNEL) && !defined(KERNEL_PRIVATE)
++class __deprecated_msg("Use DriverKit") IOHIDSystem : public IOService
++#else
++class IOHIDSystem : public IOService
++#endif
++{
++	OSDeclareDefaultStructors(IOHIDSystem);
++
++	friend class IOHIDUserClient;
++	friend class IOHIDParamUserClient;
++	friend class IOHIDEventSystemUserClient;
++
++private:
++	IOHIDWorkLoop           *workLoop;
++    IOInterruptEventSource  *keyboardEQES;
++    IOCommandGate           *cmdGate;
++    IONotifier              *publishNotify;
++	void                    *eventMsg;	// Msg to be sent to Window Server.
++	void                    *stackShotMsg;	// Msg to be sent to Stack Shot.
++
++	// Shared memory area information
++    IOBufferMemoryDescriptor * globalMemory;
++	uintptr_t	shmem_addr;	// kernel address of shared memory
++	vm_size_t	shmem_size;	// size of shared memory
++
++	// Pointers to structures which occupy the shared memory area.
++	volatile EvGlobals  *evg;	// Pointer to EvGlobals (shmem)
++	// Internal variables related to the shared memory area
++	int                 lleqSize;	// # of entries in low-level queue
++                        // FIXME: why is this ivar lleqSize an ivar? {Dan]
++
++	// Screens list
++	EVScreen * evScreen;	// array of screens known to driver
++	int             screens;	// running total of allocated screens
++	UInt32          cursorScreens;	// bit mask of screens with cursor present
++    UInt32          cursorPinScreen;// a screen to pin against
++	IOGBounds		cursorPin;	// Range to which cursor is pinned
++					// while on this screen.
++	IOGBounds		workSpace;	// IOGBounds of full workspace.
++	// Event Status state - This includes things like event timestamps,
++	// time til screen dim, and related things manipulated through the
++	// Event Status API.
++	//
++    struct ExpansionData;
++    ExpansionData   *_privateData;
++
++    IOGPoint	clickLoc;       // location of last mouse click
++    IOGPoint    clickSpaceThresh;// max mouse delta to be a doubleclick
++
++//	int	clickState;	// Current click state
++
++	bool evOpenCalled;	// Has the driver been opened?
++    int  evOpenedByPID;
++	bool evInitialized;	// Has the first-open-only initialization run?
++	bool eventsOpen;	// Boolean: has evmmap been called yet?
++	bool cursorStarted;	// periodic events running?
++	bool cursorEnabled;	// cursor positioning ok?
++	bool cursorCoupled;	// cursor positioning on pointer moves ok?
++	bool cursorPinned;	// cursor positioning on pointer moves ok?
++
++    uint64_t lastUndimEvent;
++
++    struct SetFixedMouseLocData {
++        uint64_t    origTs;
++        uint64_t    callTs;
++        int32_t     x;
++        int32_t     y;
++        int32_t     pid;
++    } __attribute__((packed));
++
++    struct Diags {
++        /* Cursor actions slower than this are tracked for diagnostics */
++        static const uint32_t SLOW_CURSOR_MS = 20;
++        
++        typedef enum {
++            kCursorActionShow = 0,
++            kCursorActionHide,
++            kCursorActionMove,
++
++            kCursorActionCount
++        } CursorAction;
++
++        static const char * cursorStrings[kCursorActionCount];
++
++        uint64_t    cursorWorkloopTime;
++        uint64_t    lastActionTimes[kCursorActionCount];
++        uint8_t     lastCursorActionsMask;
++
++        IOHistogramReporter * cursorTotalHistReporter;
++        IOHistogramReporter * cursorGraphicsHistReporter;
++
++    } _diags;
++
++    IOPMrootDomain *    rootDomain;
++    UInt32              powerState;
++
++    OSDictionary *  savedParameters;	// keep user settings
++
++    UInt32		maxWaitCursorFrame;	// animation frames
++	UInt32		firstWaitCursorFrame;	//
++
++    IOHIDPointingDevice * _hidPointingDevice;
++    IOHIDKeyboardDevice * _hidKeyboardDevice;
++
++    OSObject * lastSender;
++
++
++    bool setParamPropertiesInProgress;
++
++    OSSet * dataQueueSet;
++  
++
++private:
++
++
++  static IOReturn powerStateHandler( void *target, void *refCon,
++            UInt32 messageType, IOService *service, void *messageArgument, vm_size_t argSize );
++  void updatePowerState(UInt32 messageType);
++
++ /* Resets */
++    void    _setScrollCountParameters(OSDictionary *newSettings = NULL);
++
++  /* Initialize the shared memory area */
++  void     initShmem(bool clean);
++  /* Dispatch low level events through shared memory to the WindowServer */
++  void postEvent(       int        what,
++          /* at */      IOFixedPoint64 *       location,
++          /* atTime */  AbsoluteTime  ts,
++          /* withData */NXEventData * myData,
++          /* sender */  OSObject *    sender   = 0,
++          /* pid */     UInt32        extPID   = 0,
++          /* processKEQ*/bool         processKEQ = true,
++          /* options*/   UInt32       options    = 0
++                          );
++  /* Dispatch mechanisms for screen state changes */
++  void evDispatch(
++            /* command */ EvCmd evcmd);
++
++  OSDictionary * createFilteredParamPropertiesForService(IOService * service, OSDictionary * dict);
++
++  static void _periodicEvents(IOHIDSystem * self,
++                              IOTimerEventSource *timer);
++
++  static void doProcessKeyboardEQ(IOHIDSystem * self);
++  static void processKeyboardEQ(IOHIDSystem * self, AbsoluteTime * deadline = 0);
++
++  void doProcessNotifications();
++  
++  bool genericNotificationHandler(void * ref, IOService * newService, IONotifier * notifier );
++
++  static bool handlePublishNotification( void * target, IOService * newService );
++  static bool handleTerminationNotification( void * target, IOService * newService );
++
++  static void makeNumberParamProperty( OSDictionary * dict, const char * key,
++                            unsigned long long number, unsigned int bits );
++
++  static void makeInt32ArrayParamProperty( OSDictionary * dict, const char * key,
++                            UInt32 * array, unsigned int count );
++
++/*
++ * HISTORICAL NOTE:
++ *   The following methods were part of the IOHIDSystem(Input) category;
++ *   the declarations have now been merged directly into this class.
++ *
++ * Exported Interface Event Driver object input services.
++ */
++
++private:
++  // Schedule next periodic run based on current event system state.
++  void scheduleNextPeriodicEvent();
++  // Message invoked to run periodic events.  This method runs in the workloop.
++  void periodicEvents(IOTimerEventSource *timer);
++  // Start the cursor running.
++  bool startCursor();
++  // Repin cursor location.
++  bool resetCursor();
++  // Wait Cursor machinery.
++  void showWaitCursor();
++  void hideWaitCursor();
++  void animateWaitCursor();
++  void changeCursor(int frame);
++  // Return screen number a point lies on.
++  int  pointToScreen(IOGPoint * p);
++
++  inline void showCursor();
++  inline void hideCursor();
++  inline void moveCursor();
++  void enableContinuousCursor();
++  void disableContinuousCursor();
++  void _onScreenCursorPin();
++
++  bool registerEventSource(IOService * source);
++
++  // Set abs cursor position.
++  void setCursorPosition(IOGPoint * newLoc, bool external, OSObject * sender=0);
++  void _setCursorPosition(bool external = false, bool proximityChange = false, OSObject * sender=0);
++
++  static bool _idleTimeSerializerCallback(void * target, void * ref, OSSerialize *s);
++  static bool _cursorStateSerializerCallback(void * target, void * ref, OSSerialize *s);
++  static bool _displaySerializerCallback(void * target, void * ref, OSSerialize *s);
++
++  IOReturn _recordCursorAction(uint64_t origTS, uint64_t entryTS);
++
++  virtual IOReturn configureReport(IOReportChannelList *channels,
++                                   IOReportConfigureAction action,
++                                   void *result,
++                                   void *destination) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn updateReport(IOReportChannelList      *channels,
++                                IOReportUpdateAction      action,
++                                void                     *result,
++                                void                     *destination) APPLE_KEXT_OVERRIDE;
++
++  void createParameters( void );
++
++/* END HISTORICAL NOTE */
++  
++//  void updateUnificationFlags ();
++  
++public:
++  static IOHIDSystem * instance();     /* Return the current instance of the */
++				       /* EventDriver, or 0 if none. */
++
++  virtual bool init(OSDictionary * properties = 0) APPLE_KEXT_OVERRIDE;
++  virtual IOHIDSystem * probe(IOService *    provider,
++                              SInt32 * score) APPLE_KEXT_OVERRIDE;
++  virtual bool start(IOService * provider) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn message(UInt32 type, IOService * provider,
++				void * argument) APPLE_KEXT_OVERRIDE;
++  virtual void free(void) APPLE_KEXT_OVERRIDE;
++  virtual bool attach( IOService * provider ) APPLE_KEXT_OVERRIDE;
++  virtual void detach( IOService * provider ) APPLE_KEXT_OVERRIDE;
++
++  virtual IOWorkLoop *getWorkLoop(void) const APPLE_KEXT_OVERRIDE;
++
++  virtual IOReturn evOpen(void);
++  virtual IOReturn evClose(void);
++
++  virtual IOReturn  setProperties( OSObject * properties ) APPLE_KEXT_OVERRIDE;
++  virtual IOReturn  setParamProperties(OSDictionary * dict);
++
++  /* Create the shared memory area */
++  virtual IOReturn createShmem(void*,void*,void*,void*,void*,void*);
++
++  /* register the IOSharedDataQueue for the new user events */
++  virtual IOReturn registerEventQueue(IOSharedDataQueue * queue);
++
++  /* Unregister the IOSharedDataQueue for the new user events */
++  virtual IOReturn unregisterEventQueue(IOSharedDataQueue * queue);
++
++public:
++
++  virtual IOReturn newUserClient(task_t         owningTask,
++                 /* withToken */ void *         security_id,
++                 /* ofType */    UInt32         type,
++                 /* withProps*/  OSDictionary *  properties,
++                 /* client */    IOUserClient ** handler) APPLE_KEXT_OVERRIDE;
++
++/*
++ * HISTORICAL NOTE:
++ *   The following methods were part of the IOHIPointingEvents protocol;
++ *   the declarations have now been merged directly into this class.
++ */
++
++public:
++/*
++ * HISTORICAL NOTE:
++ *   The following methods were part of the IOHIKeyboardEvents protocol;
++ *   the declarations have now been merged directly into this class.
++ */
++
++public:
++  virtual void keyboardEvent(unsigned   eventType,
++      /* flags */            unsigned   flags,
++      /* keyCode */          unsigned   key,
++      /* charCode */         unsigned   charCode,
++      /* charSet */          unsigned   charSet,
++      /* originalCharCode */ unsigned   origCharCode,
++      /* originalCharSet */  unsigned   origCharSet,
++      /* keyboardType */     unsigned   keyboardType,
++      /* repeat */           bool       repeat,
++      /* atTime */           AbsoluteTime ts);
++
++  virtual void keyboardSpecialEvent(   unsigned   eventType,
++                    /* flags */        unsigned   flags,
++                    /* keyCode  */     unsigned   key,
++                    /* specialty */    unsigned   flavor,
++                    /* guid */ 	       UInt64     guid,
++                    /* repeat */       bool       repeat,
++                    /* atTime */       AbsoluteTime ts);
++
++  virtual void updateEventFlags(unsigned flags);  /* Does not generate events */
++
++
++
++
++private:
++
++  static void _keyboardEvent(       IOHIDSystem * self,
++                                    unsigned   eventType,
++            /* flags */             unsigned   flags,
++            /* keyCode */           unsigned   key,
++            /* charCode */          unsigned   charCode,
++            /* charSet */           unsigned   charSet,
++            /* originalCharCode */  unsigned   origCharCode,
++            /* originalCharSet */   unsigned   origCharSet,
++            /* keyboardType */      unsigned   keyboardType,
++            /* repeat */            bool       repeat,
++            /* atTime */            AbsoluteTime ts,
++                                    OSObject * sender,
++                                    void *     refcon);
++
++  static void _keyboardSpecialEvent(IOHIDSystem * self,
++                                    unsigned   eventType,
++                /* flags */         unsigned   flags,
++                /* keyCode  */      unsigned   key,
++                /* specialty */     unsigned   flavor,
++                /* guid */          UInt64     guid,
++                /* repeat */        bool       repeat,
++                /* atTime */        AbsoluteTime ts,
++                                    OSObject * sender,
++                                    void *     refcon);
++
++  static void _updateEventFlags(    IOHIDSystem * self,
++                                    unsigned   flags,
++                                    OSObject * sender,
++                                    void *     refcon);  /* Does not generate events */
++
++
++/*
++ * HISTORICAL NOTE:
++ *   The following methods were part of the IOUserClient protocol;
++ *   the declarations have now been merged directly into this class.
++ */
++
++public:
++
++  virtual IOReturn setEventsEnable(void*,void*,void*,void*,void*,void*);
++  virtual IOReturn setCursorEnable(void*,void*,void*,void*,void*,void*);
++  virtual IOReturn extPostEvent(void*,void*,void*,void*,void*,void*);
++  virtual IOReturn extSetMouseLocation(void*,void*,void*,void*,void*,void*);
++  virtual IOReturn extGetButtonEventNum(void*,void*,void*,void*,void*,void*);
++    
++    IOReturn extSetBounds(void*,void*,void*,void*,void*,void*);
++    IOReturn extSetOnScreenBounds(void*,void*,void*,void*,void*,void*);
++    IOReturn setBounds(IOGBounds * bounds, IOGPoint * screenPoint, bool onScreen);
++
++    IOReturn extGetStateForSelector(void*,void*,void*,void*,void*,void*);
++    IOReturn extSetStateForSelector(void*,void*,void*,void*,void*,void*);
++    IOReturn extRegisterVirtualDisplay(void*,void*,void*,void*,void*,void*);
++    IOReturn extUnregisterVirtualDisplay(void*,void*,void*,void*,void*,void*);
++    IOReturn extSetVirtualDisplayBounds(void*,void*,void*,void*,void*,void*);
++    IOReturn extGetUserHidActivityState(void*,void*,void*,void*,void*,void*);
++    IOReturn setContinuousCursorEnable(void*,void*,void*,void*,void*,void*);
++/*
++ * HISTORICAL NOTE:
++ *   The following methods were part of the IOScreenRegistration protocol;
++ *   the declarations have now been merged directly into this class.
++ *
++ * Methods exported by the EventDriver for display systems.
++ *
++ *	The screenRegister protocol is used by frame buffer drivers to register
++ *	themselves with the Event Driver.  These methods are called in response
++ *	to an _IOGetParameterInIntArray() call with "IO_Framebuffer_Register" or
++ *	"IO_Framebuffer_Unregister".
++ */
++
++public:
++  virtual int registerScreen(IOGraphicsDevice * instance,
++        /* bounds */         IOGBounds * bp,
++        /* virtual bounds */ IOGBounds * vbp);
++private:
++    static IOReturn doRegisterScreen(IOHIDSystem *self, IOGraphicsDevice *io_gd, IOGBounds *bp, IOGBounds * vbp, void *arg3);
++    IOReturn        registerScreenGated(IOGraphicsDevice *io_gd, IOGBounds *bp, IOGBounds * vbp, SInt32 *index);
++public:
++
++
++  virtual void unregisterScreen(int index);
++
++/*
++ * HISTORICAL NOTE:
++ *   The following methods were part of the IOWorkspaceBounds protocol;
++ *   the declarations have now been merged directly into this class.
++ *
++ * Absolute position input devices and some specialized output devices
++ * may need to know the bounding rectangle for all attached displays.
++ * The following method returns a IOGBounds* for the workspace.  Please note
++ * that the bounds are kept as signed values, and that on a multi-display
++ * system the minx and miny values may very well be negative.
++ */
++
++public:
++  virtual IOGBounds * workspaceBounds();
++
++/* END HISTORICAL NOTES */
++
++private:
++void keyboardEvent(unsigned   eventType,
++      /* flags */            unsigned   flags,
++      /* keyCode */          unsigned   key,
++      /* charCode */         unsigned   charCode,
++      /* charSet */          unsigned   charSet,
++      /* originalCharCode */ unsigned   origCharCode,
++      /* originalCharSet */  unsigned   origCharSet,
++      /* keyboardType */     unsigned   keyboardType,
++      /* repeat */           bool       repeat,
++      /* atTime */           AbsoluteTime ts,
++      /* sender */           OSObject * sender);
++
++void keyboardSpecialEvent(   unsigned   eventType,
++      /* flags */        unsigned   flags,
++      /* keyCode  */     unsigned   key,
++      /* specialty */    unsigned   flavor,
++      /* guid */         UInt64     guid,
++      /* repeat */       bool       repeat,
++      /* atTime */       AbsoluteTime ts,
++      /* sender */       OSObject * sender);
++
++void updateEventFlags(unsigned flags, OSObject * sender);
++
++
++/*
++ * COMMAND GATE COMPATIBILITY:
++ *   The following method is part of the work needed to make IOHIDSystem
++ *   compatible with IOCommandGate.  The use of IOCommandQueue has been
++ *   deprecated, thus requiring this move.  This should allow for less
++ *   context switching as all actions formerly run on the I/O Workloop
++ *   thread, will now be run on the caller thread.  The static methods
++ *   will be called from cmdGate->runAction and returns the appropriate
++ *   non-static helper method.  Arguments are stored in the void* array,
++ *   args, and are passed through.   Since we are returning in the static
++ *   function, gcc3 should translate that to one instruction, thus
++ *   minimizing cost.
++ */
++
++static	IOReturn	doEvClose (IOHIDSystem *self);
++        IOReturn	evCloseGated (void);
++        IOReturn    evOpenGated(void);
++
++static	IOReturn	doUnregisterScreen (IOHIDSystem *self, void * arg0);
++        IOReturn	unregisterScreenGated (int index);
++
++static	IOReturn	doSetDisplayBounds (IOHIDSystem *self, void * arg0, void * arg1);
++        IOReturn	setDisplayBoundsGated (UInt32 index, IOGBounds *bounds);
++
++static	IOReturn	doCreateShmem (IOHIDSystem *self, void * arg0);
++        IOReturn	createShmemGated (void * p1);
++
++static    IOReturn    doRegisterEventQueue (IOHIDSystem *self, void * arg0);
++        IOReturn    registerEventQueueGated (void * p1);
++
++static    IOReturn    doUnregisterEventQueue (IOHIDSystem *self, void * arg0);
++        IOReturn    unregisterEventQueueGated (void * p1);
++
++
++static	IOReturn	doKeyboardEvent (IOHIDSystem *self, void * args);
++        void		keyboardEventGated (unsigned   eventType,
++                                            unsigned   flags,
++                                            unsigned   key,
++                                            unsigned   charCode,
++                                            unsigned   charSet,
++                                            unsigned   origCharCode,
++                                            unsigned   origCharSet,
++                                            unsigned   keyboardType,
++                                            bool       repeat,
++                                            AbsoluteTime ts,
++                                            OSObject * sender);
++
++static	IOReturn	doKeyboardSpecialEvent (IOHIDSystem *self, void * args);
++        void		keyboardSpecialEventGated (
++                                            unsigned   eventType,
++                                            unsigned   flags,
++                                            unsigned   key,
++                                            unsigned   flavor,
++                                            UInt64     guid,
++                                            bool       repeat,
++                                            AbsoluteTime ts,
++                                            OSObject * sender);
++
++static	IOReturn	doUpdateEventFlags (IOHIDSystem *self, void * args);
++        void		updateEventFlagsGated (unsigned flags, OSObject * sender);
++
++static	IOReturn	doNewUserClient (IOHIDSystem *self, void * args);
++        IOReturn 	newUserClientGated (task_t owningTask,
++                                            void * security_id,
++                                            UInt32 type,
++                                            OSDictionary *  properties,
++                                            IOUserClient ** handler);
++
++static	IOReturn	doSetCursorEnable (IOHIDSystem *self, void * arg0);
++        IOReturn	setCursorEnableGated (void * p1);
++
++static	IOReturn	doSetContinuousCursorEnable (IOHIDSystem *self, void * arg0);
++        IOReturn	setContinuousCursorEnableGated (void * p1);
++
++static	IOReturn	doExtPostEvent(IOHIDSystem *self, void * arg0, void * arg1, void * arg2, void * arg3);
++        IOReturn	extPostEventGated (void * p1, void * p2, void * p3);
++
++static	IOReturn	doExtSetMouseLocation (IOHIDSystem *self, void * args);
++        IOReturn	extSetMouseLocationGated (void * args);
++
++static	IOReturn	doExtGetButtonEventNum (IOHIDSystem *self, void * arg0, void * arg1);
++        IOReturn	extGetButtonEventNumGated (void * p1, void * p2);
++
++static	IOReturn	doSetParamPropertiesPre (IOHIDSystem *self, void * arg0, void * arg1);
++        IOReturn	setParamPropertiesPreGated (OSDictionary * dict, OSIterator ** pOpenIter);
++
++static	IOReturn	doSetParamPropertiesPost (IOHIDSystem *self, void * arg0);
++        IOReturn	setParamPropertiesPostGated (OSDictionary * dict);
++
++        IOReturn  updateParamPropertiesGated(IOService * source);
++
++static	IOReturn	doExtGetStateForSelector (IOHIDSystem *self, void *p1, void *p2);
++static	IOReturn	doExtSetStateForSelector (IOHIDSystem *self, void *p1, void *p2);
++
++/* END COMMAND GATE COMPATIBILITY */
++
++public:
++    virtual UInt32 eventFlags();
++    virtual void   sleepDisplayTickle(IOService * requester);
++
++    virtual void dispatchEvent(IOHIDEvent *event, IOOptionBits options=0);
++
++    void updateHidActivity();
++    void hidActivityChecker();
++    static void reportUserHidActivity(IOHIDSystem *self, void *args );
++    void reportUserHidActivityGated(void *args );
++
++    static IOReturn getUserHidActivityState(IOHIDSystem *self, void *arg0);
++    IOReturn getUserHidActivityStateGated(void *state);
++
++};
++
++#endif /* !_IOHIDSYSTEM_H */
 
 diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
 --- a/iokit/conf/files.arm64

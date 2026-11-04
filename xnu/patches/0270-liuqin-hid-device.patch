@@ -26044,7 +26044,7 @@ diff --git a/iokit/Kernel/arm/hid/LiuqinHIDPrivateKeys.h b/iokit/Kernel/arm/hid/
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/LiuqinHIDPrivateKeys.h
-@@ -0,0 +1,33 @@
+@@ -0,0 +1,42 @@
 +/*
 + * LIUQIN: IOHIDFamily property keys and list macros that Apple never publishes
 + * in any IOHIDFamily tag (1090..2238): AppleHIDUsageTables.h and the private
@@ -26077,6 +26077,15 @@ new file mode 100644
 +#define kIOHIDDeviceMessagePropertyUpdateKeys  nullptr
 +#define kIOHIDPropagatePropertyKeys            nullptr
 +
++
++/* IOHIDLibUserClient's private option bits are unpublished (Apple keeps
++ * them in a closed IOHIDLib header).  They are only tested against
++ * fCachedOptionBits, which userspace fills with public IOOptionBits;
++ * use high bits that cannot collide with a public option.  Userspace on
++ * this port never sets them, so both tests stay false: the default
++ * behaviour (reports may be dropped while the task is suspended). */
++#define kIOHIDOptionsPrivateTypeNoDroppedReports   0x00010000
++#define kIOHIDOptionsPrivateTypeIgnoreTaskSuspend  0x00020000
 +#endif /* LIUQIN_HID_PRIVATE_KEYS_H */
 
 diff --git a/iokit/ipc/ipc_port.h b/iokit/ipc/ipc_port.h

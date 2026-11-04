@@ -7967,7 +7967,7 @@ new file mode 100644
 +* @discussion
 +* As per HID spec  unit and unit exponent can be associated with given value.
 +* Example :
-+* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倸鍊烽懗鍫曞磻閵娾晛纾垮┑鐘宠壘缁狅拷闂佽法鍣﹂幏锟�2 cm).
++* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倸鍊搁崐鎼佸磹閻戣姤鍤勯柛锟介弴鐐碉紱闂侀潧艌閺呮稓澹曢崹锟介埞鎴︽偐鐎圭姴锟芥�肩磼閻欏懏瀚归梻鍌欐祰濞夋洟宕抽敃鍌氱��闁跨噦鎷�2 cm).
 +* This function converts value based on unit and unit exponent to IOFixed. Currently
 +* it only supports unit as length in cm.
 +*
@@ -14583,7 +14583,7 @@ new file mode 100644
 +   @defined    kIOHIDDigitizerSurfaceSwitchKey
 +   @abstract   Property to turn on / of surface digitizer contact reporting
 +   @discussion To allow for better power management, a host may wish to indicate what it would like a touchpad digitizer to not report surface digitizer contacts by clearing this
-+                flag. By default, upon cold鈥恇oot/power cycle, touchpads that support reporting surface
++                flag. By default, upon cold闁炽儲浜�oot/power cycle, touchpads that support reporting surface
 +                contacts shall do so by default.
 +*/
 +
@@ -14627,6 +14627,1819 @@ new file mode 100644
 +__END_DECLS
 +
 +#endif /* !_IOKIT_HID_IOHIDKEYS_H_ */
+
+diff --git a/iokit/IOKit/hidsystem/IOHIDParameter.h b/iokit/IOKit/hidsystem/IOHIDParameter.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIDParameter.h
+@@ -0,0 +1,350 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2003 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++/* 	Copyright (c) 1992 NeXT Computer, Inc.  All rights reserved. 
++ *
++ * evsio.h - Get/Set parameter calls for Event Status Driver.
++ *
++ *	CAUTION: Developers should stick to the API exported in
++ *		<drivers/event_status_driver.h> to guarantee
++ *		binary compatability of their applications in future
++ *		releases.
++ *
++ * HISTORY
++ * 22 May 1992    Mike Paquette at NeXT
++ *      Created. 
++ */
++#ifndef _DEV_EVSIO_H
++#define _DEV_EVSIO_H
++
++/* Public type definitions. */
++#include <IOKit/hidsystem/IOHIDTypes.h>
++#include <IOKit/hidsystem/IOLLEvent.h>
++#include <IOKit/hid/IOHIDProperties.h>
++
++/*
++ * Identify this driver as one that uses the new driverkit and messaging API
++ */
++#ifndef _NeXT_MACH_EVENT_DRIVER_
++#define _NeXT_MACH_EVENT_DRIVER_	(1)
++#endif /* !_NeXT_MACH_EVENT_DRIVER_ */
++
++/* * */
++
++#define kIOHIDKindKey					"HIDKind"
++#define kIOHIDInterfaceIDKey			"HIDInterfaceID"
++#define kIOHIDSubinterfaceIDKey			"HIDSubinterfaceID"
++#define kIOHIDOriginalSubinterfaceIDKey "HIDOriginalSubinterfaceID"
++
++#define kIOHIDParametersKey				"HIDParameters"
++
++#define kIOHIDVirtualHIDevice                   "HIDVirtualDevice"
++
++#define kIOHIDKeyRepeatKey				"HIDKeyRepeat"
++#define kIOHIDInitialKeyRepeatKey		"HIDInitialKeyRepeat"
++#define kIOHIDKeyMappingKey				"HIDKeyMapping"
++#define kIOHIDResetKeyboardKey			"HIDResetKeyboard"
++
++#define kIOHIDKeyboardModifierMappingPairsKey   "HIDKeyboardModifierMappingPairs"
++#define kIOHIDKeyboardModifierMappingSrcKey     "HIDKeyboardModifierMappingSrc"
++#define kIOHIDKeyboardModifierMappingDstKey     "HIDKeyboardModifierMappingDst"
++
++#define kIOHIDKeyboardCapsLockDoesLockKey       "HIDKeyboardCapsLockDoesLock"
++#define kIOHIDKeyboardSupportsF12EjectKey       "HIDKeyboardSupportsF12Eject"
++#define kIOHIDKeyboardSupportedModifiersKey     "HIDKeyboardSupportedModifiers"
++#define kIOHIDKeyboardGlobalModifiersKey        "HIDKeyboardGlobalModifiers"
++
++
++//read only property that specify usage of clobal modifiers
++// Bit[0] -  Report modifiers to the service by setting kIOHIDKeyboardGlobalModifiersKey  with global modifiers
++// Bit[1] -  Update/translate events from service taking global modifiers state in consideration
++#define kIOHIDServiceGlobalModifiersUsageKey     "HIDServiceGlobalModifiersUsage"
++
++
++#define kIOHIDPointerResolutionKey		"HIDPointerResolution"
++#define kIOHIDResetPointerKey			"HIDResetPointer"
++#define kIOHIDPointerConvertAbsoluteKey	"HIDPointerConvertAbsolute"
++#define kIOHIDPointerContactToMoveKey	"HIDPointerContactToMove"
++#define kIOHIDPointerPressureToClickKey	"HIDPointerPressureToClick"
++#define kIOHIDPointerButtonCountKey	"HIDPointerButtonCount"
++
++#define kIOHIDPointerAccelerationSettingsKey	"HIDPointerAccelerationSettings"
++#define kIOHIDPointerAccelerationTableKey  "HIDPointerAccelerationTable"
++
++// velocity for pointer acceleration
++#define kIOHIDPointerAccelerationMultiplierKey        "HIDPointerAccelerationMultiplier"
++
++
++#define kIOHIDScrollResetKey			"HIDScrollReset"
++#define kIOHIDScrollResolutionKey		"HIDScrollResolution"
++#define kIOHIDScrollReportRateKey       "HIDScrollReportRate"
++#define kIOHIDScrollAccelerationTableKey	"HIDScrollAccelerationTable"
++
++#define kIOHIDScrollResolutionXKey		"HIDScrollResolutionX"
++#define kIOHIDScrollResolutionYKey		"HIDScrollResolutionY"
++#define kIOHIDScrollResolutionZKey		"HIDScrollResolutionZ"
++
++#define kIOHIDScrollAccelerationTableXKey	"HIDScrollAccelerationTableX"
++#define kIOHIDScrollAccelerationTableYKey	"HIDScrollAccelerationTableY"
++#define kIOHIDScrollAccelerationTableZKey	"HIDScrollAccelerationTableZ"
++
++#define kIOHIDScrollMouseButtonKey      "HIDScrollMouseButton"
++
++#define kIOHIDScrollZoomModifierMaskKey "HIDScrollZoomModifierMask"
++
++#define kIOHIDTrackpadScrollAccelerationKey "HIDTrackpadScrollAcceleration"
++
++#define kIOHIDTrackpadAccelerationType	"HIDTrackpadAcceleration"
++
++#define kIOHIDClickTimeKey				"HIDClickTime"
++#define kIOHIDClickSpaceKey				"HIDClickSpace"
++
++#define kIOHIDWaitCursorFrameIntervalKey	"HIDWaitCursorFrameInterval"
++
++#define kIOHIDAutoDimThresholdKey		"HIDAutoDimThreshold"
++#define kIOHIDAutoDimStateKey			"HIDAutoDimState"
++#define kIOHIDAutoDimTimeKey			"HIDAutoDimTime"
++#define kIOHIDIdleTimeKey				"HIDIdleTime"
++
++#define kIOHIDBrightnessKey				"HIDBrightness"
++#define kIOHIDAutoDimBrightnessKey		"HIDAutoDimBrightness"
++
++#define kIOHIDFKeyModeKey			"HIDFKeyMode"
++
++// if kIOHIDStickyKeysDisabledKey is 1, then all sticky keys functionality
++// is completely turned off. Multiple shifts will have no effect.
++#define kIOHIDStickyKeysDisabledKey		"HIDStickyKeysDisabled"
++
++// if kIOHIDStickyKeysOnKey is 1 then a depressed modifier will stay down
++// until a non-modifer key is pressed (or sticky keys is turned off)
++#define kIOHIDStickyKeysOnKey			"HIDStickyKeysOn"
++
++// if kIOHIDStickyKeysShiftTogglesKey is 1, then a sequence of five
++// shift keys in sequence will toggle sticky keys on or off
++#define kIOHIDStickyKeysShiftTogglesKey	"HIDStickyKeysShiftToggles"
++
++//
++//
++#define kIOHIDResetStickyKeyNotification    "HIDResetStickyKeyNotification"
++
++// if kIOHIDMouseKeysOptionTogglesKey is 1, then a sequence of five
++// option keys in sequence will toggle mouse keys on or off
++#define kIOHIDMouseKeysOptionTogglesKey	"HIDMouseKeysOptionToggles"
++
++// kIOHIDSlowKeysDelayKey represents the delay used for slow keys.
++// if kIOHIDSlowKeysDelayKey is 0, then slow keys off
++#define kIOHIDSlowKeysDelayKey			"HIDSlowKeysDelay"
++
++#define kIOHIDF12EjectDelayKey			"HIDF12EjectDelay"
++
++#define kIOHIDMouseKeysOnKey			"HIDMouseKeysOn"
++
++#define kIOHIDUseKeyswitchKey           "HIDUseKeyswitch"
++
++#define kIOHIDDisallowRemappingOfPrimaryClickKey	"HIDDisallowRemappingOfPrimaryClick"
++#define kIOHIDMouseKeysEnablesVirtualNumPadKey	"HIDMouseKeysEnablesVirtualNumPad"
++
++#define kIOHIDResetLEDsKey          "HIDResetLEDs"
++
++// Parametric Acceleration Keys
++#define kHIDAccelParametricCurvesKey            "HIDAccelCurves"
++#define kHIDPointerReportRateKey                "HIDPointerReportRate"
++#define kHIDTrackingAccelParametricCurvesKey    "HIDTrackingAccelCurves"
++#define kHIDScrollAccelParametricCurvesKey      "HIDScrollAccelCurves"
++#define kHIDAccelParametricCurvesDebugKey       "HIDAccelCurvesDebug"
++#define kHIDScrollAccelParametricCurvesDebugKey "HIDScrollAccelCurvesDebug"
++#define kHIDAccelGainLinearKey                  "HIDAccelGainLinear"
++#define kHIDAccelGainParabolicKey               "HIDAccelGainParabolic"
++#define kHIDAccelGainCubicKey                   "HIDAccelGainCubic"
++#define kHIDAccelGainQuarticKey              "HIDAccelGainQuartic"
++#define kHIDAccelTangentSpeedLinearKey          "HIDAccelTangentSpeedLinear"
++#define kHIDAccelTangentSpeedParabolicRootKey   "HIDAccelTangentSpeedParabolicRoot"
++#define kHIDAccelTangentSpeedCubicRootKey       "HIDAccelTangentSpeedCubicRoot"
++#define kHIDAccelTangentSpeedQuarticRootKey  "HIDAccelTangentSpeedQuarticRoot"
++#define kHIDAccelIndexKey                       "HIDAccelIndex"
++
++// Scroll Count Keys
++#define kIOHIDScrollCountMaxTimeDeltaBetweenKey         "HIDScrollCountMaxTimeDeltaBetween"
++#define kIOHIDScrollCountMaxTimeDeltaToSustainKey       "HIDScrollCountMaxTimeDeltaToSustain"
++#define kIOHIDScrollCountMinDeltaToStartKey             "HIDScrollCountMinDeltaToStart"
++#define kIOHIDScrollCountMinDeltaToSustainKey           "HIDScrollCountMinDeltaToSustain"
++#define kIOHIDScrollCountIgnoreMomentumScrollsKey       "HIDScrollCountIgnoreMomentumScrolls"
++#define kIOHIDScrollCountMouseCanResetKey               "HIDScrollCountMouseCanReset"
++#define kIOHIDScrollCountMaxKey                         "HIDScrollCountMax"
++#define kIOHIDScrollCountAccelerationFactorKey          "HIDScrollCountAccelerationFactor"
++#define kIOHIDScrollCountZeroKey                        "HIDScrollCountZero"
++#define kIOHIDScrollCountBootDefaultKey                 "HIDScrollCountBootDefault"
++#define kIOHIDScrollCountResetKey                       "HIDScrollCountReset"
++
++// HIDSystem Property Key
++
++// Mark user activity state on HID System
++#define kIOHIDActivityUserIdleKey                       "IOHIDActivityUserIdle"
++
++// the following values are used in kIOHIDPointerButtonMode
++typedef enum {
++	kIOHIDButtonMode_BothLeftClicks = 0,
++	kIOHIDButtonMode_ReverseLeftRightClicks = 1,
++	kIOHIDButtonMode_EnableRightClick = 2
++} IOHIDButtonModes;
++
++#ifdef _undef
++#define EVS_PREFIX	"Evs_"	/* All EVS calls start with this string */
++
++/* WaitCursor-related ioctls */
++
++#define EVSIOSWT "Evs_SetWaitThreshold"
++#define EVSIOSWT_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIOSWS "Evs_SetWaitSustain"
++#define EVSIOSWS_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIOSWFI "Evs_SetWaitFrameInterval"
++#define EVSIOSWFI_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIOCWINFO	"Evs_CurrentWaitCursorInfo"
++#define EVSIOCWINFO_THRESH	0
++#define EVSIOCWINFO_SUSTAIN	(EVSIOCWINFO_THRESH + EVS_PACKED_TIME_SIZE)
++#define EVSIOCWINFO_FINTERVAL	(EVSIOCWINFO_SUSTAIN + EVS_PACKED_TIME_SIZE)
++#define EVSIOCWINFO_SIZE	(EVSIOCWINFO_FINTERVAL + EVS_PACKED_TIME_SIZE)
++#endif
++
++#define EVS_PACKED_TIME_SIZE (sizeof(UInt64) / sizeof( unsigned int))
++
++/* Device control ioctls. Levels specified may be in the range 0 - 64. */
++
++#define EVSIOSB	  	kIOHIDBrightnessKey
++#define EVSIOSB_SIZE	1
++
++#define EVSIOSADB 	kIOHIDAutoDimBrightnessKey
++#define EVSIOSADB_SIZE	1
++
++#ifdef _undef
++#define EVSIOSA	  "Evs_SetAttenuation"
++#define EVIOSA_SIZE	1
++
++#define EVSIO_DCTLINFO	"Evs_DeviceControlInfo"
++typedef enum {
++	EVSIO_DCTLINFO_BRIGHT,
++	EVSIO_DCTLINFO_ATTEN,
++	EVSIO_DCTLINFO_AUTODIMBRIGHT
++} evsio_DCTLINFOIndices;
++#define EVSIO_DCTLINFO_SIZE	(EVSIO_DCTLINFO_AUTODIMBRIGHT + 1)
++#endif
++
++/*
++ * Device status request
++ */
++#define	EVSIOINFO  NX_EVS_DEVICE_INFO
++
++
++/* Keyboard-related ioctls - implemented within Event Sources */
++
++#define EVSIOSKR  	kIOHIDKeyRepeatKey
++#define EVSIOSKR_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIOSIKR 	kIOHIDInitialKeyRepeatKey
++#define EVSIOSIKR_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIORKBD 	kIOHIDResetKeyboardKey
++#define EVSIORKBD_SIZE	1
++
++#define EVSIOCKR_SIZE	EVS_PACKED_TIME_SIZE
++
++#define	EVSIOCKML 	kIOHIDKeyMappingKey
++#define EVSIOCKML_SIZE	1
++
++/* The following two tokens are for use with the get/set character routines. */
++#define EVSIOSKM  	kIOHIDKeyMappingKey
++#define EVSIOSKM_SIZE	4096
++
++#define	EVSIOCKM  	kIOHIDKeyMappingKey
++#define EVSIOCKM_SIZE	4096
++
++/* Mouse-related ioctls - implemented within Event Sources */
++
++#define	EVSIOSMS  	kIOHIDPointerAccelerationKey
++#define	EVSIOSMS_SIZE		(1)
++
++#define	EVSIOCMS  	kIOHIDPointerAccelerationKey
++#define	EVSIOCMS_SIZE		(1)
++
++#ifdef _undef
++#define EVSIOSMH  "Evs_SetMouseHandedness"
++#define EVSIOSMH_SIZE	1		// value from NXMouseButton enum
++
++#define EVSIOCMH  "Evs_CurrentMouseHandedness"
++#define EVSIOCMH_SIZE	1
++#endif
++
++/* Generic pointer device controls, implemented by the Event Driver. */
++#define	EVSIOSCT  	kIOHIDClickTimeKey
++#define EVSIOSCT_SIZE	EVS_PACKED_TIME_SIZE
++
++#define	EVSIOSCS  	kIOHIDClickSpaceKey
++typedef enum {
++	EVSIOSCS_X,
++	EVSIOSCS_Y
++} evsioEVSIOSCSIndices;
++#define EVSIOSCS_SIZE	(EVSIOSCS_Y + 1)
++
++#define EVSIOSADT	 kIOHIDAutoDimThresholdKey
++#define EVSIOSADT_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIOSADS 	kIOHIDAutoDimStateKey
++#define EVSIOSADS_SIZE	1
++
++#define EVSIORMS  	kIOHIDResetPointerKey
++#define EVSIORMS_SIZE	1
++
++#define	EVSIOCCT  	kIOHIDClickTimeKey
++#define EVSIOCCT_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIOCADT 	kIOHIDAutoDimThresholdKey
++#define EVSIOCADT_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIOGDADT 	kIOHIDAutoDimTimeKey
++#define EVSIOGDADT_SIZE	EVS_PACKED_TIME_SIZE
++
++#define EVSIOIDLE 	kIOHIDIdleTimeKey
++#define EVSIOIDLE_SIZE	EVS_PACKED_TIME_SIZE
++
++#define	EVSIOCCS  	kIOHIDClickSpaceKey
++typedef enum {
++	EVSIOCCS_X,
++	EVSIOCCS_Y
++} evsioEVSIOCCSIndices;
++#define EVSIOCCS_SIZE	(EVSIOCCS_Y + 1)
++
++#define EVSIOCADS 	kIOHIDAutoDimStateKey
++#define EVSIOCADS_SIZE	1
++
++enum {
++    // Selectors for IOHIDGetModifierLockState and IOHIDSetModifierLockState
++    kIOHIDCapsLockState             = 0x00000001,
++    kIOHIDNumLockState              = 0x00000002,
++    kIOHIDActivityUserIdle          = 0x00000003,
++    // We no longer report display state through HIDSystem. This will not return the current state.
++    kIOHIDActivityDisplayOn         = 0x00000004,
++};
++
++#endif /* !_DEV_EVSIO_H */
+
+diff --git a/iokit/IOKit/hid/IOHIDProperties.h b/iokit/IOKit/hid/IOHIDProperties.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hid/IOHIDProperties.h
+@@ -0,0 +1,105 @@
++/*
++ * Copyright (c) 2016 Apple Computer, Inc. All rights reserved.
++ *
++ * @APPLE_LICENSE_HEADER_START@
++ *
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ *
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ *
++ * @APPLE_LICENSE_HEADER_END@
++ */
++
++#ifndef IOHIDProperties_h
++#define IOHIDProperties_h
++
++#include <IOKit/hid/IOHIDEventServiceKeys.h>
++
++/*!
++ * @define      kIOHIDMouseAccelerationType
++ *
++ * @abstract    CFNumber that contains the mouse acceleration value.
++ */
++#define kIOHIDMouseAccelerationType                 "HIDMouseAcceleration"
++
++/*!
++ * @define      kIOHIDPointerButtonMode
++ *
++ * @abstract    CFNumber containing the current pointer button mode.
++ *              See IOHIDButtonModes enumerator for possible modes.
++ */
++#define kIOHIDPointerButtonMode                     "HIDPointerButtonMode"
++#define kIOHIDPointerButtonModeKey                  kIOHIDPointerButtonMode
++
++/*!
++ * @define      kIOHIDUserUsageMapKey
++ *
++ * @abstract    CFArray of dictionaries that contain user defined key mappings.
++ */
++#define kIOHIDUserKeyUsageMapKey                     "UserKeyMapping"
++
++/*!
++ * @define      kIOHIDKeyboardCapsLockDelayOverride
++ *
++ * @abstract    CFNumber containing the delay (in ms) before the caps lock key is activated.
++ */
++#define kIOHIDKeyboardCapsLockDelayOverride         "CapsLockDelayOverride"
++#define kIOHIDKeyboardCapsLockDelayOverrideKey      kIOHIDKeyboardCapsLockDelayOverride
++
++/*!
++ * @define      kIOHIDServiceEjectDelayKey
++ *
++ * @abstract    CFNumber containing the delay (in ms) before the eject key is activated.
++ */
++#define kIOHIDServiceEjectDelayKey                  "EjectDelay"
++
++/*!
++ * @define      kIOHIDServiceLockKeyDelayKey
++ *
++ * @abstract    CFNumber containing the delay (in ms) before the lock key is activated.
++ */
++#define kIOHIDServiceLockKeyDelayKey				 "LockKeyDelay"
++
++/*!
++ * @define      kIOHIDServiceInitialKeyRepeatDelayKey
++ *
++ * @abstract    CFNumber containing the delay (in ns) before the initial key repeat.
++ *              If value is 0, there are no repeats.
++ */
++#define kIOHIDServiceInitialKeyRepeatDelayKey       "HIDInitialKeyRepeat"
++
++/*!
++ * @define      kIOHIDServiceKeyRepeatDelayKey
++ *
++ * @abstract    CFNumber containing the delay (in ns) for subsequent key repeats.
++ *              If value is 0, there are no repeats (including initial).
++ */
++#define kIOHIDServiceKeyRepeatDelayKey              "HIDKeyRepeat"
++
++/*!
++ * @define      kIOHIDIdleTimeMicrosecondsKey
++ *
++ * @abstract    CFNumber containing the HID idle time in microseconds.
++ */
++#define kIOHIDIdleTimeMicrosecondsKey               "HIDIdleTimeMicroseconds"
++
++/*!
++ * @define      kIOHIDServiceCapsLockStateKey
++ *
++ * @abstract    CFBoolean for setting/getting the caps lock state of the
++ *              service. The caps lock LED will be updated to reflect the state.
++ */
++#define kIOHIDServiceCapsLockStateKey                "HIDCapsLockState"
++
++#endif /* IOHIDProperties_h */
+
+diff --git a/iokit/IOKit/hid/IOHIDDeviceTypes.h b/iokit/IOKit/hid/IOHIDDeviceTypes.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hid/IOHIDDeviceTypes.h
+@@ -0,0 +1,308 @@
++/*
++ *
++ * @APPLE_LICENSE_HEADER_START@
++ *
++ * Copyright (c) 2019 Apple Computer, Inc.  All Rights Reserved.
++ *
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ *
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ *
++ * @APPLE_LICENSE_HEADER_END@
++ */
++
++#ifndef IOHIDDeviceTypes_h
++#define IOHIDDeviceTypes_h
++
++#include <TargetConditionals.h>
++
++#if TARGET_OS_DRIVERKIT
++#include <DriverKit/IOTypes.h>
++#include <DriverKit/IOReturn.h>
++#else
++#include <IOKit/IOReturn.h>
++#include <IOKit/IOTypes.h>
++#endif // TARGET_OS_DRIVERKIT
++
++/*!
++ * @typedef IOHIDReportType
++ *
++ * @abstract
++ * Describes different type of HID reports.
++ */
++enum IOHIDReportType {
++    kIOHIDReportTypeInput = 0,
++    kIOHIDReportTypeOutput,
++    kIOHIDReportTypeFeature,
++    kIOHIDReportTypeCount
++};
++typedef enum IOHIDReportType IOHIDReportType;
++
++/*!
++ * @typedef IOHIDElementCommitDirection
++ *
++ * @abstract
++ * Commit direction passed in to the commit() function of an IOHIDElement.
++ *
++ * @field kIOHIDElementCommitDirectionIn
++ * Passing in kIOHIDElementCommitDirectionIn will issue a getReport call to the
++ * device, and the element  will be updated with the value retrieved by the
++ * device. The value can be accessed via the getValue() or getDataValue()
++ * functions.
++ *
++ * @field kIOHIDElementCommitDirectionOut
++ * Passing in kIOHIDElementCommitDirectionOut will issue a setReport call to the
++ * device. Before issuing this call, the desired value should be set on the
++ * element with the setValue() or setDataValue() functions.
++ */
++typedef enum {
++    kIOHIDElementCommitDirectionIn,
++    kIOHIDElementCommitDirectionOut
++} IOHIDElementCommitDirection;
++
++/*!
++ * @typedef IOHIDElementCookie
++ *
++ * @abstract
++ * Abstract data type used as a unique identifier for an element.
++ */
++#if  TARGET_OS_DRIVERKIT || defined(__LP64__)
++typedef uint32_t IOHIDElementCookie;
++#else
++typedef void * IOHIDElementCookie;
++#endif
++
++/*!
++ * @typedef IOHIDElementType
++ *
++ * @abstract
++ * Describes different types of HID elements.
++ *
++ * @discussion
++ * Used by the IOHIDFamily to identify the type of element processed.
++ * Represented by the key kIOHIDElementTypeKey in the dictionary describing the
++ * element.
++ *
++ * @field kIOHIDElementTypeInput_Misc
++ * Misc input data field or varying size.
++ *
++ * @field kIOHIDElementTypeInput_Button
++ * One bit input data field.
++ *
++ * @field kIOHIDElementTypeInput_Axis
++ * Input data field used to represent an axis.
++ *
++ * @field kIOHIDElementTypeInput_ScanCodes
++ * Input data field used to represent a scan code or usage selector.
++ *
++ * @field kIOHIDElementTypeInput_NULL
++ * Input data field used to represent the end of an input report when receiving
++ * input elements.
++ *
++ * @field kIOHIDElementTypeOutput
++ * Used to represent an output data field in a report.
++ *
++ * @field kIOHIDElementTypeFeature
++ * Describes input and output elements not intended for consumption by the end
++ * user.
++ *
++ * @field kIOHIDElementTypeCollection
++ * Element used to identify a relationship between two or more elements.
++ */
++enum IOHIDElementType {
++    kIOHIDElementTypeInput_Misc        = 1,
++    kIOHIDElementTypeInput_Button      = 2,
++    kIOHIDElementTypeInput_Axis        = 3,
++    kIOHIDElementTypeInput_ScanCodes   = 4,
++    kIOHIDElementTypeInput_NULL        = 5,
++    kIOHIDElementTypeOutput            = 129,
++    kIOHIDElementTypeFeature           = 257,
++    kIOHIDElementTypeCollection        = 513
++};
++typedef enum IOHIDElementType IOHIDElementType;
++
++enum {
++    kIOHIDElementFlagsConstantMask        = 0x0001,
++    kIOHIDElementFlagsVariableMask        = 0x0002,
++    kIOHIDElementFlagsRelativeMask        = 0x0004,
++    kIOHIDElementFlagsWrapMask            = 0x0008,
++    kIOHIDElementFlagsNonLinearMask       = 0x0010,
++    kIOHIDElementFlagsNoPreferredMask     = 0x0020,
++    kIOHIDElementFlagsNullStateMask       = 0x0040,
++    kIOHIDElementFlagsVolativeMask        = 0x0080,
++    kIOHIDElementFlagsBufferedByteMask    = 0x0100
++};
++typedef uint32_t IOHIDElementFlags;
++
++/*!
++ * @typedef IOHIDElementCollectionType
++ *
++ * @abstract
++ * Describes different types of HID collections.
++ *
++ * @discussion
++ * Collections identify a relationship between two or more elements.
++ *
++ * @field kIOHIDElementCollectionTypePhysical
++ * Used for a set of data items that represent data points collected at one
++ * geometric point.
++ *
++ * @field kIOHIDElementCollectionTypeApplication
++ * Identifies item groups serving different purposes in a single device.
++ *
++ * @field kIOHIDElementCollectionTypeLogical
++ * Used when a set of data items form a composite data structure.
++ *
++ * @field kIOHIDElementCollectionTypeReport
++ * Wraps all the fields in a report.
++ *
++ * @field kIOHIDElementCollectionTypeNamedArray
++ * Contains an array of selector usages.
++ *
++ * @field kIOHIDElementCollectionTypeUsageSwitch
++ * Modifies the meaning of the usage it contains.
++ *
++ * @field kIOHIDElementCollectionTypeUsageModifier
++ * Modifies the meaning of the usage attached to the encompassing collection.
++ */
++enum IOHIDElementCollectionType{
++    kIOHIDElementCollectionTypePhysical    = 0x00,
++    kIOHIDElementCollectionTypeApplication,
++    kIOHIDElementCollectionTypeLogical,
++    kIOHIDElementCollectionTypeReport,
++    kIOHIDElementCollectionTypeNamedArray,
++    kIOHIDElementCollectionTypeUsageSwitch,
++    kIOHIDElementCollectionTypeUsageModifier
++};
++typedef enum IOHIDElementCollectionType IOHIDElementCollectionType;
++
++/*!
++ * @typedef IOHIDValueScaleType
++ *
++ * @abstract
++ * Describes different types of scaling that can be performed on element values.
++ *
++ * @field kIOHIDValueScaleTypeCalibrated
++ * Type for value that is scaled with respect to the calibration properties.
++ *
++ * @field kIOHIDValueScaleTypePhysical
++ * Type for value that is scaled with respect to the physical min and physical
++ * max of the element.
++ *
++ * @field kIOHIDValueScaleTypeExponent
++ * Type for value that is scaled with respect to the element's unit exponent.
++ */
++enum {
++    kIOHIDValueScaleTypeCalibrated,
++    kIOHIDValueScaleTypePhysical,
++    kIOHIDValueScaleTypeExponent
++};
++typedef uint32_t IOHIDValueScaleType;
++
++/*!
++ * @typedef IOHIDValueOptions
++ *
++ * @abstract
++ * Describes options for gathering element values.
++ *
++ * @field kIOHIDValueOptionsFlagRelativeSimple
++ * Compares against previous value
++ *
++ * @field kIOHIDValueOptionsUpdateElementValues
++ * Generates a get report before reading the element value when getting an element.
++ * Generates a set report with the passed value, even if it did not change, to the device when setting a value.
++ */
++enum {
++    kIOHIDValueOptionsFlagRelativeSimple    = (1<<0),
++    kIOHIDValueOptionsFlagPrevious          = (1<<1),
++    kIOHIDValueOptionsUpdateElementValues   = (1<<2)
++};
++typedef uint32_t IOHIDValueOptions;
++
++/*!
++ * @typedef IOHIDCompletionAction
++ *
++ * @abstract Function called when set/get report completes
++ *
++ * @param target
++ * The target specified in the IOHIDCompletion struct.
++ *
++ * @param parameter
++ * The parameter specified in the IOHIDCompletion struct.
++ *
++ * @param status
++ * Completion status
++ */
++typedef void (*IOHIDCompletionAction)(void *target,
++                                      void *parameter,
++                                      IOReturn status,
++                                      uint32_t bufferSizeRemaining);
++
++/*!
++ * @typedef IOHIDCompletion
++ *
++ * @abstract
++ * Struct specifying action to perform when set/get report completes.
++ *
++ * @var target
++ * The target to pass to the action function.
++ *
++ * @var action
++ * The function to call.
++ *
++ * @var parameter
++ * The parameter to pass to the action function.
++ */
++typedef struct IOHIDCompletion {
++    void *target;
++    IOHIDCompletionAction action;
++    void *parameter;
++} IOHIDCompletion;
++
++/*!
++ * @abstract
++ * Option bits for IOHIDDevice::handleReport, IOHIDDevice::getReport, and
++ * IOHIDDevice::setReport
++ *
++ * @field kIOHIDReportOptionNotInterrupt
++ * Tells method that the report passed was not interrupt driven.
++ */
++enum
++{
++    kIOHIDReportOptionNotInterrupt      = 0x100,
++    kIOHIDReportOptionVariableSize      = 0x200
++};
++
++/*!
++ * @typedef HIDReportCommandType
++ *
++ * @abstract
++ * Type of the report command for DriverKit driver
++ */
++typedef enum {
++    kIOHIDReportCommandSetReport,
++    kIOHIDReportCommandGetReport
++} HIDReportCommandType;
++
++/*!
++ * @typedef kIOHIDDeviceXXXAsyncRequestTimeout
++ *
++ * @abstract
++ * The default, minimum and maximum timeout values in ms for async device requests.
++ */
++#define kIOHIDDeviceDefaultAsyncRequestTimeout 1000ULL
++#define kIOHIDDeviceMinAsyncRequestTimeout     50ULL
++#define kIOHIDDeviceMaxAsyncRequestTimeout     1200000ULL
++
++#endif /* IOHIDDeviceTypes_h */
+
+diff --git a/iokit/IOKit/hid/IOHIDDescriptorParser.h b/iokit/IOKit/hid/IOHIDDescriptorParser.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hid/IOHIDDescriptorParser.h
+@@ -0,0 +1,1000 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2012 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++#ifndef __IOHIDDescriptorParser__
++#define __IOHIDDescriptorParser__
++
++#if defined(KERNEL) && !defined(KERNEL_PRIVATE)
++#define __iohid_deprecated(_msg) __deprecated_msg(_msg)
++#else /* !defined(KERNEL) || defined(KERNEL_PRIVATE) */
++#define __iohid_deprecated(_msg)
++#endif /* !defined(KERNEL) || defined(KERNEL_PRIVATE) */
++
++#if RTKIT
++#include <stdio.h>
++#include <stdint.h>
++#include <stdbool.h>
++
++typedef uint8_t     UInt8;
++typedef int8_t      Int8;
++typedef uint32_t    UInt32;
++typedef int32_t     SInt32;
++typedef uint32_t    IOByteCount;
++typedef bool        Boolean;
++typedef SInt32      OSStatus;
++typedef size_t      vm_size_t;
++
++#else
++
++#include <TargetConditionals.h>
++
++#if TARGET_OS_DRIVERKIT
++#include <DriverKit/IOTypes.h>
++#include <stdint.h>
++#include <stddef.h>
++
++typedef uint8_t     UInt8;
++typedef int8_t      Int8;
++typedef uint32_t    UInt32;
++typedef int32_t     SInt32;
++typedef unsigned char Boolean;
++typedef SInt32      OSStatus;
++typedef size_t      vm_size_t;
++
++#else
++#include <IOKit/IOTypes.h>
++#endif
++
++#if __has_include(<MacTypes.h>)
++    #include <MacTypes.h>
++#endif
++
++#endif
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/* End missing types and enums */
++
++
++    
++#if __has_include(<MacErrors.h>)
++    #include <MacErrors.h>
++#elif __has_include(<CoreServices/../Frameworks/CarbonCore.framework/Headers/MacErrors.h>)
++    #include <CoreServices/../Frameworks/CarbonCore.framework/Headers/MacErrors.h>
++#else
++enum
++{
++	kHIDSuccess						= 0,
++	
++/* HID assigned error numbers are -13949 .. -13900 */
++	kHIDBaseError					= -13950,
++
++	kHIDNullStateErr,
++	kHIDBufferTooSmallErr,
++	kHIDValueOutOfRangeErr,
++	kHIDUsageNotFoundErr,
++	kHIDNotValueArrayErr,
++	kHIDInvalidPreparsedDataErr,
++	kHIDIncompatibleReportErr,
++	kHIDBadLogPhysValuesErr,
++	kHIDInvalidReportTypeErr,
++	kHIDInvalidReportLengthErr,
++	kHIDNullPointerErr,
++	kHIDBadParameterErr,
++	kHIDNotEnoughMemoryErr,
++	kHIDEndOfDescriptorErr,
++	kHIDUsagePageZeroErr,
++	kHIDBadLogicalMinimumErr,
++	kHIDBadLogicalMaximumErr,
++	kHIDInvertedLogicalRangeErr,
++	kHIDInvertedPhysicalRangeErr,
++	kHIDUnmatchedUsageRangeErr,
++	kHIDInvertedUsageRangeErr,
++	kHIDUnmatchedStringRangeErr,
++	kHIDUnmatchedDesignatorRangeErr,
++	kHIDReportSizeZeroErr,
++	kHIDReportCountZeroErr,
++	kHIDReportIDZeroErr,
++	kHIDInvalidRangePageErr,
++
++	// 
++	// HID device driver errors 
++	//
++	
++	kHIDDeviceNotReady 		= -13910, 		// The device is still initializing, try again later
++	kHIDVersionIncompatibleErr,
++};
++#endif
++// types of HID reports (input, output, feature)
++enum
++{
++	kHIDInputReport			= 	1,
++	kHIDOutputReport,
++	kHIDFeatureReport,
++	kHIDUnknownReport		=	255
++};
++
++// flags passed to HIDOpenReportDescriptor
++enum
++{
++	kHIDFlag_StrictErrorChecking = 0x00000001
++};
++
++typedef UInt32	HIDReportType;
++typedef UInt32	HIDUsage;
++
++typedef void *HIDPreparsedDataRef;
++
++/*!
++  @typedef HIDUsageAndPage
++  @abstract The HIDUsageAndPage data structure is used by HID clients when obtaining status of buttons to hold the usage page and usage of a button that is down.
++  @discussion Clients use the HIDUSageAndPage structure with the HIDGetButtonsEx function to obtain both the usage page and usage identifiers of each button that is down.
++  @field usage Specifies the usage identifier within the usage page specified by usagePage of a button that is down.
++  @field usagePage Specifies the usage page identifier of a button that is down.
++ */
++struct HIDUsageAndPage
++{
++	HIDUsage	usage;
++	HIDUsage	usagePage;
++};
++typedef struct HIDUsageAndPage HIDUsageAndPage, *HIDUsageAndPagePtr;
++
++/*!
++  @typedef HIDCaps
++  @abstract The HIDCaps data structure is used by HID clients to hold the capabilities of a HID device.
++  @discussion This structure holds the parsed capabilities and data maximums returned for a device by the HIDGetCaps function.
++  @field usage Specifies the specific class of functionality that this device provides.  This value is dependent and specific to the value provided in the usagePage field.  For example, a keyboard could have a usagePage of kHIDUsagePage_Generic and a usage of kHIDUsage_Generic_Keyboard.
++  @field usagePage Specifies the usage page identifier for this top level collection.
++  @field inputReportByteLength Specifies the maximum length, in bytes, of an input report for this device, including the report ID which is unilaterally prepended to the device data.
++  @field outputReportByteLength Specifies the maximum length, in bytes, of an output report for this device, including the report ID which is unilaterally prepended to the device data.
++  @field featureReportByteLength Specifies the maximum length, in bytes, of a feature report for this device, including the report ID which is unilaterally prepended to the device data.
++  @field numberCollectionNodes Specifies the number of HIDCollectionNode structures that are returned for this top level collection by the HIDGetConnectionNodes function.
++  @field numberInputButtonCaps Specifies the number of input buttons.
++  @field numberInputValueCaps Specifies the number of input values.
++  @field numberOutputButtonCaps Specifies the number of output buttons.
++  @field numberOutputValueCaps Specifies the number of output values
++  @field numberFeatureButtonCaps Specifies the number of feature buttons.
++  @field numberFeatureValueCaps Specifies the number of feature values.
++ */
++struct HIDCaps
++{
++	HIDUsage		usage;
++	HIDUsage		usagePage;
++	IOByteCount		inputReportByteLength;
++	IOByteCount		outputReportByteLength;
++	IOByteCount		featureReportByteLength;
++	UInt32			numberCollectionNodes;
++	UInt32			numberInputButtonCaps;
++	UInt32			numberInputValueCaps;
++	UInt32			numberOutputButtonCaps;
++	UInt32			numberOutputValueCaps;
++	UInt32			numberFeatureButtonCaps;
++	UInt32			numberFeatureValueCaps;
++};
++typedef struct HIDCaps HIDCaps, * HIDCapsPtr;
++
++struct HIDCapabilities {
++    HIDUsage                        usage;
++    HIDUsage                        usagePage;
++    IOByteCount						inputReportByteLength;
++    IOByteCount						outputReportByteLength;
++    IOByteCount						featureReportByteLength;
++    UInt32                          numberCollectionNodes;
++    UInt32                          numberInputButtonCaps;
++    UInt32                          numberInputValueCaps;
++    UInt32                          numberOutputButtonCaps;
++    UInt32                          numberOutputValueCaps;
++    UInt32                          numberFeatureButtonCaps;
++    UInt32                          numberFeatureValueCaps;
++};
++typedef struct HIDCapabilities HIDCapabilities, * HIDCapabilitiesPtr;
++
++
++struct HIDCollectionNode
++{
++	HIDUsage	collectionUsage;
++	HIDUsage	collectionUsagePage;
++	UInt32		parent;
++	UInt32		numberOfChildren;
++	UInt32		nextSibling;
++	UInt32		firstChild;
++};
++typedef struct HIDCollectionNode HIDCollectionNode, * HIDCollectionNodePtr;
++
++struct HIDButtonCaps
++{
++	HIDUsage	usagePage;
++	UInt32		reportID;
++	UInt32		bitField;
++	UInt32		collection;
++	HIDUsage	collectionUsage;
++	HIDUsage	collectionUsagePage;
++	Boolean		isRange;
++	Boolean		isStringRange;
++	Boolean		isDesignatorRange;
++	Boolean		isAbsolute;
++        SInt32 startBit;	// Added esb 9-29-99
++
++	union
++	{
++		struct
++		{
++			HIDUsage		usageMin;
++			HIDUsage		usageMax;
++			UInt32			stringMin;
++			UInt32			stringMax;
++			UInt32			designatorMin;
++			UInt32			designatorMax;
++		} range;
++		struct
++		{
++			HIDUsage		usage;
++			HIDUsage		reserved1;
++			UInt32			stringIndex;
++			UInt32			reserved2;
++			UInt32			designatorIndex;
++			UInt32			reserved3;
++		} notRange;
++	} u;
++};
++typedef struct HIDButtonCaps HIDButtonCaps, * HIDButtonCapsPtr;
++
++struct HIDButtonCapabilities
++{
++	HIDUsage	usagePage;
++	UInt32		reportID;
++	UInt32		bitField;
++	UInt32		collection;
++	HIDUsage	collectionUsage;
++	HIDUsage	collectionUsagePage;
++	Boolean		isRange;
++	Boolean		isStringRange;
++	Boolean		isDesignatorRange;
++	Boolean		isAbsolute;
++
++    SInt32                          unitExponent;	// Added KH 1/25/01
++    SInt32                          units;			// Added KH 1/25/01
++//    UInt32                          reserved;		// Not added KH 1/25/01
++        SInt32 startBit;	// Added esb 9-29-99
++    UInt32                          pbVersion;		// Added KH 1/25/01
++
++	union
++	{
++		struct
++		{
++			HIDUsage		usageMin;
++			HIDUsage		usageMax;
++			UInt32			stringMin;
++			UInt32			stringMax;
++			UInt32			designatorMin;
++			UInt32			designatorMax;
++		} range;
++		struct
++		{
++			HIDUsage		usage;
++			HIDUsage		reserved1;
++			UInt32			stringIndex;
++			UInt32			reserved2;
++			UInt32			designatorIndex;
++			UInt32			reserved3;
++		} notRange;
++	} u;
++};
++typedef struct HIDButtonCapabilities HIDButtonCapabilities, * HIDButtonCapabilitiesPtr;
++
++struct HIDValueCaps
++{
++	HIDUsage	usagePage;
++	UInt32		reportID;
++	UInt32		bitField;
++	UInt32		collection;
++	HIDUsage	collectionUsage;
++	HIDUsage	collectionUsagePage;
++
++	Boolean		isRange;
++	Boolean		isStringRange;
++	Boolean		isDesignatorRange;
++	Boolean		isAbsolute;
++
++        UInt32		startBit;	// Added by esb 9-28-99
++	UInt32		bitSize;
++	UInt32		reportCount;
++
++	SInt32		logicalMin;
++	SInt32		logicalMax;
++	SInt32		physicalMin;
++	SInt32		physicalMax;
++	
++	union
++	{
++		struct
++		{
++			HIDUsage		usageMin;
++			HIDUsage		usageMax;
++			UInt32			stringMin;
++			UInt32			stringMax;
++			UInt32			designatorMin;
++			UInt32			designatorMax;
++		} range;
++		struct
++		{
++			HIDUsage		usage;
++			HIDUsage		reserved1;
++			UInt32			stringIndex;
++			UInt32			reserved2;
++			UInt32			designatorIndex;
++			UInt32			reserved3;
++		} notRange;
++	} u;
++};
++typedef struct HIDValueCaps HIDValueCaps, * HIDValueCapsPtr;
++
++struct HIDValueCapabilities
++{
++	HIDUsage	usagePage;
++	UInt32		reportID;
++	UInt32		bitField;
++	UInt32		collection;
++	HIDUsage	collectionUsage;
++	HIDUsage	collectionUsagePage;
++
++	Boolean		isRange;
++	Boolean		isStringRange;
++	Boolean		isDesignatorRange;
++	Boolean		isAbsolute;
++
++	UInt32		bitSize;
++	UInt32		reportCount;
++
++	SInt32		logicalMin;
++	SInt32		logicalMax;
++	SInt32		physicalMin;
++	SInt32		physicalMax;
++	
++    SInt32                          unitExponent;	// Added KH 1/25/01
++    SInt32                          units;			// Added KH 1/25/01
++//    UInt32                          reserved;		// Not added KH 1/25/01
++        SInt32 startBit;	// Added esb 9-29-99	// Moved here KH 1/25/01
++    UInt32                          pbVersion;		// Added KH 1/25/01
++
++	union
++	{
++		struct
++		{
++			HIDUsage		usageMin;
++			HIDUsage		usageMax;
++			UInt32			stringMin;
++			UInt32			stringMax;
++			UInt32			designatorMin;
++			UInt32			designatorMax;
++		} range;
++		struct
++		{
++			HIDUsage		usage;
++			HIDUsage		reserved1;
++			UInt32			stringIndex;
++			UInt32			reserved2;
++			UInt32			designatorIndex;
++			UInt32			reserved3;
++		} notRange;
++	} u;
++};
++typedef struct HIDValueCapabilities HIDValueCapabilities, * HIDValueCapabilitiesPtr;
++
++/*!
++  @function HIDOpenReportDescriptor
++  @abstract The HIDOpenReportDescriptor function allocates the memory the parser needs to handle the given report descriptor, and then parses the report descriptor.
++  @discussion When the parsed information is no longer needed, clients should call the HIDCloseReportDescriptor function.
++  @param hidReportDescriptor Contains a pointer to the actual HID report descriptor from the USB device's firmware
++  @param descriptorLength The length of the HID report descriptor
++  @param preparsedDataRef Preparsed data reference to be used for subsequent function calls
++  @param flags Flags for this runction are kHIDFlag_StrictErrorChecking = 0x00000001
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDOpenReportDescriptor	   (void *					hidReportDescriptor,
++							IOByteCount				descriptorLength,
++							HIDPreparsedDataRef *	preparsedDataRef,
++							UInt32					flags);
++
++/*!
++  @function HIDCloseReportDescriptor
++  @abstract Disposes of the memory the parser allocated for the HIDOpenReportDescriptor function.
++  @param preparsedDataRef Preparsed data reference for the report that is returned by the HIDOpenReportDescriptor function.  After making a call to the HIDCloseReportDescriptor function, the preparsedDataRef is invalid and should not be used.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDCloseReportDescriptor   (HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetButtonCaps
++  @abstract Returns the button capabilities structures for a HID device based on the given preparsed data.
++ @param reportType Specifies the type of report for which to retrieve the scaled value.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport
++  @param buttonCaps Points to a caller-allocated buffer that will contain, on return, an array of HIDButtonCaps structures.  The structures contain information for all buttons that meet the search criteria
++  @param buttonCapsSize Contains the size of the buttonCaps array passed in to the function and is set to the number of elements actually placed in the array after the call completes.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetButtonCaps		   (HIDReportType			reportType,
++							HIDButtonCapsPtr		buttonCaps,
++							UInt32	*				buttonCapsSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetButtonCapabilities
++  @abstract Returns the button capabilities structures for a HID device based on the given preparsed data.
++ @param reportType Specifies the type of report for which to retrieve the scaled value.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport
++  @param buttonCaps Points to a caller-allocated buffer that will contain, on return, an array of HIDButtonCapabilities structures.  The structures contain information for all buttons that meet the search criteria
++  @param buttonCapsSize Contains the size of the buttonCaps array passed in to the function and is set to the number of elements actually placed in the array after the call completes.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetButtonCapabilities   (HIDReportType			reportType,
++							HIDButtonCapabilitiesPtr	buttonCaps,
++							UInt32	*				buttonCapsSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetCaps
++  @abstract Returns the capabilities of a HID device based on the given preparsed data.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param capabilities Points to a caller allocated buffer, that upon return contains the parsed capability information for this HID device.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetCaps				   (HIDPreparsedDataRef		preparsedDataRef,
++							HIDCapsPtr				capabilities);
++
++/*!
++  @function HIDGetCapabilities
++  @abstract Returns the capabilities of a HID device based on the given preparsed data.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param capabilities Points to a caller allocated buffer, that upon return contains the parsed capability information for this HID device.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetCapabilities		   (HIDPreparsedDataRef		preparsedDataRef,
++							HIDCapabilitiesPtr		capabilities);
++
++/*!
++  @function HIDGetCollectionNodes
++  @abstract Returns an array of HIDCollectionNode structures that describe the relationships and layout of the link collections within this top level collection.
++  @discussion The length of the buffer required, in array elements, for an entire collection node array is found in the HIDCaps structure member numberCollectionNodes.  You obtain the HIDCaps information by calling the HIDGetCaps function.  For information on the relationships of link collections described by the data returned from this routine, see the descripton of the HIDCollectionNode structure.
++  @param collectionNodes Points to a caller-allocated array of HIDCollectionNode structures in which this routine returns an entry for each collection within the top level collection.  A collection is a group of corresponding HID descriptors containing input, output, and feature items that have some common relationship to one another.  For example, a pointer collection contains items for x and y position data, and button data.
++  @param collectionNodesSize On input, specifies the length in array elements of the buffer provided at collectionNodes.  On output, this parameter is set to the number of entries in the collectionNodes array that were initialized.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetCollectionNodes	   (HIDCollectionNodePtr	collectionNodes,
++							UInt32 *				collectionNodesSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetScaledUsageValue
++  @abstract The HIDGetScaledUsageValue function returns the capabilities for all buttons for a given top level collection.
++  @discussion Clients who which to obtain all capabilities for a usage that contains multiple data items for a single usage that corresponds to a HID byte array, must call the HIDGetUsageValueArray function.
++  @param reportType Specifies the type of report for which to retrieve the scaled value.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies the usage page of the value to be retrieved.
++  @param collection Optionally specifies the link collection identifier of the value to be retrieved.
++  @param usage Specifies the usage of the scaled value to be retrieved.
++  @param usageValue Points to a variable, that on return from this routine holds the scaled value retrieved from the device report.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data
++  @param reportLength Specifies the length, in bytes, of the report data provided at report
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDGetScaledUsageValue	   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							SInt32 *				usageValue,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++/*!
++  @function HIDGetSpecificButtonCaps
++  @abstract Retrieves the capabilities for all buttons in a specific type of report that meet the search criteria.
++  @discussion The HIDGetSpecificButtonCaps function retrieves capability data for buttons that meet a given search criteria, as opposed to the HIDGetButtonCaps function which returns the capability data for all buttons on the device.  Calling this routine specifying zero for usagePage, usage and collection is equivalent to calling the HIDGetButtonCaps function.
++  @param reportType Specifies the type of report for which to retrieve the button capabilities.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies a usage page identifier to use as a search criteria.  If this parameter is non-zero, then only buttons that specify this usage page will be retrieved.
++  @param collection Specifies a link collection identifier to use as a search criteria.  If this parameter is non-zero, then only buttons that are part of the specified link collection are retrieved.
++  @param usage Specifies a usage identifier to use as a search criteria.  If this parameter is non-zero, then only buttons that match the value specified are retrieved.
++  @param buttonCaps Points to a caller-allocated buffer that will contain, on return, an array of HIDButtonCaps structures.  The structures contain information for all buttons that meet the search criteria.
++  @param buttonCapsSize On input, specifies the length, in array elements, of the buffer provided in the buttonCaps parameter.  On output, this parameter is set to the actual number of elements that were returned by the function call, in the buffer provided in the buttonCaps parameter, if the routine completed without error.  The correct length necessary to retrieve the button capabilities can be found in the capability data returned for the device by the HIDGetCaps function.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetSpecificButtonCaps   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							HIDButtonCapsPtr		buttonCaps,
++							UInt32 *				buttonCapsSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetSpecificButtonCapabilities
++  @abstract Retrieves the capabilities for all buttons in a specific type of report that meet the search criteria.
++  @discussion The HIDGetSpecificButtonCapabilities function retrieves capability data for buttons that meet a given search criteria, as opposed to the HIDGetButtonCapabilities function which returns the capability data for all buttons on the device.  Calling this routine specifying zero for usagePage, usage and collection is equivalent to calling the HIDGetButtonCapabilities function.
++  @param reportType Specifies the type of report for which to retrieve the button capabilities.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies a usage page identifier to use as a search criteria.  If this parameter is non-zero, then only buttons that specify this usage page will be retrieved.
++  @param collection Specifies a link collection identifier to use as a search criteria.  If this parameter is non-zero, then only buttons that are part of the specified link collection are retrieved.
++  @param usage Specifies a usage identifier to use as a search criteria.  If this parameter is non-zero, then only buttons that match the value specified are retrieved.
++  @param buttonCaps Points to a caller-allocated buffer that will contain, on return, an array of HIDButtonCapabilities structures.  The structures contain information for all buttons that meet the search criteria.
++  @param buttonCapsSize On input, specifies the length, in array elements, of the buffer provided in the buttonCaps parameter.  On output, this parameter is set to the actual number of elements that were returned by the function call, in the buffer provided in the buttonCaps parameter, if the routine completed without error.  The correct length necessary to retrieve the button capabilities can be found in the capability data returned for the device by the HIDGetCaps function.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetSpecificButtonCapabilities   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							HIDButtonCapabilitiesPtr	buttonCaps,
++							UInt32 *				buttonCapsSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetSpecificValueCaps
++  @abstract Retrieves the capabilities for all values in a specific type of report that meet the search criteria.
++  @discussion The HIDGetSpecificValueCaps function retrieves capability data for values that meet given search criteria, as opposed to the HIDGetValueCaps function, which returns the capability data for all values on the device.  Calling this routine with a value of zero for usagePage, usage and collection parameters is equivalent to calling the HIDGetValueCaps function.
++  @param reportType Specifies the type of report for which to retrieve the value capabilities.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport or kHIDFeatureReport.
++  @param usagePage Specifies a usage page identifier to use as a search criteria.  If this parameter is non-zero, then only values that specify this usage page will be retrieved.
++  @param collection Specifies a link collection identifier to use as a search criteria.  If this parameter is non-zero, then only values that are part of this link collection will be retrieved.
++  @param usage Specifies a usage identifier to use as a search criteria.  If this parameter is non-zero, then only values that specify this usage will be retrieved.
++  @param valueCaps Points to a caller-allocated buffer that will contain, on return, an array of HIDValueCaps structures that contain information for all values that meet the search criteria.
++  @param valueCapsSize Specifies the length on input, in array elements, of the buffer provided in the valueCaps parameter.  On output, this parameter is set to the actual number of elements that were returned by this function call, in the buffer provided in the valueCaps parameter, if the routine completed without error.  The correct length necessary to retrieve the value capabilities can be found in the capability data returned for the device from the HIDGetCaps function.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetSpecificValueCaps	   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							HIDValueCapsPtr			valueCaps,
++							UInt32 *				valueCapsSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetSpecificValueCapabilities
++  @abstract Retrieves the capabilities for all values in a specific type of report that meet the search criteria.
++  @discussion The HIDGetSpecificValueCapabilities function retrieves capability data for values that meet given search criteria, as opposed to the HIDGetValueCapabilities function, which returns the capability data for all values on the device.  Calling this routine with a value of zero for usagePage, usage and collection parameters is equivalent to calling the HIDGetValueCapabilities function.
++  @param reportType Specifies the type of report for which to retrieve the value capabilities.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport or kHIDFeatureReport.
++  @param usagePage Specifies a usage page identifier to use as a search criteria.  If this parameter is non-zero, then only values that specify this usage page will be retrieved.
++  @param collection Specifies a link collection identifier to use as a search criteria.  If this parameter is non-zero, then only values that are part of this link collection will be retrieved.
++  @param usage Specifies a usage identifier to use as a search criteria.  If this parameter is non-zero, then only values that specify this usage will be retrieved.
++  @param valueCaps Points to a caller-allocated buffer that will contain, on return, an array of HIDValueCapabilities structures that contain information for all values that meet the search criteria.
++  @param valueCapsSize Specifies the length on input, in array elements, of the buffer provided in the valueCaps parameter.  On output, this parameter is set to the actual number of elements that were returned by this function call, in the buffer provided in the valueCaps parameter, if the routine completed without error.  The correct length necessary to retrieve the value capabilities can be found in the capability data returned for the device from the HIDGetCaps function.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetSpecificValueCapabilities	   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							HIDValueCapabilitiesPtr	valueCaps,
++							UInt32 *				valueCapsSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetButtonsOnPage
++  @abstract Retrieves the button stat information for buttons on a specified usage page.
++  @param reportType Specifies the type of report, provided in the report parameter, from which to retrieve the buttons.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport or kHIDFeatureReport.
++  @param usagePage Specifies the usage page of the buttons for which to retrieve the current state.
++  @param collection Optionally specifies the link collection identifier used to retrieve only specific button states.  If this value is non-zero, only the buttons that are part of the given collection are returned.
++  @param usageList On return, points to a caller-allocated buffer that contains the usages of all the buttons that are perssed and belong to the usage page specified in the usagePage parameter.
++  @param usageListSize Is the size, in array elements, of the buffer provided in the usageList parameter.  On return, this parameter contains the number of button states that were set by this routine.  If the error kHIDBufferTooSmallErr was returned, this parameter contains the number of array elements required to hold all button data requested.  The maximum number of buttons that can ever be returned for a given type of report can be obtained by calling the HIDMaxUsageListLength function.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data
++  @param reportLength Specifies the size, in bytes, of the report data provided in the report parameter
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDGetButtonsOnPage		   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage *				usageList,
++							UInt32 *				usageListSize,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++/*!
++  @function HIDGetButtons
++  @abstract The HIDGetButtons function takes a report from a HID device and gets the current state of the buttons in that report.
++  @param reportType Specifies the type of report, provided in the report parameter, from which to retrieve the buttons.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport or kHIDFeatureReport
++  @param collection Optionally specifies the link collection identifier used to retrieve only specific button states.  If this value is non-zero, only the buttons that are part of the given collection are returned.
++  @param usageList On return, points to a caller-allocated buffer that contains the usages of all the buttons that are pressed.
++  @param usageListSize Is the size, in array elements, of the buffer provided in the usageList parameter.  On return, this parameter contains the number of button states that were set by this routine.  If the error kHIDBufferToSmallErr was returned, this parameter contains the number of array elements required to hold all button data requested.  The maximum number of buttons that can ever be returned for a given type of report can be obtained by calling the HIDMaxUsageListLength function.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data.
++  @param reportLength Specifies the length, in bytes, of the report data provided in the report parameter.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDGetButtons			   (HIDReportType			reportType,
++							UInt32					collection,
++							HIDUsageAndPagePtr		usageList,
++							UInt32 *				usageListSize,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDGetNextButtonInfo       (HIDReportType          reportType,
++                            HIDUsage               usagePage,
++                            HIDUsage               usage,
++                            UInt32 *               collection,
++                            UInt8 *                reportID,
++                            HIDPreparsedDataRef    preparsedDataRef);
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDGetNextUsageValueInfo   (HIDReportType          reportType,
++                            HIDUsage               usagePage,
++                            HIDUsage               usage,
++                            UInt32 *               collection,
++                            UInt8 *                reportID,
++                            HIDPreparsedDataRef    preparsedDataRef);
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDGetReportLength         (HIDReportType          	reportType,
++                            UInt8                  	reportID,
++                            IOByteCount		   		*reportLength,
++                            HIDPreparsedDataRef    	preparsedDataRef);
++
++/*!
++  @function HIDGetUsageValue
++  @abstract The HIDGetUsageValue function returns a value from a device data report given a selected search criteria.
++  @discussion The HIDGetUsageValue function does not sign the value.  To have the sign bit automatically applied, use the HIDGetScaledUsageValue function instead.  For manually assigning the sign bit, the position of the sign bit can be found in the HIDValueCaps structure for this value.  Clients who wish to obtain all data for a usage that contains multiple data items for a single usage, corresponding to a HID byte array, must call the HIDGetUsageValueArray function instead.
++  @param reportType Specifies the type of report, provided in report, from which to retrieve the value.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies the usage page of the value to retrieve.
++  @param collection Optionally specifies the link collection identifier of the value to be retrieved.
++  @param usage Specifies the usage of the value to be retrieved.
++  @param usageValue Points to a variable, that on return from this routine holds the value retrieved from the device report.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data.
++  @param reportLength Specifies the size, in bytes, of the report data provided in the report parameter.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDGetUsageValue		   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							SInt32 *				usageValue,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++/*!
++  @function HIDGetUsageValueArray
++  @abstract The HIDGetUsageValueArray function returns a value from a device data report given a selected search criteria.
++  @discussion When the HIDGetUsageValueArray function retrieves the data, it fills in the buffer in little-endian order beginning with the least significant bit of the data for this usage.  The data is filled in without regard to byte alignment and is shifted such that the least significant bit is placed as the 1st bit of the given buffer.
++  @param reportType Specifies the type of report, provided in report, from which to retrieve the value.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies the usage page of the data to be retrieved.
++  @param collection Optionally specifies the link collection identifier of the data to be retrieved.
++  @param usage Specifies the usage identifier of the value to be retrieved.
++  @param usageValueBuffer Points to a caller-allocated buffer that contains, on output, the data from the device.  The correct length for this buffer can be found by multiplying the reportCount and bitSize fields of the HIDValueCaps structure for the value and rounding the resulting value up to the nearest byte.
++  @param usageValueBufferSize Specifies the size, in bytes, of the buffer in the usageValueBuffer parameter.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data.
++  @param reportLength Specifies the size, in bytes, of the report data provided in report.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDGetUsageValueArray	   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							UInt8 *					usageValueBuffer,
++							IOByteCount				usageValueBufferSize,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++/*!
++  @function HIDGetValueCaps
++  @abstract The HIDGetValueCaps function retrieves the capabilities for all values for a specified top level collection.
++  @discussion The HIDGetValueCaps function retrieves the capability data for all values in a top level collection without regard for the usage, usage page or collection of the value.  To retrieve value capabilities for a specific usage, usage page or collection, use the HIDGetSpecificValueCaps function.
++  @param reportType Specifies the type of report for which to retrieve the value capabilities.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param valueCaps On return, points to a caller-allocated buffer that contains an array of HIDValueCaps structures containing information for all values in the top level collection.
++  @param valueCapsSize On input, specifies the size in array elements of the buffer provided in the valueCaps parameter.  On output, this parameter is set to the actual number of elements that were returned in the buffer provided in the valueCaps parameter, if the function completed without error.  The correct length necessary to retrieve the value capabilities can be found in the capability data returned for the device by the HIDGetCaps function.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetValueCaps			   (HIDReportType			reportType,
++							HIDValueCapsPtr			valueCaps,
++							UInt32 *				valueCapsSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDGetValueCapabilities
++  @abstract The HIDGetValueCapabilities function retrieves the capabilities for all values for a specified top level collection.
++  @discussion The HIDGetValueCapabilities function retrieves the capability data for all values in a top level collection without regard for the usage, usage page or collection of the value.  To retrieve value capabilities for a specific usage, usage page or collection, use the HIDGetSpecificValueCapabilities function.
++  @param reportType Specifies the type of report for which to retrieve the value capabilities.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param valueCaps On return, points to a caller-allocated buffer that contains an array of HIDValueCapabilities structures containing information for all values in the top level collection.
++  @param valueCapsSize On input, specifies the size in array elements of the buffer provided in the valueCaps parameter.  On output, this parameter is set to the actual number of elements that were returned in the buffer provided in the valueCaps parameter, if the function completed without error.  The correct length necessary to retrieve the value capabilities can be found in the capability data returned for the device by the HIDGetCapabilities function.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern
++OSStatus
++HIDGetValueCapabilities	   (HIDReportType			reportType,
++							HIDValueCapabilitiesPtr	valueCaps,
++							UInt32 *				valueCapsSize,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDInitReport              (HIDReportType          reportType,
++                            UInt8                  reportID,
++                            HIDPreparsedDataRef    preparsedDataRef,
++                            void *                 report,
++                            IOByteCount      	   reportLength);
++
++/*!
++  @function HIDMaxUsageListLength
++  @abstract The HIDMaxUsageListLength function returns the maximum number of buttons that can be returned from a given report type for the top level collection.
++  @param reportType Specifies the type of report for which to get a maximum usage count.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Optionally specifies the usage page identifier to use as a search criteria.  If this parameter is zero, the function returns the number of buttons for the entire top-level collection regardless of the actual value of the usage page.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern  
++UInt32
++HIDMaxUsageListLength	   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							HIDPreparsedDataRef		preparsedDataRef);
++
++/*!
++  @function HIDSetScaledUsageValue
++  @abstract The HIDSetScaledUsageValue function takes a signed physical (scaled) number and converts it to the logical, or device representation and inserts it in a given report.
++  @discussion The HIDSetScaledUsageValue function automatically handles the setting of the signed bit in the data to be sent to the device.
++  @param reportType Specifies the type of report.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies the usage page identifier of the value to be set in the report.
++  @param collection Optionally specifies the link collection identifier to distinguish between values that have the same usage page and usage identifiers.  If this parameter is zero, it will be ignored.
++  @param usage Specifies the usage identifier of the value to be set in the report.
++  @param usageValue Specifies the physical, or scaled, value to be set in the value for the given report.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data.
++  @param reportLength Specifies the length, in bytes of the report data specified in the report parameter.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDSetScaledUsageValue	   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							SInt32					usageValue,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++/*!
++  @function HIDSetButtons
++  @abstract The HIDSetButtons function takes a report from a HID device and returns the current state of the buttons in that report.
++  @param reportType Specifies the type of repor.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies the usage page identifier of the value to be set in the report.
++  @param collection Optionally specifies the link collection identifier to distinguish between buttons.  If this parameter is zero, it is ignored.
++  @param usageList Points to a caller-allocated buffer that contains an array of button data to be set in the report in the report parameter.
++  @param usageListSize Specifies the size, in array elements, of the buffer provided in the usageList parameter.  If an error is returned by a call to this function, the usageListLength parameter contains the location in the array provided in the usageList parameter where the error was encountered.  All array entries encountered prior to the error location were successfully set in the report provided in the report parameter.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data.
++  @param reportLength Specifies the size, in bytes, of the report data provided in the report parameter.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDSetButtons			   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage *				usageList,
++							UInt32 *				usageListSize,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++/*!
++  @function HIDSetUsageValue
++  @abstract The HIDSetUsageValue function sets a value in a give report.
++  @discussion The HIDSetUsageVlaue function does not automatically handle the sign bit.  Clients must either manually set the sign bit, at the position provided in the HIDValueCaps structure for this value, or call the HIDSetScaledUsageValue function.
++  @param reportType Specifies the type of report.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies the usage page identifier of the value to be set in the report.
++  @param collection Optionally specifies the link collection identifier to distinguish between values that have the same usage page and usage identifiers.  If this parameter is zero, it is ignored.
++  @param usage Specifies the usage identifier of the value to be set in the report.
++  @param usageValue Specifies the data that is to be set in the value for the given report.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data.
++  @param reportLength Specifies the size, in bytes, of the report data provided in the report parameter.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDSetUsageValue		   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							SInt32					usageValue,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++/*!
++  @function HIDSetUsageValueArray
++  @abstract The HIDSetUsageValueArray function sets an array of values in a given report.
++  @discussion The HIDSetUsageValue function does not automatically handle the sign bit.  Clients must either manually set the sign bit, at the position provided in the HIDValueCaps structure for this value, or call the HIDSetScaledUsageValue function.
++  @param reportType Specifies the type of report.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies the usage page identifier of the value to be set in the report.
++  @param collection Optionally specifies the link collection identifier to distinguish between values that have the same usage page and usage identifiers.  If this parameter is zero, it is ignored.
++  @param usage Specifies the usage identifier of the value to be set in the report.
++  @param usageValueBuffer Points to a caller-allocated buffer that contains, on output, the data from the device.  The correct length for this buffer can be found by multiplying the reportCount and bitSize fields of the HIDValueCaps structure for this value and rounding the resulting value up to the nearest byte.
++  @param usageValueBufferLength Specifies the size, in bytes, of the buffer in the usageValueBuffer parameter.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data.
++  @param reportLength Specifies the size, in bytes, of the report data provided in the report parameter.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDSetUsageValueArray	   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							UInt8 *					usageValueBuffer,
++							IOByteCount				usageValueBufferLength,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++/*!
++  @function HIDUsageListDifference
++  @abstract The HIDUsageListDifference function compares and provides the differences between two lists of buttons.
++  @param previousUsageList Points to the older button list to be used for comparison.
++  @param currentUsageList Points to the newer button list to be used for comparison.
++  @param breakUsageList On return, points to a caller-allocated buffer that contains the buttons set in the older list, specified in the previousUsageList parameter, but not set in the new list, specified in the currentUsageList parameter.
++  @param makeUsageList On return, points to a caller-allocated buffer that contains the buttons set in the new list, specified in the currentUsageList parameter, but not set in the old list, specified in the previousUsageList parameter.
++  @param usageListsSize Specifies the length, in array elements, of the buffers provided in the currentUsageList and previousUssageList parameters.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDUsageListDifference	   (HIDUsage *				previousUsageList,
++							HIDUsage *				currentUsageList,
++							HIDUsage *				breakUsageList,
++							HIDUsage *				makeUsageList,
++							UInt32					usageListsSize);
++
++/*!
++  @function HIDSetButton
++  @abstract The HIDSetButton function takes a report from a HID device and sets the current state of the specified button in that report.
++  @param reportType Specifies the type of report.  This parameter must be one of the following: kHIDInputReport, kHIDOutputReport, or kHIDFeatureReport.
++  @param usagePage Specifies the usage page identifier of the value to be set in the report.
++  @param collection Optionally specifies the link collection identifier to distinguish between buttons.  If this parameter is zero, it is ignored.
++  @param usage Points to a caller-allocated buffer that contains the button data to be set in the report in the report parameter.
++  @param preparsedDataRef Preparsed data reference for the report that is retuned by the HIDOpenReportDescriptor function
++  @param report Points to the caller-allocated buffer that contains the device report data.
++  @param reportLength Specifies the size, in bytes, of the report data provided in the report parameter.
++  @result OSStatus Returns an error code if an error was encountered or noErr on success.
++ */
++
++__iohid_deprecated("Use DriverKit")
++extern 
++OSStatus
++HIDSetButton			   (HIDReportType			reportType,
++							HIDUsage				usagePage,
++							UInt32					collection,
++							HIDUsage				usage,
++							HIDPreparsedDataRef		preparsedDataRef,
++							void *					report,
++							IOByteCount				reportLength);
++
++
++#ifdef __cplusplus
++}
++#endif
++
++
++#endif
+
+diff --git a/iokit/IOKit/graphics/IOGraphicsDevice.h b/iokit/IOKit/graphics/IOGraphicsDevice.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/graphics/IOGraphicsDevice.h
+@@ -0,0 +1,20 @@
++/*
++ * LIUQIN: minimal IOGraphicsDevice.h.
++ *
++ * IOHIDSystem.h includes <IOKit/graphics/IOGraphicsDevice.h> for the display
++ * device it talks to on macOS. This tree has no IOGraphics family, and the
++ * vendored IOHIDDevice.cpp only needs the include to resolve: nothing in the
++ * digitizer path touches a graphics device. Declaring the class forward is
++ * enough for every use in the files we compile.
++ */
++#ifndef LIUQIN_IOGRAPHICSDEVICE_STUB_H
++#define LIUQIN_IOGRAPHICSDEVICE_STUB_H
++
++#include <IOKit/IOService.h>
++
++class IOGraphicsDevice : public IOService
++{
++	OSDeclareDefaultStructors(IOGraphicsDevice)
++};
++
++#endif /* LIUQIN_IOGRAPHICSDEVICE_STUB_H */
 
 diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
 --- a/iokit/conf/files.arm64

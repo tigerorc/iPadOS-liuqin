@@ -7967,7 +7967,7 @@ new file mode 100644
 +* @discussion
 +* As per HID spec  unit and unit exponent can be associated with given value.
 +* Example :
-+* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倸鍊搁崐鎼佸磹閹间礁纾归柟闂寸�佺壕褰掓煙闂傚�革拷浣哄�曡ぐ鎺撶厽闁硅揪绲借�氶梺鎼炲�曠�氫即寮诲☉銏℃櫢濞寸姴锟斤拷閸楁娊鏌ｉ幇锟介敓钘夛拷灞借�块梻鍌氬�风欢姘�锟戒匠鍡楋拷婵嬫⒑閸濆嫭鍣虹紒瀣�鎸荤粩鐔煎即閵忕姴鐎�闂佽法鍠嶇划娆撳春閻愬搫绠ｉ柨鏃囨�勬禍褰掓煟鎼粹剝璐″┑锟介幘锟介弫鎾绘嚍閵夛拷閹风兘鎳栭埡鍐跨床闂備胶绮�閻熴儵骞婅箛鏇�鎷峰�橈拷缂嶅﹤锟藉﹤锟芥艾纾兼繛鍡樺姉閵堟澘鈹戦悙璇ф嫹鐎ｏ拷缁�瀣�锟借�勬礃婵炲﹪寮�閸愶拷瀹曟帒锟芥ɑ鍞婚幏鐑芥晸娴犲��鈷戦悹鎭掑妼濞呮劙鏌熼崙銈嗗��2 cm).
++* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倸鍊搁崐鎼佸磹閹间礁纾归柟闂寸�佺壕褰掓煙闂傚�革拷浣哄�曡ぐ鎺撶厵闂傚倸锟介潻鎷锋担鍝勶拷鏇°亹閹烘挾鍘介梺纭呮彧缁插�燂拷姘舵⒑閹肩偛锟芥洜锟芥矮鍗冲��璇测槈閵忊剝娅㈡繛瀵稿Т閿熸枻鎷烽柛妤佸▕閺岋綁骞囬敓浠嬫晸閽樺�涙嫹鐏炲�燂拷鍧楁⒒閸屾艾锟介�庢�㈠�橈拷閿熸垝鍖犻崱妤嬫嫹濠靛��鈷戦柛婵嗗��閸ｈ櫣绱掔�ｏ拷閹歌崵绮╅悢鐓庡嵆闁靛繒濮撮悗锟介梻浣芥硶閸犲秶鍒掑▎鎾虫槬闁绘劕鎼�缁狅綁鏌ㄩ弮鍥�锟藉嫭绂嶈ぐ鎺撶厽閹肩补鍓濈拹鈥斥攽閿熶粙骞橀敓浠嬪极閹剧粯鍤嶉柕澶涙嫹闁归�庡厴閹虫牠鍩￠崘璺ㄥ簥闂傚倷鑳剁划锟介柣鐔村劦楠炲﹨绠涢弴锟介幏宄帮拷姗堟嫹缂傚秴锕ら敓钘夛工閿熻姤鑹剧壕鍏肩箾閸℃ê濮夐柕鍫熸緲閳规垿鎮欑拠褎瀚归悗锝忔嫹缂侊拷鐎ｏ拷閿熷�燂拷鍕�绀冨┑鐐诧躬瀵�锟介柛鎰舵嫹鐎规洘甯掗敓鑺ド戦崬濠氬箯閻戣姤鏅稿ù鐘诧拷锟介埛鎴︽偣閹�鎺戝�兼繛鍛�鍔欓弻鐔煎礄閵堝棗锟斤拷2 cm).
 +* This function converts value based on unit and unit exponent to IOFixed. Currently
 +* it only supports unit as length in cm.
 +*
@@ -14583,7 +14583,7 @@ new file mode 100644
 +   @defined    kIOHIDDigitizerSurfaceSwitchKey
 +   @abstract   Property to turn on / of surface digitizer contact reporting
 +   @discussion To allow for better power management, a host may wish to indicate what it would like a touchpad digitizer to not report surface digitizer contacts by clearing this
-+                flag. By default, upon cold闂傚倷鑳堕崑銊╁磿閸欏�岋拷宥夋晸缁诧拷ot/power cycle, touchpads that support reporting surface
++                flag. By default, upon cold闂傚倸鍊烽懗鍫曞磻閵娾晛纾块柛娆忥拷宀嬫嫹瀹ュ�嬫櫢缂佽�ф嫹ot/power cycle, touchpads that support reporting surface
 +                contacts shall do so by default.
 +*/
 +
@@ -17139,7 +17139,7 @@ new file mode 100644
 +};
 +
 +/* KeyboardOrKeypad Page (0x07) */
-+/* This section is the Usage Page for key codes to be used in implementing a USB keyboard. A Boot Keyboard (84-, 101- or 104-key) should at a minimum support all associated usage codes as indicated in the 鐟滅皡ot閿燂拷 */
++/* This section is the Usage Page for key codes to be used in implementing a USB keyboard. A Boot Keyboard (84-, 101- or 104-key) should at a minimum support all associated usage codes as indicated in the 閻熸粎鐨�ot闁跨噦鎷� */
 +/* column below. */
 +/* The usage type of all key codes is Selectors (Sel), except for the modifier keys Keyboard Left Control (0x224) to Keyboard Right GUI (0x231) which are Dynamic Flags (DV). */
 +/* Note: A general note on Usages and languages: Due to the variation of keyboards from language to language, it is not feasible to specify exact key mappings for every language. Where this list is not specific for a key function in a language, the closest equivalent key position should be used, so that a keyboard may be modified for a different language by simply printing different keycaps. One example is the Y key on a North American keyboard. In Germany this is typically Z. Rather than changing the keyboard firmware to put the Z Usage into that place in the descriptor list, the vendor should use the Y Usage on both the North American and German keyboards. This continues to be the existing practice in the industry, in order to minimize the number of changes to the electronics to accommodate otherlanguages. */
@@ -17323,7 +17323,7 @@ new file mode 100644
 +};
 +
 +/* LEDs Page (0x08) */
-+/* An LED or indicator is implemented as an On/Off Control (OOF) using the 鐟楀常ngle button toggle閿燂拷 mode, where a value of 1 will turn on the indicator, and a value of 0 will turn it off. The exceptions are described below. */
++/* An LED or indicator is implemented as an On/Off Control (OOF) using the 閻熸��甯竛gle button toggle闁跨噦鎷� mode, where a value of 1 will turn on the indicator, and a value of 0 will turn it off. The exceptions are described below. */
 +enum
 +{
 +    kHIDUsage_LED_NumLock    = 0x01,    /* On/Off Control */
@@ -17418,12 +17418,12 @@ new file mode 100644
 +
 +/* Button Page (0x09) */
 +/* The Button page is the first place an application should look for user selection controls. System graphical user interfaces typically employ a pointer and a set of hierarchical selectors to select, move and otherwise manipulate their environment. For these purposes the following assignment of significance can be applied to the Button usages: */
-+/* 閿燂拷 Button 1, Primary Button. Used for object selecting, dragging, and double click activation. On MacOS, this is the only button. Microsoft operating systems call this a logical left button, because it */
++/* 闁跨噦鎷� Button 1, Primary Button. Used for object selecting, dragging, and double click activation. On MacOS, this is the only button. Microsoft operating systems call this a logical left button, because it */
 +/* is not necessarily physically located on the left of the pointing device. */
-+/* 閿燂拷 Button 2, Secondary Button. Used by newer graphical user interfaces to browse object properties. Exposed by systems to applications that typically assign application-specific functionality. */
-+/* 閿燂拷 Button 3, Tertiary Button. Optional control. Exposed to applications, but seldom assigned functionality due to prevalence of two- and one-button devices. */
-+/* 閿燂拷 Buttons 4 -55. As the button number increases, its significance as a selector decreases. */
-+/* In many ways the assignment of button numbers is similar to the assignment of Effort in Physical descriptors. Button 1 would be used to define the button a finger rests on when the hand is in the 鐟楁硟 rest閿燂拷 position, that is, virtually no effort is required by the user to activate the button. Button values increment as the finger has to stretch to reach a control. See Section 6.2.3, 鐟楀ゾysical Descriptors,閿燂拷 in the HID Specification for methods of further qualifying buttons. */
++/* 闁跨噦鎷� Button 2, Secondary Button. Used by newer graphical user interfaces to browse object properties. Exposed by systems to applications that typically assign application-specific functionality. */
++/* 闁跨噦鎷� Button 3, Tertiary Button. Optional control. Exposed to applications, but seldom assigned functionality due to prevalence of two- and one-button devices. */
++/* 闁跨噦鎷� Buttons 4 -55. As the button number increases, its significance as a selector decreases. */
++/* In many ways the assignment of button numbers is similar to the assignment of Effort in Physical descriptors. Button 1 would be used to define the button a finger rests on when the hand is in the 閻熸�佺�� rest闁跨噦鎷� position, that is, virtually no effort is required by the user to activate the button. Button values increment as the finger has to stretch to reach a control. See Section 6.2.3, 閻熸��銈緔sical Descriptors,闁跨噦鎷� in the HID Specification for methods of further qualifying buttons. */
 +enum
 +{
 +    kHIDUsage_Button_1    = 0x01,    /* (primary/trigger) */
@@ -17687,7 +17687,7 @@ new file mode 100644
 +
 +/* Ordinal Page (0x0A) */
 +/* The Ordinal page allows multiple instances of a control or sets of controls to be declared without requiring individual enumeration in the native usage page. For example, it is not necessary to declare usages of Pointer 1, Pointer 2, and so forth on the Generic Desktop page. When parsed, the ordinal instance number is, in essence, concatenated to the usages attached to the encompassing collection to create Pointer 1, Pointer 2, and so forth. */
-+/* For an example, see Section A.5, 鐟楀檽ltiple Instances of a Control,閿燂拷 in Appendix A, 鐟楀紥age Examples.閿燂拷 By convention, an Ordinal collection is placed inside the collection for which it is declaring multiple instances. */
++/* For an example, see Section A.5, 閻熸��妾絣tiple Instances of a Control,闁跨噦鎷� in Appendix A, 閻熸��绱�age Examples.闁跨噦鎷� By convention, an Ordinal collection is placed inside the collection for which it is declaring multiple instances. */
 +/* Instances do not have to be identical. */
 +enum
 +{
@@ -17702,7 +17702,7 @@ new file mode 100644
 +/* Telephony Page (0x0B) */
 +/* This usage page defines the keytop and control usages for telephony devices. */
 +/* Indicators on a phone are handled by wrapping them in LED: Usage In Use Indicator and LED: Usage Selected Indicator usages. For example, a message-indicator LED would be identified by a Telephony: Message usage declared as a Feature or Output in a LED: Usage In Use Indicator collection. */
-+/* See Section 14, 鐟滅钡nsumer Page (0x0C),閿燂拷 for audio volume and tone controls. */
++/* See Section 14, 閻熸粎閽�nsumer Page (0x0C),闁跨噦鎷� for audio volume and tone controls. */
 +enum
 +{
 +    kHIDUsage_Tfon_Phone    = 0x01,    /* Application Collection */
@@ -25674,6 +25674,199 @@ new file mode 100644
 +};
 +
 +#endif /* IOHIDElementContainer_h */
+
+diff --git a/iokit/IOKit/IOReporter.h b/iokit/IOKit/IOReporter.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/IOReporter.h
+@@ -0,0 +1,37 @@
++/*
++ * LIUQIN: the IOReporter declarations IOHIDDevice.cpp needs.
++ *
++ * This tree carries iokit/Kernel/IOReporter.cpp (Apple source, with the class
++ * and both static bulk methods this file calls) but no public IOReporter.h.
++ * The vendored IOHIDDevice.cpp only uses the two bulk helpers
++ * (configureAllReports / updateAllReports) to fan an IOHIDDevice report out to
++ * registered reporters; nothing on the digitizer path registers one, so the
++ * OSSet is always empty. Declaring just those two keeps the compile honest
++ * without pulling the whole IOReporter surface into a header this tree lacks.
++ */
++#ifndef LIUQIN_IOREPORTER_SHIM_H
++#define LIUQIN_IOREPORTER_SHIM_H
++
++#include <IOKit/IOService.h>
++#include <IOKit/IOReturn.h>
++#include <IOKit/IOTypes.h>
++
++class OSSet;
++class OSData;
++class OSObject;
++
++class IOReporter : public OSObject
++{
++	OSDeclareDefaultStructors(IOReporter)
++public:
++	static IOReturn configureAllReports(OSSet *reporters,
++	    IOReportCategories categories, IOReturn (action)(OSObject *target, void *ref,
++	    IOReporter *reporter, OSData *channels, OSData *result, IOReportOptions options),
++	    void *ref, IOService *destination);
++	static IOReturn updateAllReports(OSSet *reporters,
++	    IOReportCategories categories, IOReturn (action)(OSObject *target, void *ref,
++	    IOReporter *reporter, OSData *channels, OSData *result, IOReportOptions options),
++	    void *ref, IOService *destination);
++};
++
++#endif /* LIUQIN_IOREPORTER_SHIM_H */
+
+diff --git a/iokit/IOKit/hid/IOHIDEventServiceKeys.h b/iokit/IOKit/hid/IOHIDEventServiceKeys.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hid/IOHIDEventServiceKeys.h
+@@ -0,0 +1,144 @@
++/*
++ *
++ * @APPLE_LICENSE_HEADER_START@
++ *
++ * Copyright (c) 2019 Apple Computer, Inc.  All Rights Reserved.
++ *
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ *
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ *
++ * @APPLE_LICENSE_HEADER_END@
++ */
++
++#ifndef IOHIDEventServiceKeys_h
++#define IOHIDEventServiceKeys_h
++
++/*!
++ * @define kIOHIDPointerAccelerationKey
++ *
++ * @abstract
++ * Number property that contains the pointer acceleration value.
++ */
++#define kIOHIDPointerAccelerationKey "HIDPointerAcceleration"
++
++/*!
++ * @define kIOHIDPointerAccelerationTypeKey
++ *
++ * @abstract
++ * String property containing the type of acceleration for pointer.
++ * Supported types are:
++ *      <code>kIOHIDPointerAccelerationKey</code>
++ *      <code>kIOHIDMouseScrollAccelerationKey</code>
++ *      <code>kIOHIDTrackpadAccelerationType</code>
++ */
++#define kIOHIDPointerAccelerationTypeKey "HIDPointerAccelerationType"
++
++/*!
++ * @define kIOHIDMouseScrollAccelerationKey
++ *
++ * @abstract
++ * Number property that contains the mouse scroll acceleration value.
++ */
++#define kIOHIDMouseScrollAccelerationKey "HIDMouseScrollAcceleration"
++
++/*!
++ * @define kIOHIDMouseAccelerationTypeKey
++ *
++ * @abstract
++ * Number property that contains the mouse acceleration value.
++ */
++#define kIOHIDMouseAccelerationTypeKey "HIDMouseAcceleration"
++
++/*!
++ * @define kIOHIDScrollAccelerationKey
++ *
++ * @abstract
++ * Number property that contains the scroll acceleration value.
++ */
++#define kIOHIDScrollAccelerationKey "HIDScrollAcceleration"
++
++/*!
++ * @define kIOHIDScrollAccelerationTypeKey
++ *
++ * @abstract
++ * Number property containing the type of acceleration for scroll.
++ * Supported types are:
++ *      <code>kIOHIDMouseScrollAccelerationKey</code>
++ *      <code>kIOHIDTrackpadScrollAccelerationKey</code>
++ */
++#define kIOHIDScrollAccelerationTypeKey "HIDScrollAccelerationType"
++
++/*!
++ * @define kIOHIDDigitizerTipThresholdKey
++ *
++ * @abstract
++ * Number property that describes the threshold percentage for when the tip
++ * pressure of a digitizer stylus should change from hovering to dragging.
++ *
++ * @discussion
++ * If a digitizer stylus supports the kHIDUsage_Dig_TipPressure (0x30) usage,
++ * the service may optionally publish this key to describe the value at which
++ * the pressure should change the pointer behavior from hovering to dragging.
++ * The value is a percentage from 0 to 100, where 100 percent is equal to the
++ * logical max that the stylus dispatches. If no value is provided, the default
++ * value of 75 will be used.
++ */
++#define kIOHIDDigitizerTipThresholdKey "DigitizerTipThreshold"
++
++/*!
++ * @define kIOHIDSurfaceDimensionsKey
++ *
++ * @abstract
++ * Dictionary property published on a service that describes the surface
++ * dimensions for services that publish absolute X/Y values, such as digitizer
++ * and pointer devices. The dictionary will contain the kIOHIDWidthKey and
++ * kIOHIDHeightKey keys described below. Value is in millimeter represented
++ * as IOFixed.
++ */
++#define kIOHIDSurfaceDimensionsKey "SurfaceDimensions"
++
++/*!
++ * @define kIOHIDWidthKey
++ *
++ * @abstract
++ * Number property used in the surface dimensions dictionary described above.
++ * Default value represents the physical max - physical min of the absolute
++ * X value.
++ */
++#define kIOHIDWidthKey "Width"
++
++/*!
++ * @define kIOHIDHeightKey
++ *
++ * @abstract
++ * Number property used in the surface dimensions dictionary described above.
++ * Default value represents the physical max - physical min of the absolute
++ * Y value.
++ */
++#define kIOHIDHeightKey "Height"
++
++/*!
++ * @define kIOHIDEventDriverHandlesReport
++ *
++ * @abstract
++ * Boolean property used to let handleReport in an IOUserHIDEventDriver get the
++ * report before any other processing is done in IOUserHIDEventService.
++ * If this property is enabled the IOUserHIDEventService subclass should update
++ * the elements with IOHIDInterface::processReport to update the IOHIDElements as
++ * IOUserHIDEventService will not do this like when this property is not set.
++ */
++#define kIOHIDEventDriverHandlesReport "IOHIDEventDriverHandlesReport"
++
++#endif /* IOHIDDeviceTypes_h */
 
 diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
 --- a/iokit/conf/files.arm64

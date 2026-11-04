@@ -1,85 +1,58 @@
 liuqin: stub the macOS-only names IOHIDDevice.cpp references
 
-0270 vendored Apple's IOHIDDevice.cpp unchanged. It references four things that
+0270 vendored Apple's IOHIDDevice.cpp unchanged. It references two things that
 do not exist on iOS (and are not in this tree):
 
-  IOHIDSystemActivityTickle(kind, this)          x2, in updateActivityTickle
-  IOHIKeyboard::message(kIOHIDSystemDeviceSeizeRequestMessage, ...)
-  IOHIPointing::message(kIOHIDSystemDeviceSeizeRequestMessage, ...)
-  NX_HARDWARE_TICKLE / NX_NULLEVENT              event kind constants
+  IOHIDSystemActivityTickle(kind, this)   x2, in updateActivityTickle
+  NX_HARDWARE_TICKLE                       the event kind constant
 
-All of them sit on the seize/tickle path: a real keyboard or pointing device
-being seized by IOHIDSystem. This port has no IOHIDSystem layer at all and the
+Both sit on the seize/tickle path: a real keyboard or pointing device being
+seized by IOHIDSystem. This port has no IOHIDSystem layer at all and the
 digitizer never seizes anything, so the correct behaviour is to do nothing.
-The header is included from IOHIDDevice.cpp behind ARM64_BOARD_CONFIG_LIUQIN so
-a future real port can drop it without touching Apple's source.
+IOHIDFamilyPrivate.h (also vendored, unchanged) declares the non-static
+prototype, so the stub is a plain inline definition that satisfies it.
+NX_NULLEVENT and the real IOHIKeyboard/IOHIPointing classes come from the
+headers 0270 mirrors (IOLLEvent.h, IOKit/hidsystem/IOHIKeyboard.h), so they
+are not restated here any more.
 
 diff --git a/iokit/Kernel/arm/hid/LiuqinHIDMacOSStubs.h b/iokit/Kernel/arm/hid/LiuqinHIDMacOSStubs.h
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/LiuqinHIDMacOSStubs.h
-@@ -0,0 +1,59 @@
+@@ -0,0 +1,36 @@
 +/*
 + * LIUQIN: the macOS-only IOHIDDevice.cpp dependencies, as no-ops.
 + *
 + * IOHIDDevice.cpp is Apple source (IOHIDFamily-1915.140.3) kept unchanged.
-+ * Four of the names it uses exist only in the macOS IOHIDSystem layer, which
-+ * iOS does not have and this port certainly does not: this kernel has no
-+ * IOHIDSystem, no IOHIKeyboard and no IOHIPointing. Every reference is on the
-+ * seize/tickle path, which a digitizer never takes -- it seizes nothing and
-+ * there is no system-wide tickle sink to poke.
++ * What it uses that exists only in the macOS IOHIDSystem layer, which iOS
++ * does not have and this port certainly does not:
 + *
-+ * So: do nothing, quietly, and keep the call sites compiling.
++ *   IOHIDSystemActivityTickle -- wakes the macOS-wide event system so it
++ *       re-evaluates idle time. No event system here; a tickle would only
++ *       cost a lock on a service that does not exist.
++ *   NX_HARDWARE_TICKLE -- the event kind passed to the tickle call. The
++ *       macOS value (IOLLEvent.h) is kept so a future port that grows a
++ *       real tickle sink needs no change here; nothing on this port reads it.
++ *
++ * IOHIDFamilyPrivate.h already declares the non-static prototype, so this is
++ * a plain inline definition, not a static one.
 + */
 +#ifndef LIUQIN_HID_MACOS_STUBS_H
 +#define LIUQIN_HID_MACOS_STUBS_H
 +
-+/* NX event kinds IOHIDDevice.cpp passes to the tickle call. Values are the
-+ * macOS ones (IOLLEvent.h) so a future port that grows a real tickle sink
-+ * needs no change here; nothing on this port reads them. */
-+#ifndef NX_NULLEVENT
-+#define NX_NULLEVENT            0
-+#endif
 +#ifndef NX_HARDWARE_TICKLE
 +#define NX_HARDWARE_TICKLE      24
 +#endif
 +
-+/* kIOHIDSystemDeviceSeizeRequestMessage: the message IOHIDDevice sends to its
-+ * provider when userland asks to seize the device. Unused on this port. */
-+#ifndef kIOHIDSystemDeviceSeizeRequestMessage
-+#define kIOHIDSystemDeviceSeizeRequestMessage 0xe0005000
-+#endif
-+
 +/*
 + * IOHIDSystemActivityTickle: on macOS this wakes the event system so it
-+ * re-evaluates idle time. There is no event system here; a tickle would only
-+ * cost a lock on a service that does not exist.
++ * re-evaluates idle time. There is no event system here; do nothing.
 + */
-+static inline void
++inline void
 +IOHIDSystemActivityTickle(int kind, IOService *sender)
 +{
 +	(void)kind;
 +	(void)sender;
 +}
-+
-+/*
-+ * IOHIDDevice.cpp casts its provider to IOHIKeyboard / IOHIPointing and sends
-+ * the seize message through them. Neither class exists on iOS, so the casts
-+ * must yield NULL: declare the classes and give OSDynamicCast nothing to
-+ * match. (OSDynamicCast needs a real OSObject subclass to compile.)
-+ */
-+class IOHIKeyboard : public IOService
-+{
-+	OSDeclareDefaultStructors(IOHIKeyboard)
-+public:
-+	using IOService::message;
-+};
-+
-+class IOHIPointing : public IOService
-+{
-+	OSDeclareDefaultStructors(IOHIPointing)
-+public:
-+	using IOService::message;
-+};
 +
 +#endif /* LIUQIN_HID_MACOS_STUBS_H */

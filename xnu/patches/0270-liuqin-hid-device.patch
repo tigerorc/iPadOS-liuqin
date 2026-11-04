@@ -350,7 +350,7 @@ diff --git a/iokit/Kernel/arm/hid/IOHIDDevice.cpp b/iokit/Kernel/arm/hid/IOHIDDe
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/IOHIDDevice.cpp
-@@ -0,0 +1,2682 @@
+@@ -0,0 +1,2691 @@
 +/*
 + *
 + * @APPLE_LICENSE_HEADER_START@
@@ -401,6 +401,7 @@ new file mode 100644
 +#include "IOHIDUsageTables.h"
 +#include "AppleHIDUsageTables.h"
 +#include "IOHIDDeviceElementContainer.h"
++#include "LiuqinHIDPrivateKeys.h"
 +
 +#include <sys/queue.h>
 +#include <machine/limits.h>
@@ -2978,6 +2979,11 @@ new file mode 100644
 +
 +#pragma clang diagnostic ignored "-Wunused-parameter"
 +
++#if 0 /* LIUQIN: DriverKit-side IMPL() methods below are generated from
++ * IOHIDDevice.iig, which this port does not build: there is no dext and no
++ * IOUserServer.  The generated *__*_Args types and IOUserServer.h therefore
++ * do not exist here.  Nothing on this port calls these methods; keep the
++ * Apple source text intact but out of the compile. */
 +#include <IOKit/IOUserServer.h>
 +
 +kern_return_t
@@ -3035,6 +3041,7 @@ new file mode 100644
 +}
 +
 +
++#endif /* LIUQIN: no DriverKit/IOUserServer on this kernel */
 
 diff --git a/iokit/Kernel/arm/hid/IOHIDDevice.h b/iokit/Kernel/arm/hid/IOHIDDevice.h
 new file mode 100644
@@ -8332,7 +8339,7 @@ diff --git a/iokit/Kernel/arm/hid/IOHIDLibUserClient.cpp b/iokit/Kernel/arm/hid/
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/IOHIDLibUserClient.cpp
-@@ -0,0 +1,2234 @@
+@@ -0,0 +1,2235 @@
 +/*
 + *
 + * @APPLE_LICENSE_HEADER_START@
@@ -8384,6 +8391,7 @@ new file mode 100644
 +#include "IOHIDPrivateKeys.h"
 +#include <AssertMacros.h>
 +#include "IOHIDDeviceElementContainer.h"
++#include "LiuqinHIDPrivateKeys.h"
 +#include <IOKit/hid/IOHIDDeviceTypes.h>
 +
 +__BEGIN_DECLS
@@ -9063,12 +9071,12 @@ new file mode 100644
 +    }
 +
 +    if (fWakePort != MACH_PORT_NULL) {
-+        ipc_port_release_send(fWakePort);
++        ipc_port_release_send((ipc_port_t)fWakePort);
 +        fWakePort = MACH_PORT_NULL;
 +    }
 +
 +    if (fValidPort != MACH_PORT_NULL) {
-+        ipc_port_release_send(fValidPort);
++        ipc_port_release_send((ipc_port_t)fValidPort);
 +        fValidPort = MACH_PORT_NULL;
 +    }
 +
@@ -9210,14 +9218,14 @@ new file mode 100644
 +    switch ( type ) {
 +        case kIOHIDLibUserClientAsyncPortType:
 +            if (fWakePort != MACH_PORT_NULL) {
-+                ipc_port_release_send(fWakePort);
++                ipc_port_release_send((ipc_port_t)fWakePort);
 +                fWakePort = MACH_PORT_NULL;
 +            }
 +            fWakePort = port;
 +            break;
 +        case kIOHIDLibUserClientDeviceValidPortType:
 +            if (fValidPort != MACH_PORT_NULL) {
-+                ipc_port_release_send(fValidPort);
++                ipc_port_release_send((ipc_port_t)fValidPort);
 +                fValidPort = MACH_PORT_NULL;
 +            }
 +
@@ -26032,6 +26040,75 @@ index c00cbd4..ce9fbd7 100644
 +#ifndef kHIDUsage_AppleVendor_MultipleInterfaces
 +#define kHIDUsage_AppleVendor_MultipleInterfaces 0x10000
 +#endif
+diff --git a/iokit/Kernel/arm/hid/LiuqinHIDPrivateKeys.h b/iokit/Kernel/arm/hid/LiuqinHIDPrivateKeys.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/Kernel/arm/hid/LiuqinHIDPrivateKeys.h
+@@ -0,0 +1,33 @@
++/*
++ * LIUQIN: IOHIDFamily property keys and list macros that Apple never publishes
++ * in any IOHIDFamily tag (1090..2238): AppleHIDUsageTables.h and the private
++ * key headers shipped with the open-source drops are licence-only stubs.
++ *
++ * The property keys follow Apple's kIOHID<Name>Key -> "<Name>" convention;
++ * they are only ever handed to setProperty/getProperty/copyProperty and
++ * compared with OSSymbol::isEqualTo, so the exact spelling matters only for
++ * self-consistency (this kernel sets and reads them itself).
++ *
++ * The two list macros are the bodies of `static const OSSymbol *[]`
++ * initialisers in IOHIDDevice.cpp / IOHIDInterface.cpp.  Apple's list is
++ * unpublished; a single nullptr makes every loop a no-op: `prop` is then
++ * NULL and OSSymbol::isEqualTo(const OSSymbol *) returns false.  A zero-length
++ * array is ill-formed in C++, so nullptr (not {}) is required.
++ */
++#ifndef LIUQIN_HID_PRIVATE_KEYS_H
++#define LIUQIN_HID_PRIVATE_KEYS_H
++
++#define kIOHIDRegisterServiceKey                "RegisterService"
++#define kIOHIDProtectedAccessKey                "ProtectedAccess"
++#define kIOHIDExtendedDataKey                   "ExtendedData"
++#define kIOHIDMultipleInterfaceEnabledKey       "MultipleInterfaceEnabled"
++#define kIOHIDDKStartKey                        "HIDDKStart"
++#define kIOHIDRequiresTCCAuthorizationKey       "RequiresTCCAuthorization"
++#define kIOHIDDeviceForceInterfaceRematchKey   "DeviceForceInterfaceRematch"
++#define kIOHIDDeviceGameControllerSupportKey   "DeviceGameControllerSupport"
++#define kIOHIDDevicePrivilegedKey              "DevicePrivileged"
++
++#define kIOHIDDeviceMessagePropertyUpdateKeys  nullptr
++#define kIOHIDPropagatePropertyKeys            nullptr
++
++#endif /* LIUQIN_HID_PRIVATE_KEYS_H */
+
+diff --git a/iokit/ipc/ipc_port.h b/iokit/ipc/ipc_port.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/ipc/ipc_port.h
+@@ -0,0 +1,24 @@
++/*
++ * LIUQIN: path shim for <ipc/ipc_port.h>.
++ *
++ * The vendored IOHIDLibUserClient.cpp includes this under __BEGIN_DECLS only
++ * for ipc_port_release_send().  darwin-xnu-build's install step does not put
++ * osfmk/ipc/ipc_port.h into EXPORT_HDRS/osfmk/ipc (run 41850551441:
++ * "'ipc/ipc_port.h' file not found"), and the real private header pulls in a
++ * whole chain of <ipc/ipc_object.h> / <ipc/ipc_mqueue.h> that is likewise not
++ * exported.  Declare just the one entry point with its real kernel signature.
++ *
++ * Placed at iokit/ipc/ because -I<xnu>/iokit is on the compile command line,
++ * so <ipc/ipc_port.h> resolves to this file.
++ */
++#ifndef LIUQIN_IPC_PORT_H
++#define LIUQIN_IPC_PORT_H
++
++#include <sys/cdefs.h>
++#include <mach/port.h>          /* ipc_port_t */
++
++__BEGIN_DECLS
++extern void ipc_port_release_send(ipc_port_t port);
++__END_DECLS
++
++#endif /* LIUQIN_IPC_PORT_H */
+
 diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
 --- a/iokit/conf/files.arm64
 +++ b/iokit/conf/files.arm64

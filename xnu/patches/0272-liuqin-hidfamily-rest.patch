@@ -8973,7 +8973,7 @@ diff --git a/iokit/Kernel/arm/hid/IOHIDFamilyPrivate.cpp b/iokit/Kernel/arm/hid/
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/IOHIDFamilyPrivate.cpp
-@@ -0,0 +1,501 @@
+@@ -0,0 +1,508 @@
 +/*
 + * @APPLE_LICENSE_HEADER_START@
 + * 
@@ -8999,7 +8999,9 @@ new file mode 100644
 +
 +#include "IOHIDFamilyPrivate.h"
 +
-+#include "IOHIDSystem.h"
++/* LIUQIN: this header is vendored at iokit/IOKit/hidsystem, which is
++ * reachable by its angle path rather than from this directory. */
++#include <IOKit/hidsystem/IOHIDSystem.h>
 +#include "OSStackRetain.h"
 +#include "IOHIDPrivateKeys.h"
 +#include "IOHIDDebug.h"
@@ -9442,6 +9444,10 @@ new file mode 100644
 +    return false;
 +}
 +
++#if 0 /* LIUQIN: IOHIDSystem is a macOS-only layer (IOHIDSystem::instance()
++       * does not exist on iOS).  LiuqinHIDMacOSStubs.h (0271) supplies the
++       * inline no-op that the HID sources call instead; keeping both would
++       * be a duplicate definition as well. */
 +void IOHIDSystemActivityTickle(SInt32 nxEventType, IOService *sender)
 +{
 +    HIDLogInfo("HID Activity Tickle (type:%d sender:%llx)", nxEventType, sender ? sender->getRegistryEntryID() : 0);
@@ -9451,6 +9457,7 @@ new file mode 100644
 +        ioSys->message(kIOHIDSystemActivityTickle, sender, (void*)event);
 +    }
 +}
++#endif /* LIUQIN */
 +
 +extern "C" int  kern_stack_snapshot_with_reason(char *reason);
 +extern "C" kern_return_t sysdiagnose_notify_user(uint32_t keycode);
@@ -9475,7 +9482,6 @@ new file mode 100644
 +    }
 +    return singleUser & 0x1;
 +}
-
 diff --git a/iokit/Kernel/arm/hid/IOHIDEventSource.cpp b/iokit/Kernel/arm/hid/IOHIDEventSource.cpp
 new file mode 100644
 --- /dev/null
@@ -9617,7 +9623,7 @@ diff --git a/iokit/Kernel/arm/hid/IOHIDInterface.cpp b/iokit/Kernel/arm/hid/IOHI
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/IOHIDInterface.cpp
-@@ -0,0 +1,1014 @@
+@@ -0,0 +1,1015 @@
 +/*
 + *
 + * @APPLE_LICENSE_HEADER_START@
@@ -9656,6 +9662,7 @@ new file mode 100644
 +// #include <IOKitUser/IODataQueueDispatchSource.h>
 +#include "IOHIDFamilyPrivate.h"
 +#include "IOHIDPrivateKeys.h"
++#include "LiuqinHIDPrivateKeys.h"   /* LIUQIN: unpublished keys */
 +/* LIUQIN: DriverKit-only; its users are compiled out below. */
 +// #include "DriverKitSharedDefs.h"
 +#include <IOKit/IOKitKeys.h>

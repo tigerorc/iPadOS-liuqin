@@ -26162,8 +26162,8 @@ new file mode 100644
 +#define kIOHIDDeviceGameControllerSupportKey   "DeviceGameControllerSupport"
 +#define kIOHIDDevicePrivilegedKey              "DevicePrivileged"
 +
-+#define kIOHIDDeviceMessagePropertyUpdateKeys  nullptr
-+#define kIOHIDPropagatePropertyKeys            nullptr
++#define kIOHIDDeviceMessagePropertyUpdateKeys  (const OSSymbol *)nullptr
++#define kIOHIDPropagatePropertyKeys            (const OSSymbol *)nullptr
 +
 +
 +/* IOHIDLibUserClient's private option bits are unpublished (Apple keeps

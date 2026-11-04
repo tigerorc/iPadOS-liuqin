@@ -8973,7 +8973,7 @@ diff --git a/iokit/Kernel/arm/hid/IOHIDFamilyPrivate.cpp b/iokit/Kernel/arm/hid/
 new file mode 100644
 --- /dev/null
 +++ b/iokit/Kernel/arm/hid/IOHIDFamilyPrivate.cpp
-@@ -0,0 +1,508 @@
+@@ -0,0 +1,509 @@
 +/*
 + * @APPLE_LICENSE_HEADER_START@
 + * 
@@ -9004,6 +9004,7 @@ new file mode 100644
 +#include <IOKit/hidsystem/IOHIDSystem.h>
 +#include "OSStackRetain.h"
 +#include "IOHIDPrivateKeys.h"
++#include "LiuqinHIDPrivateKeys.h"   /* LIUQIN: unpublished keys */
 +#include "IOHIDDebug.h"
 +#include <IOKit/IOKitKeys.h>
 +#include <libkern/OSKextLib.h>

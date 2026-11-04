@@ -7967,7 +7967,7 @@ new file mode 100644
 +* @discussion
 +* As per HID spec  unit and unit exponent can be associated with given value.
 +* Example :
-+* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倸鍊搁崐鎼佸磹閹间礁纾归柟闂寸�佺壕褰掓煟閹达絽袚闁搞倕瀚伴弻娑㈡晸娴犲��鍗抽柣鎰�锟藉�屽耿闂傚倷绶氬�佳嗗�濋梺鍝勬噺缁嬫挻绔熼弴銏犲瀭闁跨喍绮欓崺鐐哄箣閿旇棄浜归柣搴℃贡婵�鎾�鏁撻懞銉�鎷烽懖鈺冿紲闂佺粯鐟ラ幊蹇曪拷姘�缍婂�婂�氬磼濞嗘劗銈板┑鐐诧拷瀣�绀嬬�规洘濞婇弫鍐�宕掑�樻唻鎷烽敓浠嬫⒑鐠恒劌娅愰柟鍑ゆ嫹2 cm).
++* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倸鍊搁崐鎼佸磹閹间礁纾归柟闂寸�佺壕褰掓煙闂傚�革拷浣哄�曡ぐ鎺撶厽闁硅揪绲借�氶梺鎼炲�曠�氫即寮诲☉銏℃櫢濞寸姴锟斤拷閸楁娊鏌ｉ幇锟介敓钘夛拷灞借�块梻鍌氬�风欢姘�锟戒匠鍡楋拷婵嬫⒑閸濆嫭鍣虹紒瀣�鎸荤粩鐔煎即閵忕姴鐎�闂佽法鍠嶇划娆撳春閻愬搫绠ｉ柨鏃囨�勬禍褰掓煟鎼粹剝璐″┑锟介幘锟介弫鎾绘嚍閵夛拷閹风兘鎳栭埡鍐跨床闂備胶绮�閻熴儵骞婅箛鏇�鎷峰�橈拷缂嶅﹤锟藉﹤锟芥艾纾兼繛鍡樺姉閵堟澘鈹戦悙璇ф嫹鐎ｏ拷缁�瀣�锟借�勬礃婵炲﹪寮�閸愶拷瀹曟帒锟芥ɑ鍞婚幏鐑芥晸娴犲��鈷戦悹鎭掑妼濞呮劙鏌熼崙銈嗗��2 cm).
 +* This function converts value based on unit and unit exponent to IOFixed. Currently
 +* it only supports unit as length in cm.
 +*
@@ -14583,7 +14583,7 @@ new file mode 100644
 +   @defined    kIOHIDDigitizerSurfaceSwitchKey
 +   @abstract   Property to turn on / of surface digitizer contact reporting
 +   @discussion To allow for better power management, a host may wish to indicate what it would like a touchpad digitizer to not report surface digitizer contacts by clearing this
-+                flag. By default, upon cold闂備胶鍋ㄩ崕鍙夌�嶉敓绲�ot/power cycle, touchpads that support reporting surface
++                flag. By default, upon cold闂傚倷鑳堕崑銊╁磿閸欏�岋拷宥夋晸缁诧拷ot/power cycle, touchpads that support reporting surface
 +                contacts shall do so by default.
 +*/
 +
@@ -17139,7 +17139,7 @@ new file mode 100644
 +};
 +
 +/* KeyboardOrKeypad Page (0x07) */
-+/* This section is the Usage Page for key codes to be used in implementing a USB keyboard. A Boot Keyboard (84-, 101- or 104-key) should at a minimum support all associated usage codes as indicated in the 瑜簅ot锟� */
++/* This section is the Usage Page for key codes to be used in implementing a USB keyboard. A Boot Keyboard (84-, 101- or 104-key) should at a minimum support all associated usage codes as indicated in the 鐟滅皡ot閿燂拷 */
 +/* column below. */
 +/* The usage type of all key codes is Selectors (Sel), except for the modifier keys Keyboard Left Control (0x224) to Keyboard Right GUI (0x231) which are Dynamic Flags (DV). */
 +/* Note: A general note on Usages and languages: Due to the variation of keyboards from language to language, it is not feasible to specify exact key mappings for every language. Where this list is not specific for a key function in a language, the closest equivalent key position should be used, so that a keyboard may be modified for a different language by simply printing different keycaps. One example is the Y key on a North American keyboard. In Germany this is typically Z. Rather than changing the keyboard firmware to put the Z Usage into that place in the descriptor list, the vendor should use the Y Usage on both the North American and German keyboards. This continues to be the existing practice in the industry, in order to minimize the number of changes to the electronics to accommodate otherlanguages. */
@@ -17323,7 +17323,7 @@ new file mode 100644
 +};
 +
 +/* LEDs Page (0x08) */
-+/* An LED or indicator is implemented as an On/Off Control (OOF) using the 瑗峣ngle button toggle锟� mode, where a value of 1 will turn on the indicator, and a value of 0 will turn it off. The exceptions are described below. */
++/* An LED or indicator is implemented as an On/Off Control (OOF) using the 鐟楀常ngle button toggle閿燂拷 mode, where a value of 1 will turn on the indicator, and a value of 0 will turn it off. The exceptions are described below. */
 +enum
 +{
 +    kHIDUsage_LED_NumLock    = 0x01,    /* On/Off Control */
@@ -17418,12 +17418,12 @@ new file mode 100644
 +
 +/* Button Page (0x09) */
 +/* The Button page is the first place an application should look for user selection controls. System graphical user interfaces typically employ a pointer and a set of hierarchical selectors to select, move and otherwise manipulate their environment. For these purposes the following assignment of significance can be applied to the Button usages: */
-+/* 锟� Button 1, Primary Button. Used for object selecting, dragging, and double click activation. On MacOS, this is the only button. Microsoft operating systems call this a logical left button, because it */
++/* 閿燂拷 Button 1, Primary Button. Used for object selecting, dragging, and double click activation. On MacOS, this is the only button. Microsoft operating systems call this a logical left button, because it */
 +/* is not necessarily physically located on the left of the pointing device. */
-+/* 锟� Button 2, Secondary Button. Used by newer graphical user interfaces to browse object properties. Exposed by systems to applications that typically assign application-specific functionality. */
-+/* 锟� Button 3, Tertiary Button. Optional control. Exposed to applications, but seldom assigned functionality due to prevalence of two- and one-button devices. */
-+/* 锟� Buttons 4 -55. As the button number increases, its significance as a selector decreases. */
-+/* In many ways the assignment of button numbers is similar to the assignment of Effort in Physical descriptors. Button 1 would be used to define the button a finger rests on when the hand is in the 瑗泃 rest锟� position, that is, virtually no effort is required by the user to activate the button. Button values increment as the finger has to stretch to reach a control. See Section 6.2.3, 瑗奾ysical Descriptors,锟� in the HID Specification for methods of further qualifying buttons. */
++/* 閿燂拷 Button 2, Secondary Button. Used by newer graphical user interfaces to browse object properties. Exposed by systems to applications that typically assign application-specific functionality. */
++/* 閿燂拷 Button 3, Tertiary Button. Optional control. Exposed to applications, but seldom assigned functionality due to prevalence of two- and one-button devices. */
++/* 閿燂拷 Buttons 4 -55. As the button number increases, its significance as a selector decreases. */
++/* In many ways the assignment of button numbers is similar to the assignment of Effort in Physical descriptors. Button 1 would be used to define the button a finger rests on when the hand is in the 鐟楁硟 rest閿燂拷 position, that is, virtually no effort is required by the user to activate the button. Button values increment as the finger has to stretch to reach a control. See Section 6.2.3, 鐟楀ゾysical Descriptors,閿燂拷 in the HID Specification for methods of further qualifying buttons. */
 +enum
 +{
 +    kHIDUsage_Button_1    = 0x01,    /* (primary/trigger) */
@@ -17687,7 +17687,7 @@ new file mode 100644
 +
 +/* Ordinal Page (0x0A) */
 +/* The Ordinal page allows multiple instances of a control or sets of controls to be declared without requiring individual enumeration in the native usage page. For example, it is not necessary to declare usages of Pointer 1, Pointer 2, and so forth on the Generic Desktop page. When parsed, the ordinal instance number is, in essence, concatenated to the usages attached to the encompassing collection to create Pointer 1, Pointer 2, and so forth. */
-+/* For an example, see Section A.5, 瑗噓ltiple Instances of a Control,锟� in Appendix A, 瑗弒age Examples.锟� By convention, an Ordinal collection is placed inside the collection for which it is declaring multiple instances. */
++/* For an example, see Section A.5, 鐟楀檽ltiple Instances of a Control,閿燂拷 in Appendix A, 鐟楀紥age Examples.閿燂拷 By convention, an Ordinal collection is placed inside the collection for which it is declaring multiple instances. */
 +/* Instances do not have to be identical. */
 +enum
 +{
@@ -17702,7 +17702,7 @@ new file mode 100644
 +/* Telephony Page (0x0B) */
 +/* This usage page defines the keytop and control usages for telephony devices. */
 +/* Indicators on a phone are handled by wrapping them in LED: Usage In Use Indicator and LED: Usage Selected Indicator usages. For example, a message-indicator LED would be identified by a Telephony: Message usage declared as a Feature or Output in a LED: Usage In Use Indicator collection. */
-+/* See Section 14, 瑜籵nsumer Page (0x0C),锟� for audio volume and tone controls. */
++/* See Section 14, 鐟滅钡nsumer Page (0x0C),閿燂拷 for audio volume and tone controls. */
 +enum
 +{
 +    kHIDUsage_Tfon_Phone    = 0x01,    /* Application Collection */
@@ -24311,6 +24311,1369 @@ new file mode 100644
 +
 +
 +#endif
+
+diff --git a/iokit/IOKit/hidsystem/IOLLEvent.h b/iokit/IOKit/hidsystem/IOLLEvent.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOLLEvent.h
+@@ -0,0 +1,586 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2009 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++/******************************************************************************
++	event.h (PostScript side version)
++	
++	CONFIDENTIAL
++	Copyright (c) 1988 NeXT, Inc. as an unpublished work.
++	All Rights Reserved.
++
++	Created Leo 01Mar88
++
++	Modified:
++	04May88 Leo  Final event types and record
++	22Aug88 Leo  Change short -> int for window, add reserved
++	26May90 Ted  Added NX_UNDIMMASK to correct triggering of UndoAutoDim
++	12Dec91 Mike Brought into sync with dpsclient/event.h, and fixed
++		     the #ifndef interlock with dpsclient/event.h that was
++		     broken during the Great Header Revision.
++
++	The PostScript version of this file differs from the
++	Window Kit version in that the coordinates here are
++	ints instead of floats.
++******************************************************************************/
++
++#ifndef _DEV_EVENT_H
++#define _DEV_EVENT_H
++
++#include <libkern/OSTypes.h>
++#include "IOHIDTypes.h"
++#include <mach/mach_types.h>
++
++#ifdef EVENT_H		/* Interlock with dpsclient/event.h */
++#if !defined(_NXSIZE_)	/* Work around patch for old event.h in Phase 3 projs*/
++#define _NXSIZE_	1	/* NXCoord, NXPoint, NXSize decl seen */
++#define _NXSize_	NXSize
++#endif /* _NXSIZE_ */
++#else  /* EVENT_H */		/* Haven't seen dpsclient/event.h, so define away */
++#define EVENT_H
++
++#ifdef	KERNEL
++#else	/* KERNEL */
++
++#if !defined(_NXSIZE_)	/* Work around patch for old event.h in Phase 3 projs*/
++#define _NXSIZE_	1	/* NXCoord, NXPoint, NXSize decl seen */
++typedef float   NXCoord;
++
++typedef struct _NXPoint {	/* point */
++    NXCoord         x, y;
++} NXPoint;
++
++typedef struct _NXSize {	/* size */
++    NXCoord         width, height;
++} NXSize;
++#define _NXSize_	NXSize	/* Correct usage in event_status_driver.h */
++#endif /* _NXSIZE_ */
++
++#endif	/* KERNEL */
++
++/* Event types */
++
++#define NX_NULLEVENT		0	/* internal use */
++
++/* mouse events */
++
++#define NX_LMOUSEDOWN		1	/* left mouse-down event */
++#define NX_LMOUSEUP		2	/* left mouse-up event */
++#define NX_RMOUSEDOWN		3	/* right mouse-down event */
++#define NX_RMOUSEUP		4	/* right mouse-up event */
++#define NX_MOUSEMOVED		5	/* mouse-moved event */
++#define NX_LMOUSEDRAGGED	6	/* left mouse-dragged event */
++#define NX_RMOUSEDRAGGED	7	/* right mouse-dragged event */
++#define NX_MOUSEENTERED		8	/* mouse-entered event */
++#define NX_MOUSEEXITED		9	/* mouse-exited event */
++
++/* other mouse events
++ *
++ * event.data.mouse.buttonNumber should contain the 
++ * button number (2-31) changing state.
++ */
++#define NX_OMOUSEDOWN		25	/* other mouse-down event */
++#define NX_OMOUSEUP		26	/* other mouse-up event */
++#define NX_OMOUSEDRAGGED	27	/* other mouse-dragged event */
++
++/* keyboard events */
++
++#define NX_KEYDOWN		10	/* key-down event */
++#define NX_KEYUP		11	/* key-up event */
++#define NX_FLAGSCHANGED		12	/* flags-changed event */
++
++/* composite events */
++
++#define NX_KITDEFINED		13	/* application-kit-defined event */
++#define NX_SYSDEFINED		14	/* system-defined event */
++#define NX_APPDEFINED		15	/* application-defined event */
++/* There are additional DPS client defined events past this point. */
++
++/* Scroll wheel events */
++
++#define NX_SCROLLWHEELMOVED	22
++
++/* Zoom events */
++#define NX_ZOOM             28
++
++/* tablet events */
++
++#define NX_TABLETPOINTER	23	/* for non-mousing transducers */
++#define NX_TABLETPROXIMITY	24  /* for non-mousing transducers */
++
++/* event range */
++
++#define NX_FIRSTEVENT		0
++#define NX_LASTEVENT		28
++#define NX_NUMPROCS		(NX_LASTEVENT-NX_FIRSTEVENT+1)
++
++/* Event masks */
++#define NX_NULLEVENTMASK        (1 << NX_NULLEVENT)     /* NULL event */
++#define NX_LMOUSEDOWNMASK       (1 << NX_LMOUSEDOWN)	/* left mouse-down */
++#define NX_LMOUSEUPMASK         (1 << NX_LMOUSEUP)      /* left mouse-up */
++#define NX_RMOUSEDOWNMASK       (1 << NX_RMOUSEDOWN)	/* right mouse-down */
++#define NX_RMOUSEUPMASK         (1 << NX_RMOUSEUP)      /* right mouse-up */
++#define NX_OMOUSEDOWNMASK       (1 << NX_OMOUSEDOWN)	/* other mouse-down */
++#define NX_OMOUSEUPMASK         (1 << NX_OMOUSEUP)      /* other mouse-up  */
++#define NX_MOUSEMOVEDMASK       (1 << NX_MOUSEMOVED)	/* mouse-moved */
++#define NX_LMOUSEDRAGGEDMASK	(1 << NX_LMOUSEDRAGGED)	/* left-dragged */
++#define NX_RMOUSEDRAGGEDMASK	(1 << NX_RMOUSEDRAGGED)	/* right-dragged */
++#define NX_OMOUSEDRAGGEDMASK	(1 << NX_OMOUSEDRAGGED)	/* other-dragged */
++#define NX_MOUSEENTEREDMASK     (1 << NX_MOUSEENTERED)	/* mouse-entered */
++#define NX_MOUSEEXITEDMASK      (1 << NX_MOUSEEXITED)	/* mouse-exited */
++#define NX_KEYDOWNMASK          (1 << NX_KEYDOWN)       /* key-down */
++#define NX_KEYUPMASK            (1 << NX_KEYUP)         /* key-up */
++#define NX_FLAGSCHANGEDMASK     (1 << NX_FLAGSCHANGED)	/* flags-changed */
++#define NX_KITDEFINEDMASK       (1 << NX_KITDEFINED)	/* kit-defined */
++#define NX_SYSDEFINEDMASK       (1 << NX_SYSDEFINED)	/* system-defined */
++#define NX_APPDEFINEDMASK       (1 << NX_APPDEFINED)	/* app-defined */
++#define NX_SCROLLWHEELMOVEDMASK	(1 << NX_SCROLLWHEELMOVED)	/* scroll wheel moved */
++#define NX_ZOOMMASK             (1 << NX_ZOOM)          /* Zoom */
++#define NX_TABLETPOINTERMASK	(1 << NX_TABLETPOINTER)	/* tablet pointer moved */
++#define NX_TABLETPROXIMITYMASK	(1 << NX_TABLETPROXIMITY)	/* tablet pointer proximity */
++
++#define EventCodeMask(type)	(1 << (type))
++#define NX_ALLEVENTS		-1	/* Check for all events */
++
++/* sub types for mouse and move events */
++
++#define NX_SUBTYPE_DEFAULT					0
++#define NX_SUBTYPE_TABLET_POINT				1
++#define NX_SUBTYPE_TABLET_PROXIMITY			2
++#define NX_SUBTYPE_MOUSE_TOUCH              3
++
++/* sub types for system defined events */
++
++#define NX_SUBTYPE_POWER_KEY				1
++#define NX_SUBTYPE_AUX_MOUSE_BUTTONS		7
++
++/* 
++ * NX_SUBTYPE_AUX_CONTROL_BUTTONS usage
++ *
++ * The incoming NXEvent for other mouse button down/up has event.type 
++ * NX_SYSDEFINED and event.data.compound.subtype NX_SUBTYPE_AUX_MOUSE_BUTTONS.
++ * Within the event.data.compound.misc.L[0] contains bits for all the buttons 
++ * that have changed state, and event.data.compound.misc.L[1] contains the 
++ * current button state as a bitmask, with 1 representing down, and 0
++ * representing up.  Bit 0 is the left button, bit one is the right button, 
++ * bit 2 is the center button and so forth.
++ */
++#define NX_SUBTYPE_AUX_CONTROL_BUTTONS		8
++
++#define NX_SUBTYPE_EJECT_KEY				10
++#define NX_SUBTYPE_SLEEP_EVENT				11
++#define NX_SUBTYPE_RESTART_EVENT			12
++#define NX_SUBTYPE_SHUTDOWN_EVENT			13
++#define NX_SUBTYPE_MENU               16
++#define NX_SUBTYPE_ACCESSIBILITY      17
++
++
++
++#define NX_SUBTYPE_STICKYKEYS_ON			100
++#define NX_SUBTYPE_STICKYKEYS_OFF			101
++#define NX_SUBTYPE_STICKYKEYS_SHIFT			102
++#define NX_SUBTYPE_STICKYKEYS_CONTROL			103
++#define NX_SUBTYPE_STICKYKEYS_ALTERNATE			104
++#define NX_SUBTYPE_STICKYKEYS_COMMAND			105
++#define NX_SUBTYPE_STICKYKEYS_RELEASE			106
++#define NX_SUBTYPE_STICKYKEYS_TOGGLEMOUSEDRIVING	107
++
++// New stickykeys key events
++// These were created to send an event describing the 
++// different state of the modifiers
++#define NX_SUBTYPE_STICKYKEYS_SHIFT_DOWN		110
++#define NX_SUBTYPE_STICKYKEYS_CONTROL_DOWN		111
++#define NX_SUBTYPE_STICKYKEYS_ALTERNATE_DOWN		112
++#define NX_SUBTYPE_STICKYKEYS_COMMAND_DOWN		113
++#define NX_SUBTYPE_STICKYKEYS_FN_DOWN			114
++
++#define NX_SUBTYPE_STICKYKEYS_SHIFT_LOCK		120
++#define NX_SUBTYPE_STICKYKEYS_CONTROL_LOCK		121
++#define NX_SUBTYPE_STICKYKEYS_ALTERNATE_LOCK		122
++#define NX_SUBTYPE_STICKYKEYS_COMMAND_LOCK		123
++#define NX_SUBTYPE_STICKYKEYS_FN_LOCK			124
++
++#define NX_SUBTYPE_STICKYKEYS_SHIFT_UP			130
++#define NX_SUBTYPE_STICKYKEYS_CONTROL_UP		131
++#define NX_SUBTYPE_STICKYKEYS_ALTERNATE_UP		132
++#define NX_SUBTYPE_STICKYKEYS_COMMAND_UP		133
++#define NX_SUBTYPE_STICKYKEYS_FN_UP			134
++
++
++
++// SlowKeys 
++#define NX_SUBTYPE_SLOWKEYS_START			200
++#define NX_SUBTYPE_SLOWKEYS_ABORT			201
++#define NX_SUBTYPE_SLOWKEYS_END				202
++
++// HID Parameter Property Modified
++#define NX_SUBTYPE_HIDPARAMETER_MODIFIED		210
++
++/* Masks for the bits in event.flags */
++
++/* device-independent */
++
++#define	NX_ALPHASHIFTMASK	0x00010000
++#define	NX_SHIFTMASK		0x00020000
++#define	NX_CONTROLMASK		0x00040000
++#define	NX_ALTERNATEMASK	0x00080000
++#define	NX_COMMANDMASK		0x00100000
++#define	NX_NUMERICPADMASK	0x00200000
++#define	NX_HELPMASK		0x00400000
++#define	NX_SECONDARYFNMASK	0x00800000
++#define NX_ALPHASHIFT_STATELESS_MASK    0x01000000
++
++/* device-dependent (really?) */
++
++#define	NX_DEVICELCTLKEYMASK	0x00000001
++#define	NX_DEVICELSHIFTKEYMASK	0x00000002
++#define	NX_DEVICERSHIFTKEYMASK	0x00000004
++#define	NX_DEVICELCMDKEYMASK	0x00000008
++#define	NX_DEVICERCMDKEYMASK	0x00000010
++#define	NX_DEVICELALTKEYMASK	0x00000020
++#define	NX_DEVICERALTKEYMASK	0x00000040
++#define NX_DEVICE_ALPHASHIFT_STATELESS_MASK 0x00000080
++#define NX_DEVICERCTLKEYMASK	0x00002000
++
++/* 
++ * Additional reserved bits in event.flags
++ */
++
++#define NX_STYLUSPROXIMITYMASK	0x00000080	/* deprecated */
++#define NX_NONCOALSESCEDMASK	0x00000100
++
++/* click state values
++ * If you have the following events in close succession, the click
++ * field has the indicated value:
++ *	
++ *  Event	Click Value	Comments
++ *  mouse-down	1		Not part of any click yet
++ *  mouse-up	1		Aha! A click!
++ *  mouse-down	2		Doing a double-click
++ *  mouse-up	2		It's finished
++ *  mouse-down	3		A triple
++ *  mouse-up	3
++ */
++
++/* Values for the character set in event.data.key.charSet */
++
++#define	NX_ASCIISET		0
++#define NX_SYMBOLSET		1
++#define	NX_DINGBATSSET		2
++
++/* tablet button masks
++ * Mask bits for the tablet barrel buttons placed in tablet.buttons.
++ * The buttons field uses adopts the following convention:
++ *
++ * Bit      Comments
++ * 0        Left Mouse Button ( kHIDUsage_Button_1 )
++ * 1        Right Mouse Button ( kHIDUsage_Button_2 )
++ * 2        Middle Mouse Button ( kHIDUsage_Button_3 )
++ * 3        4th Mouse Button ( kHIDUsage_Button_4 )
++ * ...
++ * 15       15th Mouse Button
++ *
++ * For your convenience, the following mask bits have been defined
++ * for tablet specific application:
++ */
++ 
++#define NX_TABLET_BUTTON_PENTIPMASK             0x0001
++#define NX_TABLET_BUTTON_PENLOWERSIDEMASK       0x0002
++#define NX_TABLET_BUTTON_PENUPPERSIDEMASK       0x0004
++
++
++/* tablet capability masks
++ * Mask bits for the tablet capabilities field.   Use these 
++ * masks with the capabilities field of a proximity event to 
++ * determine what fields in a Tablet Event are valid for this 
++ * device.
++ */
++#define NX_TABLET_CAPABILITY_DEVICEIDMASK           0x0001
++#define NX_TABLET_CAPABILITY_ABSXMASK               0x0002
++#define NX_TABLET_CAPABILITY_ABSYMASK               0x0004
++#define NX_TABLET_CAPABILITY_VENDOR1MASK            0x0008
++#define NX_TABLET_CAPABILITY_VENDOR2MASK            0x0010
++#define NX_TABLET_CAPABILITY_VENDOR3MASK            0x0020
++#define NX_TABLET_CAPABILITY_BUTTONSMASK            0x0040
++#define NX_TABLET_CAPABILITY_TILTXMASK              0x0080
++#define NX_TABLET_CAPABILITY_TILTYMASK              0x0100
++#define NX_TABLET_CAPABILITY_ABSZMASK               0x0200
++#define NX_TABLET_CAPABILITY_PRESSUREMASK           0x0400
++#define NX_TABLET_CAPABILITY_TANGENTIALPRESSUREMASK 0x0800
++#define NX_TABLET_CAPABILITY_ORIENTINFOMASK         0x1000
++#define NX_TABLET_CAPABILITY_ROTATIONMASK           0x2000
++
++/* proximity pointer types
++ * Value that describes the type of pointing device placed in
++ * proximity.pointerType.
++ */
++ 
++#define NX_TABLET_POINTER_UNKNOWN               0
++#define NX_TABLET_POINTER_PEN                   1
++#define NX_TABLET_POINTER_CURSOR                2
++#define NX_TABLET_POINTER_ERASER                3
++
++/* TabletPointData type: defines the tablet data for points included
++ * in mouse events created by a tablet driver.
++ */
++
++typedef struct _NXTabletPointData {
++	SInt32  x;  /* absolute x coordinate in tablet space at full tablet resolution */
++    SInt32  y;  /* absolute y coordinate in tablet space at full tablet resolution */
++	SInt32  z;  /* absolute z coordinate in tablet space at full tablet resolution */
++    UInt16  buttons;   /* one bit per button - bit 0 is first button - 1 = closed  */
++    UInt16  pressure;  /* scaled pressure value; MAX=(2^16)-1, MIN=0 */
++    struct {           /* tilt range is -((2^15)-1) to (2^15)-1 (-32767 to 32767)  */
++        SInt16 x;      /* scaled tilt x value */
++        SInt16 y;      /* scaled tilt y value */
++	} tilt;
++	UInt16  rotation;  /* Fixed-point representation of device rotation in a 10.6 format */
++	SInt16  tangentialPressure; /* tangential pressure on the device; same range as tilt */
++	UInt16  deviceID;  /* system-assigned unique device ID */
++	SInt16  vendor1;   /* vendor-defined signed 16-bit integer */
++	SInt16  vendor2;   /* vendor-defined signed 16-bit integer */
++	SInt16  vendor3;   /* vendor-defined signed 16-bit integer */
++} NXTabletPointData, *NXTabletPointDataPtr;
++
++/* TabletProximityData type: defines the tablet data for proximity
++ * events included in mouse events created by a tablet driver.
++ */
++
++typedef struct _NXTabletProximityData {
++    UInt16  vendorID;             /* vendor-defined ID - typically the USB vendor ID */
++	UInt16  tabletID;             /* vendor-defined tablet ID - typically the USB product ID */
++	UInt16  pointerID;            /* vendor-defined ID of the specific pointing device */
++	UInt16  deviceID;             /* system-assigned unique device ID */
++	UInt16  systemTabletID;       /* system-assigned unique tablet ID */
++	UInt16  vendorPointerType;    /* vendor-defined pointer type */
++	UInt32  pointerSerialNumber;  /* vendor-defined serial number */
++	UInt64  uniqueID __attribute__ ((packed));             /* vendor-defined unique ID */
++	UInt32  capabilityMask;       /* capabilities mask of the device */
++	UInt8   pointerType;          /* type of pointing device */
++	UInt8   enterProximity;       /* non-zero = entering; zero = leaving */
++	SInt16  reserved1;
++} NXTabletProximityData, *NXTabletProximityDataPtr;
++
++/* EventData type: defines the data field of an event */
++
++typedef	union {
++    struct {    /* For mouse-down and mouse-up events */
++        UInt8   subx;       /* sub-pixel position for x */
++        UInt8   suby;       /* sub-pixel position for y */
++        SInt16  eventNum;   /* unique identifier for this button */
++        SInt32  click;      /* click state of this event */
++        UInt8   pressure;   /* pressure value: 0=none, 255=full */
++        UInt8   buttonNumber;/* button generating other button event (0-31) */
++        UInt8   subType;
++        UInt8   reserved2;
++        SInt32  reserved3;
++        union {
++            NXTabletPointData      point;     /* tablet point data */
++            NXTabletProximityData  proximity; /* tablet proximity data */
++        } tablet;
++    } mouse;
++    struct {
++        SInt32  dx;
++        SInt32  dy;
++        UInt8   subx;
++        UInt8   suby;
++        UInt8   subType;
++        UInt8   reserved1;
++        SInt32  reserved2;
++        union {
++            NXTabletPointData      point;     /* tablet point data */
++            NXTabletProximityData  proximity; /* tablet proximity data */
++        } tablet;
++    } mouseMove;
++    struct {    /* For key-down and key-up events */
++        UInt16  origCharSet;    /* unmodified character set code */
++        SInt16  repeat;         /* for key-down: nonzero if really a repeat */
++        UInt16  charSet;        /* character set code */
++        UInt16  charCode;       /* character code in that set */
++        UInt16  keyCode;        /* device-dependent key number */
++        UInt16  origCharCode;   /* unmodified character code */
++        SInt32  reserved1;
++        UInt32  keyboardType;
++        SInt32  reserved2;
++        SInt32  reserved3;
++        SInt32  reserved4;
++        SInt32  reserved5[4];
++    } key;
++    struct {    /* For mouse-entered and mouse-exited events */
++        SInt16  reserved;
++        SInt16  eventNum;       /* unique identifier from mouse down event */
++        SInt32  trackingNum;    /* unique identifier from settrackingrect */
++        SInt32  userData;       /* uninterpreted integer from settrackingrect */
++        SInt32  reserved1;
++        SInt32  reserved2;
++        SInt32  reserved3;
++        SInt32  reserved4;
++        SInt32  reserved5;
++        SInt32  reserved6[4];
++    } tracking;
++    struct {
++        SInt16  deltaAxis1;
++        SInt16  deltaAxis2;
++        SInt16  deltaAxis3;
++        SInt16  reserved1;
++        SInt32  fixedDeltaAxis1;
++        SInt32  fixedDeltaAxis2;
++        SInt32  fixedDeltaAxis3;
++        SInt32  pointDeltaAxis1;
++        SInt32  pointDeltaAxis2;
++        SInt32  pointDeltaAxis3;
++        SInt32  reserved8[4];
++    } scrollWheel, zoom;
++    struct {    /* For window-changed, sys-defined, and app-defined events */
++        SInt16  reserved;
++        SInt16  subType;    /* event subtype for compound events */
++        union {
++            float   F[11];  /* for use in compound events */
++            SInt32  L[11];  /* for use in compound events */
++            SInt16  S[22];  /* for use in compound events */
++            char    C[44];  /* for use in compound events */
++        } misc;
++    } compound;
++    struct {
++        SInt32  x;  /* absolute x coordinate in tablet space at full tablet resolution */
++        SInt32  y;  /* absolute y coordinate in tablet space at full tablet resolution */
++        SInt32  z;  /* absolute z coordinate in tablet space at full tablet resolution */
++        UInt16  buttons;   /* one bit per button - bit 0 is first button - 1 = closed  */
++        UInt16  pressure;  /* scaled pressure value; MAX=(2^16)-1, MIN=0 */
++        struct {           /* tilt range is -((2^15)-1) to (2^15)-1 (-32767 to 32767)  */
++            SInt16 x;      /* scaled tilt x value */
++            SInt16 y;      /* scaled tilt y value */
++        } tilt;
++        UInt16  rotation;  /* Fixed-point representation of device rotation in a 10.6 format */
++        SInt16  tangentialPressure; /* tangential pressure on the device; same range as tilt */
++        UInt16  deviceID;  /* system-assigned unique device ID */
++        SInt16  vendor1;   /* vendor-defined signed 16-bit integer */
++        SInt16  vendor2;   /* vendor-defined signed 16-bit integer */
++        SInt16  vendor3;   /* vendor-defined signed 16-bit integer */
++        SInt32  reserved[4];
++    } tablet;
++    struct {
++        UInt16  vendorID;  /* vendor-defined ID - typically the USB vendor ID */
++        UInt16  tabletID;  /* vendor-defined tablet ID - typically the USB product ID */
++        UInt16  pointerID; /* vendor-defined ID of the specific pointing device */
++        UInt16  deviceID;             /* system-assigned unique device ID */
++        UInt16  systemTabletID;       /* system-assigned unique tablet ID */
++        UInt16  vendorPointerType;    /* vendor-defined pointer type */
++        UInt32  pointerSerialNumber;  /* vendor-defined serial number */
++        UInt64  uniqueID __attribute__ ((packed));             /* vendor-defined unique ID */
++        UInt32  capabilityMask;       /* capabilities mask of the device */
++        UInt8   pointerType;          /* type of pointing device */
++        UInt8   enterProximity;       /* non-zero = entering; zero = leaving */
++        SInt16  reserved1;
++        SInt32  reserved2[4];
++    } proximity;
++} NXEventData;
++
++/* The current version number of the NXEventData structure. */
++
++#define kNXEventDataVersion		2
++
++/* Finally! The event record! */
++#ifndef __ppc__
++typedef struct _NXEvent {
++	SInt32              type;		/* An event type from above */
++    struct {
++        SInt32	x, y;					/* Base coordinates in window, */
++    } 					location;	/* from bottom left */
++    UInt64              time __attribute__ ((packed));		/* time since launch */
++    SInt32              flags;		/* key state flags */
++    UInt32              window;		/* window number of assigned window */
++    UInt64              service_id __attribute__ ((packed)); /* service id */
++    SInt32              ext_pid;    /* external pid */
++    NXEventData			data;		/* type-dependent data */
++} NXEvent, *NXEventPtr;
++
++#else
++
++typedef struct _NXEvent {
++	SInt32              type;		/* An event type from above */
++    struct {
++        SInt32	x, y;					/* Base coordinates in window, */
++    } 					location;	/* from bottom left */
++    UInt64              time __attribute__ ((packed));		/* time since launch */
++    SInt32              flags;		/* key state flags */
++    UInt32              window;		/* window number of assigned window */
++    NXEventData			data;		/* type-dependent data */
++    UInt64              service_id __attribute__ ((packed)); /* service id */
++    SInt32              ext_pid;    /* external pid */
++} NXEvent, *NXEventPtr;
++
++#endif
++
++/* The current version number of the NXEvent structure. */
++
++#define kNXEventVersion		2
++
++/* How to pick window(s) for event (for PostEvent) */
++#define NX_NOWINDOW		-1
++#define NX_BYTYPE		0
++#define NX_BROADCAST		1
++#define NX_TOPWINDOW		2
++#define NX_FIRSTWINDOW		3
++#define NX_MOUSEWINDOW		4
++#define NX_NEXTWINDOW		5
++#define NX_LASTLEFT		6
++#define NX_LASTRIGHT		7
++#define NX_LASTKEY		8
++#define NX_EXPLICIT		9
++#define NX_TRANSMIT		10
++#define NX_BYPSCONTEXT		11
++
++#endif /* EVENT_H */	/* End of defs common with dpsclient/event.h */
++
++/* Mask of events that cause the screen to wake up */
++#define NX_WAKEMASK     (   NX_KEYDOWNMASK | NX_FLAGSCHANGEDMASK | \
++                            NX_LMOUSEDOWNMASK | NX_LMOUSEUPMASK | \
++                            NX_RMOUSEDOWNMASK | NX_RMOUSEUPMASK | \
++                            NX_OMOUSEDOWNMASK | NX_OMOUSEUPMASK   \
++                        )
++
++/* Mask of events that cause screen to undim */
++#define NX_UNDIMMASK    (   NX_WAKEMASK | NX_KEYUPMASK | NX_SCROLLWHEELMOVEDMASK | \
++                            NX_LMOUSEDRAGGEDMASK | NX_RMOUSEDRAGGEDMASK | NX_OMOUSEDRAGGEDMASK | \
++                            NX_MOUSEMOVEDMASK | NX_MOUSEENTEREDMASK | NX_MOUSEEXITEDMASK | \
++                            NX_TABLETPOINTERMASK | NX_TABLETPROXIMITYMASK \
++                        )
++
++
++#define  NX_EVENT_EXTENSION_LOCATION_INVALID            0x1
++#define  NX_EVENT_EXTENSION_LOCATION_TYPE_FLOAT         0x2
++#define  NX_EVENT_EXTENSION_LOCATION_DEVICE_SCALED      0x4
++#define  NX_EVENT_EXTENSION_MOUSE_DELTA_TYPE_FLOAT      0x8
++#define  NX_EVENT_EXTENSION_AUDIT_TOKEN                 0x10
++
++typedef struct _NXEventExtension {
++    UInt32              flags;
++    audit_token_t       audit;
++} NXEventExtension;
++
++typedef struct _NXEventExt {
++    NXEvent             payload;
++    NXEventExtension    extension;
++} NXEventExt;
++
++#endif /* !_DEV_EVENT_H */
++
+
+diff --git a/iokit/IOKit/hidsystem/IOHIDDescriptorParserPrivate.h b/iokit/IOKit/hidsystem/IOHIDDescriptorParserPrivate.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIDDescriptorParserPrivate.h
+@@ -0,0 +1,309 @@
++/*
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2012 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++#ifndef _IOKIT_HID_IOHIDDESCRIPTORPARSERPRIVATE_H
++#define _IOKIT_HID_IOHIDDESCRIPTORPARSERPRIVATE_H
++
++#include "IOHIDDescriptorParser.h"
++
++/* the following constants are from the USB HID Specification (www.usb.org)*/
++
++#ifdef __cplusplus
++extern "C" {
++#endif
++
++/*------------------------------------------------------------------------------*/
++/*																				*/
++/* HID Main Item Header Bit Definitions											*/
++/*																				*/
++/*------------------------------------------------------------------------------*/
++enum {
++	kHIDDataBufferedBytes		= 0x0100,
++	kHIDDataVolatileBit			= 0x80,
++	kHIDDataVolatile			= 0x80,
++	kHIDDataNullStateBit		= 0x40,
++	kHIDDataNullState			= 0x40,
++	kHIDDataNoPreferredBit		= 0x20,
++	kHIDDataNoPreferred			= 0x20,
++	kHIDDataNonlinearBit		= 0x10,
++	kHIDDataNonlinear			= 0x10,
++	kHIDDataWrapBit				= 0x08,
++	kHIDDataWrap				= 0x08,
++	kHIDDataRelativeBit			= 0x04,
++	kHIDDataRelative			= 0x04,
++	kHIDDataAbsolute			= 0x00,
++	kHIDDataVariableBit			= 0x02,
++	kHIDDataVariable			= 0x02,
++	kHIDDataArrayBit			= 0x02,
++	kHIDDataArray				= 0x00,
++	kHIDDataConstantBit			= 0x01,
++	kHIDDataConstant			= 0x01
++};
++
++/* the following constants are from the USB HID Specification (www.usb.org)*/
++
++/*------------------------------------------------------------------------------*/
++/*																				*/
++/* HID Header																	*/
++/*																				*/
++/* ---------------------------------------------------------					*/
++/* |  7	  |	 6	 |	5	|  4   |  3	  |	 2	 |	1	|  0   |					*/
++/* |			Tag			   |	Type	 |	  Size	   |					*/
++/* ---------------------------------------------------------					*/
++/*------------------------------------------------------------------------------*/
++enum {
++	kHIDItemSizeMask			= 0x03,
++	kHIDItemTagMask				= 0xF0,
++	kHIDItemTagShift			= 4,
++	kHIDItemTypeMask			= 0x0C,
++	kHIDItemTypeShift			= 2,
++	kHIDLongItemHeader			= 0xFE
++};
++
++/*------------------------------------------------------------------------------*/
++/*																				*/
++/* HID Item Type Definitions													*/
++/*																				*/
++/*------------------------------------------------------------------------------*/
++enum {
++	kHIDTypeMain				= 0,
++	kHIDTypeGlobal				= 1,
++	kHIDTypeLocal				= 2,
++	kHIDTypeLong				= 3
++};
++
++/*------------------------------------------------------------------------------*/
++/*																				*/
++/* HID Item Tag Definitions - Main Items										*/
++/*																				*/
++/*------------------------------------------------------------------------------*/
++enum {
++	kHIDTagInput				= 8,
++	kHIDTagOutput				= 9,
++	kHIDTagCollection			= 0x0A,
++	kHIDTagFeature				= 0x0B,
++	kHIDTagEndCollection		= 0x0C
++};
++
++/*------------------------------------------------------------------------------*/
++/*																				*/
++/* HID Item Tag Definitions - Globals											*/
++/*																				*/
++/*------------------------------------------------------------------------------*/
++enum {
++	kHIDTagUsagePage			= 0,
++	kHIDTagLogicalMinimum		= 1,
++	kHIDTagLogicalMaximum		= 2,
++	kHIDTagPhysicalMinimum		= 3,
++	kHIDTagPhysicalMaximum		= 4,
++	kHIDTagUnitExponent			= 5,
++	kHIDTagUnit					= 6,
++	kHIDTagReportSize			= 7,
++	kHIDTagReportID				= 8,
++	kHIDTagReportCount			= 9,
++	kHIDTagPush					= 0x0A,
++	kHIDTagPop					= 0x0B
++};
++
++/*------------------------------------------------------------------------------*/
++/*																				*/
++/* HID Item Tag Definitions - Locals											*/
++/*																				*/
++/*------------------------------------------------------------------------------*/
++enum {
++	kHIDTagUsage				= 0,
++	kHIDTagUsageMinimum			= 1,
++	kHIDTagUsageMaximum			= 2,
++	kHIDTagDesignatorIndex		= 3,
++	kHIDTagDesignatorMinimum	= 4,
++	kHIDTagDesignatorMaximum	= 5,
++	kHIDTagStringIndex			= 7,
++	kHIDTagStringMinimum		= 8,
++	kHIDTagStringMaximum		= 9,
++	kHIDTagSetDelimiter			= 0x0A
++};
++
++/*------------------------------------------------------------------------------*/
++/*																				*/
++/* HID Collection Data Definitions												*/
++/*																				*/
++/*------------------------------------------------------------------------------*/
++enum {
++	kHIDPhysicalCollection		= 0x00,
++	kHIDApplicationCollection	= 0x01
++};
++
++/*------------------------------------------------------------------------------*/
++/*																				*/
++/* HIDLibrary private defs														*/
++/*																				*/
++/*------------------------------------------------------------------------------*/
++
++#pragma clang diagnostic push
++#pragma clang diagnostic ignored "-Wfour-char-constants"
++
++enum
++{	
++	kHIDOSType			=	'hid '
++};
++
++#pragma clang diagnostic pop
++
++struct HIDItem
++{
++	IOByteCount		byteCount;
++	SInt32			itemType;
++	SInt32			tag;
++	SInt32			signedValue;
++	UInt32			unsignedValue;
++};
++typedef struct HIDItem HIDItem;
++
++struct HIDGlobalItems
++{
++	HIDUsage		usagePage;
++	SInt32			logicalMinimum;
++	SInt32			logicalMaximum;
++	SInt32			physicalMinimum;
++	SInt32			physicalMaximum;
++	SInt32			unitExponent;
++	SInt32			units;
++	IOByteCount		reportSize;
++	SInt32			reportID;
++	SInt32			reportCount;
++	SInt32			reportIndex;
++};
++typedef struct HIDGlobalItems HIDGlobalItems;
++
++struct HIDReportSizes
++{
++	SInt32		reportID;
++	SInt32		inputBitCount;
++	SInt32		outputBitCount;
++	SInt32		featureBitCount;
++};
++typedef struct HIDReportSizes HIDReportSizes;
++
++struct HIDCollection
++{
++	SInt32		data;
++	SInt32		usagePage;
++	SInt32		firstUsageItem;
++	SInt32		usageItemCount;
++	SInt32		firstReportItem;
++	SInt32		reportItemCount;
++	SInt32		parent;
++	SInt32		children;
++	SInt32		firstChild;
++	SInt32		nextSibling;
++};
++typedef struct HIDCollection HIDCollection;
++
++struct HIDCollectionExtendedNode
++{
++	HIDUsage	collectionUsage;
++	HIDUsage	collectionUsagePage;
++	UInt32		parent;
++	UInt32		numberOfChildren;
++	UInt32		nextSibling;
++	UInt32		firstChild;
++        UInt32		data;
++};
++typedef struct HIDCollectionExtendedNode HIDCollectionExtendedNode, * HIDCollectionExtendedNodePtr;
++
++enum
++{	
++	kHIDReportItemFlag_Reversed			=	0x00000001
++};
++
++struct HIDReportItem
++{
++	UInt32				reportType;
++	HIDGlobalItems		globals;
++	SInt32				startBit;
++	SInt32				parent;
++	SInt32				dataModes;
++	SInt32				firstUsageItem;
++	SInt32				usageItemCount;
++	SInt32				firstStringItem;
++	SInt32				stringItemCount;
++	SInt32				firstDesigItem;
++	SInt32				desigItemCount;
++	UInt32				flags;
++};
++typedef struct HIDReportItem HIDReportItem;
++
++struct HIDP_UsageItem
++{
++	Boolean		isRange;
++	Boolean		reserved;
++	HIDUsage	usagePage;
++	HIDUsage	usage;
++	SInt32		usageMinimum;
++	SInt32		usageMaximum;
++};
++typedef struct HIDP_UsageItem HIDP_UsageItem;
++
++struct HIDStringItem
++{
++	Boolean		isRange;
++	Boolean		reserved;
++	SInt32		index;
++	SInt32		minimum;
++	SInt32		maximum;
++};
++typedef struct HIDStringItem HIDStringItem;
++typedef HIDStringItem HIDDesignatorItem;
++
++struct HIDPreparsedData
++{
++	UInt32				hidTypeIfValid;
++	HIDCollection 		*collections;
++	UInt32				collectionCount;
++	HIDReportItem 		*reportItems;
++	UInt32				reportItemCount;
++	HIDReportSizes 		*reports;
++	UInt32				reportCount;
++	HIDP_UsageItem 		*usageItems;
++	UInt32				usageItemCount;
++	HIDStringItem 		*stringItems;
++	UInt32				stringItemCount;
++	HIDDesignatorItem 	*desigItems;
++	UInt32				desigItemCount;
++	UInt8 *				rawMemPtr;
++	UInt32				flags;
++	IOByteCount			numBytesAllocated;
++};
++typedef struct HIDPreparsedData HIDPreparsedData;
++typedef HIDPreparsedData * HIDPreparsedDataPtr;
++
++
++// Private methods
++extern
++OSStatus
++HIDGetCollectionExtendedNodes ( HIDCollectionExtendedNodePtr	collectionNodes,
++                                UInt32 *			collectionNodesSize,
++                                HIDPreparsedDataRef		preparsedDataRef );
++#ifdef __cplusplus
++}
++#endif
++#endif /* !_IOKIT_HID_IOHIDDESCRIPTORPARSERPRIVATE_H */
+
+diff --git a/iokit/IOKit/hidsystem/IOHIDElementPrivate.h b/iokit/IOKit/hidsystem/IOHIDElementPrivate.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIDElementPrivate.h
+@@ -0,0 +1,311 @@
++/*
++ *
++ * @APPLE_LICENSE_HEADER_START@
++ * 
++ * Copyright (c) 1999-2003 Apple Computer, Inc.  All Rights Reserved.
++ * 
++ * This file contains Original Code and/or Modifications of Original Code
++ * as defined in and that are subject to the Apple Public Source License
++ * Version 2.0 (the 'License'). You may not use this file except in
++ * compliance with the License. Please obtain a copy of the License at
++ * http://www.opensource.apple.com/apsl/ and read it before using this
++ * file.
++ * 
++ * The Original Code and all software distributed under the License are
++ * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
++ * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
++ * INCLUDING WITHOUT LIMITATION, ANY WARRANTIES OF MERCHANTABILITY,
++ * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
++ * Please see the License for the specific language governing rights and
++ * limitations under the License.
++ * 
++ * @APPLE_LICENSE_HEADER_END@
++ */
++
++#ifndef _IOKIT_HID_IOHIDELEMENTPRIVATE_H
++#define _IOKIT_HID_IOHIDELEMENTPRIVATE_H
++
++#include <libkern/c++/OSArray.h>
++#include <IOKit/hidsystem/IOHIDDescriptorParser.h>
++#include "IOHIDElement.h"
++#include "IOHIDDescriptorParserPrivate.h"
++#include "IOHIDLibUserClient.h"
++
++class IOHIDElementContainer;
++class IOHIDEventQueue;
++
++enum {
++    kIOHIDTransactionStateIdle,
++    kIOHIDTransactionStatePending,
++};
++
++enum {
++    kIOHIDElementVariableSizeElement    = 0x1,
++    kIOHIDElementVariableSizeReport     = 0x2
++};
++
++//===========================================================================
++// An object that describes a single HID element.
++    
++class IOHIDElementPrivate: public IOHIDElement
++{
++    friend class IOHIDDevice;
++    friend class IOHIDLibUserClient;
++    OSDeclareDefaultStructors( IOHIDElementPrivate )
++
++protected:
++    IOHIDElementContainer   *_owner;
++    IOHIDElementType        _type;
++    IOHIDElementCookie      _cookie;
++    IOHIDElementPrivate    *_nextReportHandler;
++    IOHIDElementValue      *_elementValue;
++    void                   *_elementValueLocation;
++    IOHIDElementPrivate    *_parent;
++    OSArray                *_childArray;
++    OSArray                *_queueArray;
++    UInt32                  _flags;
++    IOHIDElementCollectionType  _collectionType;
++
++    UInt32                  _reportSize;
++    UInt32                  _reportCount;
++    UInt32                  _rawReportCount;
++    UInt32                  _reportStartBit;
++    UInt32                  _reportBits;
++    UInt32                  _reportID;
++
++    UInt32                  _usagePage;
++    UInt32                  _usageMin;
++    UInt32                  _usageMax;
++    UInt32                  _rangeIndex;
++
++    UInt32                  _logicalMin;
++    UInt32                  _logicalMax;
++    UInt32                  _physicalMin;
++    UInt32                  _physicalMax;
++    
++    UInt32                  _unitExponent;
++    UInt32                  _units;
++    
++    UInt32                  _transactionState;
++    
++    OSData                 *_dataValue;
++    
++    IOHIDElementPrivate    *_duplicateReportHandler;
++    
++    IOHIDElementPrivate    *_arrayReportHandler;
++    IOHIDElementPrivate   **_rollOverElementPtr;
++    OSDictionary           *_colArrayReportHandlers;
++    OSArray                *_arrayItems;
++    OSArray                *_duplicateElements;
++    UInt32                 *_oldArraySelectors;
++    
++    bool                    _isInterruptReportHandler;
++    
++    bool                    _shouldTickleActivity;
++  
++    
++    UInt8                   _variableSize;
++    
++    UInt32                  _currentReportSizeBits;
++  
++    struct {
++        SInt32     satMin;
++        SInt32     satMax;
++        SInt32     dzMin;
++        SInt32     dzMax;
++        SInt32     min;
++        SInt32     max;
++        IOFixed    gran;
++    } _calibration;
++    
++    UInt32                  _previousValue;
++    
++    virtual bool init( IOHIDElementContainer * owner, IOHIDElementType type );
++
++    virtual void free(void) APPLE_KEXT_OVERRIDE;
++
++    virtual IOHIDElementPrivate * newSubElement( UInt16 rangeIndex ) const;
++
++    virtual bool createSubElements();
++    
++    virtual IOHIDElementPrivate * arrayHandlerElement(                                
++                                IOHIDElementContainer *owner,
++                                IOHIDElementType type,
++                                IOHIDElementPrivate * child,
++                                IOHIDElementPrivate * parent);
++
++    OSDictionary*  createProperties() const;
++    
++    unsigned int    iteratorSize(void) const APPLE_KEXT_OVERRIDE;
++    bool            initIterator(void * iterationContext) const APPLE_KEXT_OVERRIDE;
++    bool            getNextObjectForIterator(void      * iterationContext,
++                                             OSObject ** nextObject) const APPLE_KEXT_OVERRIDE;
++    bool enqueueValue(IOHIDElementValue * value);
++public:
++
++    static IOHIDElementPrivate * buttonElement(
++                                IOHIDElementContainer *owner,
++                                IOHIDElementType type,
++                                HIDButtonCapabilitiesPtr button,
++                                IOHIDElementPrivate *   parent = 0 );
++
++    static IOHIDElementPrivate * valueElement(
++                                IOHIDElementContainer *owner,
++                                IOHIDElementType type,
++                                HIDValueCapabilitiesPtr  value,
++                                IOHIDElementPrivate *   parent = 0 );
++    
++    static IOHIDElementPrivate * collectionElement(
++                                IOHIDElementContainer *owner,
++                                IOHIDElementType     type,
++                                HIDCollectionExtendedNodePtr collection,
++                                IOHIDElementPrivate *       parent = 0 );
++    
++    static IOHIDElementPrivate *nullElement(
++                                IOHIDElementContainer   *owner,
++                                UInt32                  reportID,
++                                IOHIDElementPrivate     *parent = 0);
++                                
++    static IOHIDElementPrivate * reportHandlerElement(
++                                IOHIDElementContainer *owner,
++                                IOHIDElementType     type,
++                                UInt32               reportID,
++                                UInt32               reportBits );
++
++    virtual bool serialize( OSSerialize * s ) const APPLE_KEXT_OVERRIDE;
++
++    virtual bool fillElementStruct(IOHIDElementStruct *element);
++
++    virtual bool addChildElement( IOHIDElementPrivate * child, bool arrayHeader = false );
++
++    virtual bool processReport( UInt8                       reportID,
++                                void *                      reportData,
++                                UInt32                      reportBits,
++                                const AbsoluteTime *        timestamp,
++                                IOHIDElementPrivate **      next    = 0,
++                                IOOptionBits                options = 0,
++                                IOReturn *                  error = nullptr);
++
++    virtual bool createReport( UInt8           reportID,
++                               void *        reportData, // report should be allocated outside this method
++                               UInt32 *        reportLength,
++                               IOHIDElementPrivate ** next );
++                               
++    virtual bool processArrayReport(UInt8         reportID,
++                                    void *               reportData,
++                                    UInt32               reportBits,
++                                    const AbsoluteTime * timestamp);
++
++    virtual bool createDuplicateReport(UInt8           reportID,
++                               void *        reportData, // report should be allocated outside this method
++                               UInt32 *        reportLength);
++                                    
++    virtual bool createArrayReport(UInt8           reportID,
++                               void *        reportData, // report should be allocated outside this method
++                               UInt32 *        reportLength);
++    
++    virtual void setArrayElementValue(UInt32 index, UInt32 value);
++
++    virtual bool setMemoryForElementValue(
++                                    IOVirtualAddress        address,
++                                    void *                  location);
++
++    virtual IOHIDElementPrivate * setNextReportHandler( IOHIDElementPrivate * element );
++
++    virtual void setRollOverElementPtr(IOHIDElementPrivate ** rollOverElementPtr);
++    virtual UInt32 getElementValueSize() const;
++    virtual IOByteCount getByteSize() const;
++    void setDataBits(OSData *data);
++
++    IOByteCount getCurrentByteSize();
++
++    virtual UInt32 getRangeCount() const;
++    virtual UInt32 getStartingRangeIndex() const;
++
++    virtual bool getReportType( IOHIDReportType * reportType ) const APPLE_KEXT_OVERRIDE;
++
++    virtual UInt32 setReportSize( UInt32 numberOfBits );
++    
++    inline bool shouldTickleActivity() const
++    { return _shouldTickleActivity; }
++
++    virtual bool addEventQueue( IOHIDEventQueue * queue );
++    virtual bool removeEventQueue( IOHIDEventQueue * queue );
++    virtual bool hasEventQueue( IOHIDEventQueue * queue );
++
++    inline IOHIDElementPrivate * getNextReportHandler() const
++    { return _nextReportHandler; }
++
++    inline UInt32 getRangeIndex() const
++    { return _rangeIndex; }
++    
++    inline IOHIDElementValue * getElementValue() const
++    { return _elementValue;}
++    
++    inline void setTransactionState(UInt32 state)
++    { _transactionState = state;}
++    
++    inline UInt32 getTransactionState() const
++    { return _transactionState; }
++    
++    virtual void setOutOfBoundsValue();
++    
++    virtual bool matchProperties(OSDictionary * matching);
++    
++    virtual IOHIDElementCookie              getCookie(void) APPLE_KEXT_OVERRIDE;
++    virtual IOHIDElementType                getType(void) APPLE_KEXT_OVERRIDE;
++    virtual IOHIDElementCollectionType      getCollectionType(void) APPLE_KEXT_OVERRIDE;
++    virtual OSArray *                       getChildElements(void) APPLE_KEXT_OVERRIDE;
++    virtual IOHIDElement *                  getParentElement(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getUsagePage(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getUsage(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getReportID(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getReportSize(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getReportCount(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getFlags(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getLogicalMin(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getLogicalMax(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getPhysicalMin(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getPhysicalMax(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getUnit(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getUnitExponent(void) APPLE_KEXT_OVERRIDE;
++    virtual AbsoluteTime                    getTimeStamp(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getValue(void) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getValue(IOOptionBits options) APPLE_KEXT_OVERRIDE;
++    virtual OSData *                        getDataValue(void) APPLE_KEXT_OVERRIDE;
++    virtual OSData *                        getDataValue(IOOptionBits options) APPLE_KEXT_OVERRIDE;
++    virtual void                            setValue(UInt32 value) APPLE_KEXT_OVERRIDE;
++    virtual void                            setValue(UInt32 value, IOOptionBits options) APPLE_KEXT_OVERRIDE;
++    virtual void                            setDataValue(OSData * value) APPLE_KEXT_OVERRIDE;
++    virtual bool                            conformsTo(UInt32 usagePage, UInt32 usage=0) APPLE_KEXT_OVERRIDE;
++    virtual void                            setCalibration(UInt32 min=0, UInt32 max=0, UInt32 saturationMin=0, UInt32 saturationMax=0, UInt32 deadZoneMin=0, UInt32 deadZoneMax=0, IOFixed granularity=0) APPLE_KEXT_OVERRIDE;
++    virtual UInt32                          getScaledValue(IOHIDValueScaleType type=kIOHIDValueScaleTypePhysical) APPLE_KEXT_OVERRIDE;
++    virtual IOFixed                         getScaledFixedValue(IOHIDValueScaleType type=kIOHIDValueScaleTypePhysical) APPLE_KEXT_OVERRIDE;
++    virtual IOFixed                         getScaledFixedValue(IOHIDValueScaleType type, IOOptionBits options) APPLE_KEXT_OVERRIDE;
++    
++    unsigned int getCount(void) const APPLE_KEXT_OVERRIDE;
++    unsigned int getCapacity(void) const APPLE_KEXT_OVERRIDE;
++    unsigned int getCapacityIncrement(void) const APPLE_KEXT_OVERRIDE;
++    unsigned int setCapacityIncrement(unsigned increment) APPLE_KEXT_OVERRIDE;
++    unsigned int ensureCapacity(unsigned int newCapacity) APPLE_KEXT_OVERRIDE;
++    void flushCollection(void) APPLE_KEXT_OVERRIDE;
++    virtual unsigned setOptions(unsigned   options,
++                                unsigned   mask,
++                                void     * context = 0) APPLE_KEXT_OVERRIDE;
++    virtual OSCollection *copyCollection(OSDictionary * cycleDict = 0) APPLE_KEXT_OVERRIDE;
++  
++    virtual boolean_t                       isVariableSize() APPLE_KEXT_OVERRIDE
++    {  return _variableSize & kIOHIDElementVariableSizeElement; }
++    
++    void setVariableSizeInfo            (UInt8 variableSize)
++    { _variableSize = variableSize; }
++
++    UInt8 getVariableSizeInfo           ()
++    { return _variableSize;}
++
++    bool isValidUserElement() const
++    { return _duplicateReportHandler ? _duplicateReportHandler == this : true; }
++
++};
++
++#endif /* !_IOKIT_HID_IOHIDELEMENTPRIVATE_H */
+
+diff --git a/iokit/IOKit/hidsystem/IOHIDElementContainer.h b/iokit/IOKit/hidsystem/IOHIDElementContainer.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hidsystem/IOHIDElementContainer.h
+@@ -0,0 +1,133 @@
++//
++//  IOHIDElementContainer.h
++//  IOHIDFamily
++//
++//  Created by dekom on 9/12/18.
++//
++
++#ifndef IOHIDElementContainer_h
++#define IOHIDElementContainer_h
++
++#include <libkern/c++/OSObject.h>
++#include <libkern/c++/OSArray.h>
++#include <IOKit/IOTypes.h>
++#include <IOKit/IOBufferMemoryDescriptor.h>
++#include <IOKit/hidsystem/IOHIDDescriptorParser.h>
++#include <IOKit/hid/IOHIDKeys.h>
++
++class IOHIDElementPrivate;
++class IOHIDElement;
++
++// Number of slots in the report handler dispatch table.
++//
++#define kReportHandlerSlots    8
++
++// Describes the handler(s) at each report dispatch table slot.
++//
++struct IOHIDReportHandler
++{
++    IOHIDElementPrivate *head[kIOHIDReportTypeCount];
++};
++
++class IOHIDElementContainer : public OSObject
++{
++    OSDeclareDefaultStructors(IOHIDElementContainer)
++    
++    friend class IOHIDElementPrivate;
++    
++private:
++    struct ExpansionData {
++        OSArray                     *elements;
++        OSArray                     *flattenedElements;
++        OSArray                     *flattenedCollections;
++        OSArray                     *inputReportElements;
++        IOBufferMemoryDescriptor    *elementValuesDescriptor;
++        
++        IOHIDReportHandler          reportHandlers[kReportHandlerSlots];
++        IOHIDElementPrivate         *rollOverElement;
++        
++        UInt32                      maxInputReportSize;
++        UInt32                      maxOutputReportSize;
++        UInt32                      maxFeatureReportSize;
++        UInt32                      dataElementIndex;
++        UInt32                      reportCount;
++    };
++    
++    ExpansionData                   *_reserved;
++    
++    IOReturn createElementHierarchy(HIDPreparsedDataRef parseData);
++    OSArray *createFlattenedElements(IOHIDElement *collection);
++    OSArray *createFlattenedCollections(IOHIDElement *root);
++    
++    // HID report descriptor parsing support.
++    
++    bool createCollectionElements(HIDPreparsedDataRef parseData,
++                                  OSArray *array,
++                                  UInt32 maxCount);
++    
++    void createNULLElements(HIDPreparsedDataRef parseData,
++                            IOHIDElementPrivate *parent);
++    
++    bool createValueElements(HIDPreparsedDataRef parseData,
++                             OSArray *array,
++                             UInt32 hidReportType,
++                             IOHIDElementType elementType,
++                             UInt32 maxCount);
++    
++    bool createButtonElements(HIDPreparsedDataRef parseData,
++                              OSArray *array,
++                              UInt32 hidReportType,
++                              IOHIDElementType elementType,
++                              UInt32 maxCount);
++    
++    bool createReportHandlerElements(HIDPreparsedDataRef parseData);
++    
++    IOBufferMemoryDescriptor *createElementValuesMemory();
++    
++    void getReportCountAndSizes(HIDPreparsedDataRef parseData);
++    
++    void setReportSize(UInt8 reportID, IOHIDReportType reportType, UInt32 bits);
++    
++protected:
++    bool registerElement(IOHIDElementPrivate *element,
++                         IOHIDElementCookie *cookie);
++    
++    virtual bool init(void *descriptor, IOByteCount length);
++    virtual void free() APPLE_KEXT_OVERRIDE;
++    
++public:
++    static IOHIDElementContainer *withDescriptor(void *descriptor,
++                                                 IOByteCount length);
++    
++    virtual IOReturn updateElementValues(IOHIDElementCookie *cookies,
++                                 UInt32 cookieCount = 1);
++    
++    virtual IOReturn postElementValues(IOHIDElementCookie *cookies,
++                               UInt32 cookieCount = 1);
++    
++    void createReport(IOHIDReportType reportType,
++                      UInt8 reportID,
++                      IOBufferMemoryDescriptor *report);
++    
++    bool processReport(IOHIDReportType reportType,
++                       UInt8 reportID,
++                       void *reportData,
++                       UInt32 reportLength,
++                       AbsoluteTime timestamp,
++                       bool *shouldTickle = 0,
++                       IOOptionBits options = 0,
++                       IOReturn *error = nullptr);
++    
++    OSArray *getElements() { return _reserved->elements; }
++    OSArray *getFlattenedElements() { return _reserved->flattenedElements; }
++    OSArray *getFlattenedCollections() { return _reserved->flattenedCollections; }
++    OSArray *getInputReportElements() { return _reserved->inputReportElements; }
++    IOBufferMemoryDescriptor *getElementValuesDescriptor() { return _reserved->elementValuesDescriptor; }
++    UInt32 getMaxInputReportSize() { return _reserved->maxInputReportSize; }
++    UInt32 getMaxOutputReportSize() { return _reserved->maxOutputReportSize; }
++    UInt32 getMaxFeatureReportSize() { return _reserved->maxFeatureReportSize; }
++    UInt32 getDataElementIndex() { return _reserved->dataElementIndex; }
++    UInt32 getReportCount() { return _reserved->reportCount; }
++};
++
++#endif /* IOHIDElementContainer_h */
 
 diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
 --- a/iokit/conf/files.arm64

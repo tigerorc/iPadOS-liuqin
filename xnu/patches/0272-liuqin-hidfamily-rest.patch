@@ -10639,6 +10639,8 @@ new file mode 100644
 +    return result;
 +}
 +
++#endif /* LIUQIN: no DriverKit/IOUserServer here */
++
 +/* LIUQIN: IOHIDInterface::serializeDebugState is installed as the debug
 + * serializer at the top of this file, but its only Apple definition sits in
 + * the DriverKit half above (it reads DextDebugStats through a mapped
@@ -10652,8 +10654,6 @@ new file mode 100644
 +{
 +    return false;
 +}
-+
-+#endif /* LIUQIN: no DriverKit/IOUserServer here */
 diff --git a/iokit/Kernel/arm/hid/IOHIDDescriptorParser/TargetConditionals.h b/iokit/Kernel/arm/hid/IOHIDDescriptorParser/TargetConditionals.h
 new file mode 100644
 --- /dev/null

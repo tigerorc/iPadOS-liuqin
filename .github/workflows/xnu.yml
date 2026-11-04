@@ -22,7 +22,14 @@ on:
       - ".github/workflows/xnu.yml"
 
 concurrency:
-  group: xnu-${{ github.ref }}
+  # Include the run id: a runner can finish every step yet never report the
+  # final run status (run 41860774776).  With a ref-only group that stuck run
+  # keeps the group "in progress" forever and every later run sits queued
+  # with no runner, because cancel-in-progress only fires once a NEW run has
+  # actually started.  Per-run groups make the next dispatch independent of
+  # a stuck predecessor; cancel-in-progress still cancels re-runs of the
+  # same run (attempt > 1).
+  group: xnu-${{ github.ref }}-${{ github.run_id }}
   cancel-in-progress: true
 
 env:

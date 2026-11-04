@@ -1,0 +1,41 @@
+liuqin: define liuqin_marks_draw, which the touch watch references
+
+Patch 0219 turned the touch interrupt watch's console override into a
+boot-arg-gated one:
+
+	extern int liuqin_marks_draw;
+	if (liuqin_marks_draw) {
+		liuqin_console_force = 1;
+	}
+
+but nothing in the series defines that variable, so the kernel links with
+
+	Undefined symbols for architecture arm64:
+	  "_liuqin_marks_draw", referenced from:
+	      _liuqin_touch_int_watch in liuqin_touch.o
+	clang: error: linker command failed with exit code 1
+
+and no kernel is produced at all (CI run 41765862904 uploaded only symbol
+dumps). Define it next to the other console switches so the gate defaults to
+"off", matching the pre-0219 behaviour only when a boot passes
+liuqin_marks=1; the console override stays available for the diagnostics that
+set it.
+
+diff --git a/osfmk/console/serial_console.c b/osfmk/console/serial_console.c
+--- a/osfmk/console/serial_console.c
++++ b/osfmk/console/serial_console.c
+@@ -274,6 +274,13 @@ extern void liuqin_log_append(const char *c, int size);  /* bsd/dev/liuqin_ufs.c
+  * the GUI. A panic draws again.
+  */
+ int liuqin_console_muted;
++/*
++ * Gate for the touch interrupt watch's console override (patch 0219). Nothing
++ * defined it, so the kernel failed to link with "_liuqin_marks_draw referenced
++ * from _liuqin_touch_int_watch". Off by default: the watch then only logs, and
++ * a boot that wants the transitions on screen passes liuqin_marks=1.
++ */
++int liuqin_marks_draw;
+ /* Set around the few lines that must stay visible while the console is muted
+  * (boot-phase marks, per-exec timestamps): they are the only time axis a boot
+  * without a serial port has. */
+ int liuqin_console_force;

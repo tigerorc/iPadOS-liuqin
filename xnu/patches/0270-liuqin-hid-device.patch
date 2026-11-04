@@ -7967,7 +7967,7 @@ new file mode 100644
 +* @discussion
 +* As per HID spec  unit and unit exponent can be associated with given value.
 +* Example :
-+* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倸鍊搁崐鎼佸磹閹间礁纾归柟闂寸�佺壕褰掓煙闂傚�革拷浣哄�曡ぐ鎺撶厵闂傚倸锟介潻鎷锋担鍝勶拷鏇°亹閹烘挾鍘甸梻鍌氬�搁敓浠嬫交閹烽攱鎷呴崫鍕舵嫹閺嚶颁汗闁圭儤鎸鹃崢鐢告⒒閸屾艾锟芥悂鏁撴禒瀣�浜ら柟鐑芥敱閹峰懘宕�閸曡埖瀚归柡鍤堕�佹睏闂佸湱鍎ら幐楣冨储娴犲��鈷戠痪锟介崨锟借ぐ褏绱掗幓鎺炴嫹閻曞倹瀚规慨妯垮煐閳锋垿鏌熼懖鈺佷粶闁跨喕濮ゅú婊堟晸閼恒儳鐓�闁告��鍟块敓鏂ゆ嫹閻犲洦绁村Σ鍫ユ煏韫囧﹤澧叉繛鍛�鍨虹换娑氾拷鐢碉拷鍟冦垽鏌ㄩ悢鍛婄伄闁归�庡厴閺屾稑螖娴ｇ硶鏋欓梺鍝勭焿缂嶄線鐛�閸ワ拷閺佹挻绂掔�ｏ拷閺呮悂鏌﹀Ο鐚存嫹濞戞瑥锟藉綊鎮橀悙璇ф嫹閻曞倹瀚归柛褎锟戒讲鎷婚梺绋挎湰閼归箖鏁撴禒瀣舵嫹鎼达拷閿熷�愬灩閿熻姤锕�閹风兘鏌ㄩ悢绋跨亰闁告牜濞�瀹曞崬螖鐎ｏ拷鐎氳�勭節闂堟冻鎷烽敓浠嬪煕閹达附鐓曟繝闈涙�楅敓鏂ゆ嫹闂侀潻缍�濞咃絿妲愰幒鏃撴嫹閿濆繑瀚归梺瑙勭摃瀹曠數鍒掗埡鍛�鍋勯柣鎾抽�稿畵鍡涙⒑闂堟稓绠冲┑锟介幘锟介幃妤呮晸娴犲��鈷掑ù锝堝Г绾�鍫曟煕閻樿尙肖闁告帗甯掗埢搴ㄥ箻閾忥拷濡诧拷闂備胶绮�閸旀洟骞栭敓鐣岀磼閻欏懐绉�闁哄被鍔戝��锟介柛銉�鎷烽柨鐔绘�勭�氾拷缂佸倸绉烽妵鎰板箳閹捐泛骞楅梺纭呭亹鐞涖儵宕滃┑鍫熷�婚柍銉︽灱閺�浠嬫煥閻斿墎鐭欐�犵偞锕㈤弫鎾寸�掔�ｏ拷閺嬩線鏌熼崜褏甯涢柛銈呯Ч閺屾洘寰勫☉娆忥拷褰掓⒑瑜版帪鎷锋惔鈥冲箣闂佺�呮珪閻楃娀宕洪敓鐘茬�冮悹鎭掑妼缁ㄣ儵姊婚崒姘�锟界兘鎳楅崜浣稿灊闁跨喍绮欓弻锝夋偄閺夋垵濮﹀Δ鐘靛仜閿曘劎绮诲☉銏犲嵆闁跨喍绮欓獮蹇撶暋鐢�锟介幏宄帮拷妤�鐗婄�氬湱绱撻崒姘毙㈤柨鏇樺�濋弫鎾绘寠婢舵稑浼愰梺璺ㄥ枙婵�銈夋嚌閸撗冿拷鏇㈠礂閼测晝锟介箖鏌涢埄鍏狅拷濠碉拷婢舵劖鐓忛柛锟介悢鍝ュ嚒闂佸疇锟藉嫬鐏撮柟锟藉▎鎴炲珰鐟滃海锟芥艾缍婇幃妤呮晲韫囨柨锟藉湱绱撴笟濠冨�归柣搴�缍囬幏鐑芥煥閻斿嚖鎷烽悤鍌涘�归柛鏇�鎷风紒锟介崘銊㈡斀闁绘劘锟窖嗗惈閻庣�夋嫹闁跨喍绮欓弻娑㈠箛閼搁潧锟藉綊鎮楃憴鍕�绀冮悽锟介幒妤佹櫢闁兼亽鍎旈幋锕�鑸瑰┑鐘宠壘缁狅拷闂佺粯鍨兼慨銈夊疾缁嬫５褰掓偐鐠囇勫�归柨鐔剁矙閸╂盯骞嬮敂钘変化闂佺櫢鎷烽柟鐑樺灥閿熻棄鍚嬬换娑㈠川閿熶粙宕濆▎鎾宠摕闁绘梻鍘х粈鍕�鏌曢崼婵囷拷妤呮晸閺傘倖瀚�2 cm).
++* Value : 0x100, Unit : 0x11, Unit Exponent : 0xE represents 25.6 mm (256 * 10闂傚倸鍊搁崐鎼佸磹閹间礁纾归柟闂寸�佺壕褰掓煙闂傚�革拷浣哄�曡ぐ鎺撶厵闂傚倸锟介潻鎷锋担鍝勶拷鏇°亹閹烘挾鍘甸梻鍌氬�搁敓浠嬫交閹烽攱鎷呴崫鍕舵嫹閺嚶颁汗闁圭儤鎸鹃崢鐢告⒒閸屾艾锟芥悂鏁撴禒瀣�浜ら柟鐑芥敱閹峰懘宕�閸曡埖瀚归柡鍤堕�佹睏闂佸湱鍎ら幐楣冨储閻㈠憡鈷掗柛灞捐壘閿熻姤鎮傞弫鎾寸�掔�ｏ拷娴溿倝鏌熼悜鑺ユ暠闁瑰嘲鎳樺畷锟介柛鏇″煐鐎氬綊鏌￠崵鍫曪拷浣圭潖闂備礁婀遍崕銈夊箰妤ｅ啫鍌ㄩ柣銏犳啞閳锋帡鏌涚仦鎹愬�橀柨鐔诲Г閹�鍌炲极閹惧�革拷鎺旓拷锝忔嫹濞存嚎鍊濋弻鐔兼倻閼恒儲鏆犻梺鐟板槻閹虫ê鐣烽敓浠嬫煕閺団�崇厫閻庢艾缍婇弻锟犲吹閸�鏇�鎷锋担鍦�娼栭梻鍌欑�佸﹢閬嶅磿閵堝�婄�板Δ锝呭暙閸屻劌霉閻樿�ф嫹閿熶粙鍩涢幋鐘垫／闁跨喍绮欏畷銊╂晸閸婄喆浜圭憸蹇曟�愰幒妤�绠甸柟铏瑰仦鐎氬綊鏌ｉ弴鐐诧拷鍦�锟芥俺锟藉嫭鍙忔俊锟介崹锟介悡鎰版煃闁垮��鐏撮柡宀�鍠栭幊鏍�鍩℃担椋庢崟闂備浇娉曢崰鏇熸叏閵堝悿鍝勶拷濠傜墛閺呮悂鏌ら幁鎺戝姢闁绘搫鎷烽梻浣告啞閿熸枻鎷烽柛鐔锋健閺佹捇寮�閵堝棗锟藉綊鏌ｉ悩鍙夊�勭紒浣规綑鍗遍柛锟介妷锔惧帾闂婏拷閸パ嶅伐濠⒀冨级缁绘盯宕ㄩ敓浠嬪垂閾忚�勫床婵炴垶鐔�閹风兘鎮界喊澶嬪�归柛鐔峰暔閸ㄤ粙寮婚妸鈺傚亜闁告稑锕︽导鍕�姊鸿ぐ鎺炴嫹鎼粹�冲箣闂佸搫鏈�缁嬫垼鐏冩繛杈剧悼绾�鍫曞几濞嗘挻鈷戦柛婵嗗��閻掕法绱撳�ュ嫮绐旈柣娑虫嫹闂佹悶鍎婚幏鐑芥煛娴ｈ�勫鞍缂佸倹甯為敓鏂ょ秶閹风兘鏌￠崨锟介幃鍌炲蓟閿曪拷铻ｉ柣姘�鐡ㄧ�氳�勭箾閹寸偟鎳冮柨鐔绘�勭紞濠囧箖濮楋拷閹�娆戞嫚瑜庣�氬綊鏌ｉ弴鐐诧拷鍦�锟芥艾缍婇弻娑滐拷搴ㄦ晸閹存帟锟芥煡骞忔繝姘�鈷戠紒瀣�瀵у﹢浼存煠瑜版帞鐣洪柡浣规尰缁傛帞锟斤綀鍩栫�氬綊骞栨潏鐐�瀚归梺璺ㄥ枎閿熻姤鍔曢悘鈺呮煥閻旇�残撻柨鏇�鎷烽梺褰掞拷搴″幋闁哄被鍔戦幃銏㈢矙鐠恒劋鍠婇梻浣告啞閻楁粍绻涢敓鐣岋拷瑙勬礀瀹曪拷閾绘牠鎮楅敐蹇斿�归柣搴�淇洪敓钘夊��缁★拷闂傚倸鐗婇崘濠氬箯閻戣姤鏅稿ù鐘诧拷锟介悡鏇㈡煙鏉堥箖妾�闁绘挻娲樼换婵嬫�冨☉娆欐嫹濡ゅ懏鏅搁柡鍌樺�栫�氬綊姊绘笟锟藉�艰崵绱為敓鑺ョ箾閸滃啰鎮兼俊鍙夊姍楠炴帡寮�閹炬潙锟藉綊鏌ㄥ┑鍡欑�查悗姘�缍婂�婅櫣鎲撮崟锟介幗鍐�锟借�勬礈閺佹悂宕氶幒妤�鐓涢柛娑虫嫹闁稿��瀚伴弻锝夊箻閹舵枻鎷风粙璺ㄦ殼闁糕剝绋掗埛鎴︽⒒閸�鐔恒�掔紒鐘插暱閳规垿鏁撴禒瀣�绠婚柨鐔剁矙楠炲啫螖閸涳拷閺呯�棵归悩璇ф嫹閿熶粙鍩涢幒鎳ㄥ綊鏁愰崼婢�鎾剁棯閿熶粙宕奸弴鐔哄幈闂佺粯锟藉灝鐨洪懖鏍�姊洪崨濠傜瑲閻�锟介幒妤�鐓濋幖娣�鍔岀粻濠氭煣韫囥儲瀚瑰┑陇锟窖勫�归梻鍌氬�烽懗鍓佸垝閿熶粙鏌涢弮锟藉ú鐔肩嵁閺嶏拷閺佹捇鎮惧畝锟界壕濂告煟濞嗗繑鍣界紒澶涙嫹闂備礁鎼�鐞氾拷闁告梹鍨甸敓鏂ゆ嫹闁跨喍绮欓弻娑㈠Ψ閿熶粙骞忛悜鑺ョ叆闁绘梻绮�閿熻棄瀚�閿熻姤鐔�閹烽�庣磽娴ｇ�匡拷鍝ョ矓閻戣棄桅闁圭増婢樼粻鎶芥煙閹规劖纭炬�犵偞锟藉懏鈷戠痪锟介崨锟芥禍褰掓偠濞戞牕鍔︾�规洘绮岄埞鎴﹀醇閻斿嚖鎷锋繝姘�鐓冮柕澶涢檮閻忛亶鏌￠敓鑺ョ�掔�ｏ拷閻撱儵鏌ｉ弬鍨�锟藉酣鎯屽▎鎰舵嫹閻橀潧浠﹂柨鏇樺灲瀵�锟介柟鎯э拷闈╂嫹閹烘棑鎷烽敐蹇斿�归梺鍝勶拷鈺冪獢闁哄瞼鍠栧畷婊嗭拷蹇曟暜濞戙垺鐓曢柕鍫濇噽鏁堥梺鍝勬湰濞叉ê锟芥澘瀚�閳藉�娾枎韫囥儲瀚圭憸鐗堝笚閳锋垹鎲搁悧鍫濋嚋闁圭兘鏀遍幆鏃堝灳閸愯尙锟斤綁姊绘担鐚存嫹閸涳拷閻濓拷闂佺粯锟藉啫鈻堢�规洘妞介弫鎾绘偐閼硷拷閿熻棄鍟撮幃褰掑箒閹烘垵锟借偐绱掗妸锝呭姦婵�濠傦拷姘�纾兼慨姗堟嫹闁跨喓鏅�閸忔﹢骞婂Δ鍛�绀堝ù锝囷拷璺ㄤ喊闂備浇娉曢崰宥囧垝濞嗘挸钃熼柨婵嗭拷瀣�浜滈梺鍝勶拷瀣�鐏ュ┑锟介敃锟借灃闁绘﹢娼ф禒婊堟煥閺囨ê濡跨紒锟界拠娴嬫�堥柕蹇曞Т瀹撳棝姊虹捄銊ユ瀺缂侊拷濞嗘挾宓侀煫鍥ㄦ尵閺嗗��鎮介敓浠嬫晸娴犲��绠�鐎瑰嫬搴滈幏宄拔旈敓浠嬫偋婵犲嫸鎷峰�橈拷濠�杈╂�愰幘璇茬＜婵�妯荤樂閵忋倖鐓ラ柡鍥�锚閿熻姤绻堝��锟介柟鍓х帛鐎电姴锟姐垼鍩栫粙鎴炲�奸幇鐗堚拺閻犳亽鍔岄弸娆忊攽閿熶粙濡舵径瀣�娈為梺鍛婃寙閸愭寧瀚归柡鍥ュ灩缁�鍌炴煠濞村��娅囬柨鐔剁矙缁犳牠寮诲☉銏犵労闁稿繒濯撮幏閿嬬節绾板�嬪�规繝銏ｅ煐閸旀牠鎮¤箛娑欑厱闁跨喍绮欓幃銏ゅ传閵夈儱娈ラ梻鍌欑�侀悿鍥�鏁撻挊澶婏拷锟介柣蹇旀尦閺岀喖鏁撻挊澶嗘瀻闁瑰�稿仜閻濅即鎮峰�婂啯鎹ｉ柨鐔诲Г閼瑰墽绱炴繝鍥х畺婵°倕鎳忛弲鏌ョ叓閸ャ劍鐓ラ柨鐔绘�勫﹢杈╂�愰幘瀵哥懝濠电姴鍟�閿熻棄缍婇弻锝嗘償閿熺晫绱為崶锟介獮蹇涙倻閼恒儳鍙嗛梺缁樻煥閸ゆ牠骞忛悜鑺ュ亞闁稿本绋戦敓钘夌秺閺屾盯寮撮敓浠嬪箯妞嬪海纾奸柨鐔剁矙瀹曟﹢濡搁姀鈩冩澑闂備胶绮�閸旀﹢鏁撶粣鏍ф�楅幆鍫ユ煟鎼达綇鎷锋径瀣�锟藉綊姊虹捄銊ユ瀺缂侊拷濞嗘挸钃熸繛鎴欏灩缁犳盯鏌ら幖浣规锭闁跨喕妫勭紞濠囧箖濡ゅ啯鍠嗛柛鏇�鎷风紒锟介崘锟介幃浠嬫晸娴犲��绠虫俊銈勭劍濞呫垽姊洪崗闂磋埅闁稿孩妫冮獮瀣�鏁冮敓浠嬫嚋閻熸壋鏀介柣妯虹枃婢规�肩磼閻欏懏瀚归梻鍌欒兌缁�锟介柛銊ュ悑閹便劑濡舵径濠勬煣缂備礁锟斤拷閿涙洝銇愰幒鎾充汗闁荤姴娉ч崟锟介敓钘夌秺閺屻劑鎮㈤崜浣虹厯闂佺硶鏅滈惄锟芥�犵偛锟斤拷閺佸倿鎸婃径澶婂�查梻鍌欒兌濞呫垽骞忛悜鑺ョ厵闁绘垶锚閻忋儵鏌ㄩ悢缁橈拷鍕�宕ョ�ｏ拷閹广垹鈽夐姀鐘茬獩闂佽法鍠嶇划娆忕暦濠靛棌鏋庨柟鎯х枃閹芥洟姊虹紒妯烩拻闁告�犲懐鐭嗛柛鏇�鎷烽柡灞炬礋瀹曠厧鈹戦崶閿嬪�规俊銈呮噺閺呮悂鏌￠崒妯猴拷鏍�锟芥熬鎷�2 cm).
 +* This function converts value based on unit and unit exponent to IOFixed. Currently
 +* it only supports unit as length in cm.
 +*
@@ -14583,7 +14583,7 @@ new file mode 100644
 +   @defined    kIOHIDDigitizerSurfaceSwitchKey
 +   @abstract   Property to turn on / of surface digitizer contact reporting
 +   @discussion To allow for better power management, a host may wish to indicate what it would like a touchpad digitizer to not report surface digitizer contacts by clearing this
-+                flag. By default, upon cold闂傚倸鍊搁崐鎼佸磹閻戣姤鍤勯柛锟介弴鐐碉紱闂侀潧艌閺呮稓澹曢崸妤佺厱婵炲棗楠忛幏宄扮暆鐎ｏ拷鐎氬湱锟藉箍鍎遍敓钘夛拷锟藉▍銏㈢磽娴ｆ枻鎷疯�庣�氱�紅/power cycle, touchpads that support reporting surface
++                flag. By default, upon cold闂傚倸鍊搁崐鎼佸磹閹间礁纾归柟闂寸�佺壕褰掓煟閹达絽袚闁搞倕瀚伴弻娑㈡晸娴犲��鍗抽柣鎰�锟藉�屽耿闂傚倷绶氬�佳嗗�濋梺鍝勬噺缁嬫挻绔熼弴銏犻敜婵°倓鑳堕崢鍗炩攽閻愬弶锟芥�侊拷鐘茬箻楠炲繐鐣￠幍锟介弳鍡涙倵閿濆繑瀚归柣搴㈣壘濠�閬嶆晸閽樺�岀暛闁稿酣浜堕弫鎾绘寠婢舵稒瀚归柨鐔绘�勯埢宥夊��閵忋垻锛濇繛杈剧稻閺嬪�氬箯閻わ拷閿熻棄娴烽敓鑺ユ皑閿熺晫纾�/power cycle, touchpads that support reporting surface
 +                contacts shall do so by default.
 +*/
 +
@@ -17139,7 +17139,7 @@ new file mode 100644
 +};
 +
 +/* KeyboardOrKeypad Page (0x07) */
-+/* This section is the Usage Page for key codes to be used in implementing a USB keyboard. A Boot Keyboard (84-, 101- or 104-key) should at a minimum support all associated usage codes as indicated in the 闂佽崵鍠愮划搴ㄦ儍閿熺郸t闂備浇娉曢崳锕傚箯閿燂拷 */
++/* This section is the Usage Page for key codes to be used in implementing a USB keyboard. A Boot Keyboard (84-, 101- or 104-key) should at a minimum support all associated usage codes as indicated in the 闂傚倷娴囧畷鐢稿窗閹帮拷閸掓帗鎯旈妸锕�鍓�闂佽法鍠撻柈绔ч梻鍌氬�峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 */
 +/* column below. */
 +/* The usage type of all key codes is Selectors (Sel), except for the modifier keys Keyboard Left Control (0x224) to Keyboard Right GUI (0x231) which are Dynamic Flags (DV). */
 +/* Note: A general note on Usages and languages: Due to the variation of keyboards from language to language, it is not feasible to specify exact key mappings for every language. Where this list is not specific for a key function in a language, the closest equivalent key position should be used, so that a keyboard may be modified for a different language by simply printing different keycaps. One example is the Y key on a North American keyboard. In Germany this is typically Z. Rather than changing the keyboard firmware to put the Z Usage into that place in the descriptor list, the vendor should use the Y Usage on both the North American and German keyboards. This continues to be the existing practice in the industry, in order to minimize the number of changes to the electronics to accommodate otherlanguages. */
@@ -17323,7 +17323,7 @@ new file mode 100644
 +};
 +
 +/* LEDs Page (0x08) */
-+/* An LED or indicator is implemented as an On/Off Control (OOF) using the 闂佽崵鍠愰敓鏂ゆ嫹閻�锟界粩娌�le button toggle闂備浇娉曢崳锕傚箯閿燂拷 mode, where a value of 1 will turn on the indicator, and a value of 0 will turn it off. The exceptions are described below. */
++/* An LED or indicator is implemented as an On/Off Control (OOF) using the 闂傚倷娴囧畷鐢稿窗閹扮増鏅搁柡鍌樺�栫�氬綊鏌ｉ敓浠嬫晸閻ｅ瞼鍗氭繛宀嬫嫹le button toggle闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 mode, where a value of 1 will turn on the indicator, and a value of 0 will turn it off. The exceptions are described below. */
 +enum
 +{
 +    kHIDUsage_LED_NumLock    = 0x01,    /* On/Off Control */
@@ -17418,12 +17418,12 @@ new file mode 100644
 +
 +/* Button Page (0x09) */
 +/* The Button page is the first place an application should look for user selection controls. System graphical user interfaces typically employ a pointer and a set of hierarchical selectors to select, move and otherwise manipulate their environment. For these purposes the following assignment of significance can be applied to the Button usages: */
-+/* 闂備浇娉曢崳锕傚箯閿燂拷 Button 1, Primary Button. Used for object selecting, dragging, and double click activation. On MacOS, this is the only button. Microsoft operating systems call this a logical left button, because it */
++/* 闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 Button 1, Primary Button. Used for object selecting, dragging, and double click activation. On MacOS, this is the only button. Microsoft operating systems call this a logical left button, because it */
 +/* is not necessarily physically located on the left of the pointing device. */
-+/* 闂備浇娉曢崳锕傚箯閿燂拷 Button 2, Secondary Button. Used by newer graphical user interfaces to browse object properties. Exposed by systems to applications that typically assign application-specific functionality. */
-+/* 闂備浇娉曢崳锕傚箯閿燂拷 Button 3, Tertiary Button. Optional control. Exposed to applications, but seldom assigned functionality due to prevalence of two- and one-button devices. */
-+/* 闂備浇娉曢崳锕傚箯閿燂拷 Buttons 4 -55. As the button number increases, its significance as a selector decreases. */
-+/* In many ways the assignment of button numbers is similar to the assignment of Effort in Physical descriptors. Button 1 would be used to define the button a finger rests on when the hand is in the 闂佽崵鍠愰敓鎴掕兌閿熸枻鎷� rest闂備浇娉曢崳锕傚箯閿燂拷 position, that is, virtually no effort is required by the user to activate the button. Button values increment as the finger has to stretch to reach a control. See Section 6.2.3, 闂佽崵鍠愰敓鏂ゆ嫹闁靛牏绐媠ical Descriptors,闂備浇娉曢崳锕傚箯閿燂拷 in the HID Specification for methods of further qualifying buttons. */
++/* 闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 Button 2, Secondary Button. Used by newer graphical user interfaces to browse object properties. Exposed by systems to applications that typically assign application-specific functionality. */
++/* 闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 Button 3, Tertiary Button. Optional control. Exposed to applications, but seldom assigned functionality due to prevalence of two- and one-button devices. */
++/* 闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 Buttons 4 -55. As the button number increases, its significance as a selector decreases. */
++/* In many ways the assignment of button numbers is similar to the assignment of Effort in Physical descriptors. Button 1 would be used to define the button a finger rests on when the hand is in the 闂傚倷娴囧畷鐢稿窗閹扮増鏅搁柟瀛樺笩閸忓矂鏌ㄩ悢鍛婄伄闁瑰嚖鎷� rest闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 position, that is, virtually no effort is required by the user to activate the button. Button values increment as the finger has to stretch to reach a control. See Section 6.2.3, 闂傚倷娴囧畷鐢稿窗閹扮増鏅搁柡鍌樺�栫�氬綊姊洪棃娑氬ⅱ缂佹劕鐛眎cal Descriptors,闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 in the HID Specification for methods of further qualifying buttons. */
 +enum
 +{
 +    kHIDUsage_Button_1    = 0x01,    /* (primary/trigger) */
@@ -17687,7 +17687,7 @@ new file mode 100644
 +
 +/* Ordinal Page (0x0A) */
 +/* The Ordinal page allows multiple instances of a control or sets of controls to be declared without requiring individual enumeration in the native usage page. For example, it is not necessary to declare usages of Pointer 1, Pointer 2, and so forth on the Generic Desktop page. When parsed, the ordinal instance number is, in essence, concatenated to the usages attached to the encompassing collection to create Pointer 1, Pointer 2, and so forth. */
-+/* For an example, see Section A.5, 闂佽崵鍠愰敓鏂ゆ嫹婵″墽鎷卼iple Instances of a Control,闂備浇娉曢崳锕傚箯閿燂拷 in Appendix A, 闂佽崵鍠愰敓鏂ゆ嫹缂佹唻鎷穉ge Examples.闂備浇娉曢崳锕傚箯閿燂拷 By convention, an Ordinal collection is placed inside the collection for which it is declaring multiple instances. */
++/* For an example, see Section A.5, 闂傚倷娴囧畷鐢稿窗閹扮増鏅搁柡鍌樺�栫�氱懓鈹戦垾鍐测挃闁瑰嘲宓搃ple Instances of a Control,闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 in Appendix A, 闂傚倷娴囧畷鐢稿窗閹扮増鏅搁柡鍌樺�栫�氬湱绱撴担鐟版暰闁归�庯拷濉痚 Examples.闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 By convention, an Ordinal collection is placed inside the collection for which it is declaring multiple instances. */
 +/* Instances do not have to be identical. */
 +enum
 +{
@@ -17702,7 +17702,7 @@ new file mode 100644
 +/* Telephony Page (0x0B) */
 +/* This usage page defines the keytop and control usages for telephony devices. */
 +/* Indicators on a phone are handled by wrapping them in LED: Usage In Use Indicator and LED: Usage Selected Indicator usages. For example, a message-indicator LED would be identified by a Telephony: Message usage declared as a Feature or Output in a LED: Usage In Use Indicator collection. */
-+/* See Section 14, 闂佽崵鍠愮划搴ㄦ煢閿熺单sumer Page (0x0C),闂備浇娉曢崳锕傚箯閿燂拷 for audio volume and tone controls. */
++/* See Section 14, 闂傚倷娴囧畷鐢稿窗閹帮拷閸掓帗鎯旈妸锔惧弮闂佽法鍠撻崡鏅剈mer Page (0x0C),闂傚倸鍊峰ù鍥р枖閺囥垹闂�闁挎洖鍊哥粻锟介梺璺ㄥ櫐閹凤拷 for audio volume and tone controls. */
 +enum
 +{
 +    kHIDUsage_Tfon_Phone    = 0x01,    /* Application Collection */
@@ -25679,38 +25679,23 @@ diff --git a/iokit/IOKit/IOReporter.h b/iokit/IOKit/IOReporter.h
 new file mode 100644
 --- /dev/null
 +++ b/iokit/IOKit/IOReporter.h
-@@ -0,0 +1,31 @@
+@@ -0,0 +1,16 @@
 +/*
-+ * LIUQIN: the IOReporter declarations IOHIDDevice.cpp needs.
++ * LIUQIN: <IOKit/IOReporter.h> for this tree.
 + *
-+ * This tree carries iokit/Kernel/IOReporter.cpp (Apple source, with the class
-+ * and both static bulk helpers) but no public IOReporter.h. The vendored
-+ * IOHIDDevice.cpp only calls configureAllReports / updateAllReports to fan a
-+ * report out to registered reporters, and nothing on the digitizer path
-+ * registers one. Signatures copied from IOReporter.cpp itself.
++ * Apple's public IOReporter.h is not in this xnu, but the classes it declares
++ * are: iokit/IOKit/IOKernelReporters.h defines IOReporter, IOSimpleReporter and
++ * the IOReport* helpers, and iokit/Kernel/IOReporter.cpp implements them.
++ * IOHIDDevice.cpp/h only need the include to resolve, so forward to the real
++ * header rather than restating the class (a restatement collides with
++ * IOSimpleReporter, which derives from it).
 + */
-+#ifndef LIUQIN_IOREPORTER_SHIM_H
-+#define LIUQIN_IOREPORTER_SHIM_H
++#ifndef LIUQIN_IOREPORTER_FORWARD_H
++#define LIUQIN_IOREPORTER_FORWARD_H
 +
-+#include <IOKit/IOService.h>
-+#include <IOKit/IOReturn.h>
-+#include <IOKit/IOReportTypes.h>
++#include <IOKit/IOKernelReporters.h>
 +
-+class OSSet;
-+
-+class IOReporter : public OSObject
-+{
-+	OSDeclareDefaultStructors(IOReporter)
-+public:
-+	static IOReturn configureAllReports(OSSet *reporters,
-+	    IOReportChannelList *channelList, IOReportConfigureAction action,
-+	    void *result, void *destination);
-+	static IOReturn updateAllReports(OSSet *reporters,
-+	    IOReportChannelList *channelList, IOReportConfigureAction action,
-+	    void *result, void *destination);
-+};
-+
-+#endif /* LIUQIN_IOREPORTER_SHIM_H */
++#endif /* LIUQIN_IOREPORTER_FORWARD_H */
 diff --git a/iokit/IOKit/hid/IOHIDEventServiceKeys.h b/iokit/IOKit/hid/IOHIDEventServiceKeys.h
 new file mode 100644
 --- /dev/null
@@ -25888,6 +25873,49 @@ new file mode 100644
 +
 +#endif /* LIUQIN_HIDDRIVERKIT_IOHIDDEVICE_H */
 
+diff --git a/iokit/IOKit/hid/LiuqinAppleVendorUsages.h b/iokit/IOKit/hid/LiuqinAppleVendorUsages.h
+new file mode 100644
+--- /dev/null
++++ b/iokit/IOKit/hid/LiuqinAppleVendorUsages.h
+@@ -0,0 +1,22 @@
++/*
++ * LIUQIN: the AppleVendor usage identifiers IOHIDElementPrivate.cpp compares
++ * against. The AppleHIDUsageTables.h this tree ships is a licence-only stub,
++ * so these were missing. Values are the ones Apple's usage tables define on
++ * the vendor-defined page (0xff00).
++ */
++#ifndef LIUQIN_APPLE_VENDOR_USAGES_H
++#define LIUQIN_APPLE_VENDOR_USAGES_H
++
++#include <IOKit/hid/IOHIDUsageTables.h>
++
++#ifndef kHIDPage_AppleVendor
++#define kHIDPage_AppleVendor                    0xff00
++#endif
++#ifndef kHIDUsage_AppleVendor_Message
++#define kHIDUsage_AppleVendor_Message           0x0001
++#endif
++#ifndef kHIDUsage_AppleVendor_Payload
++#define kHIDUsage_AppleVendor_Payload           0x0002
++#endif
++
++#endif /* LIUQIN_APPLE_VENDOR_USAGES_H */
+
+diff --git a/iokit/Kernel/arm/hid/AppleHIDUsageTables.h b/iokit/Kernel/arm/hid/AppleHIDUsageTables.h
+--- a/iokit/Kernel/arm/hid/AppleHIDUsageTables.h
++++ b/iokit/Kernel/arm/hid/AppleHIDUsageTables.h
+@@ -22,0 +23,11 @@
++
++/* LIUQIN: vendor usage page the HID element code compares against. */
++#ifndef kHIDPage_AppleVendor
++#define kHIDPage_AppleVendor                    0xff00
++#endif
++#ifndef kHIDUsage_AppleVendor_Message
++#define kHIDUsage_AppleVendor_Message           0x0001
++#endif
++#ifndef kHIDUsage_AppleVendor_Payload
++#define kHIDUsage_AppleVendor_Payload           0x0002
++#endif
 diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
 --- a/iokit/conf/files.arm64
 +++ b/iokit/conf/files.arm64

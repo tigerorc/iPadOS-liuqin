@@ -1,0 +1,247 @@
+--- a/iokit/Kernel/arm/LiuqinBattery.cpp
++++ b/iokit/Kernel/arm/LiuqinBattery.cpp
+@@ -0,0 +1,216 @@
++/*
++ * LIUQIN: the battery the iOS UI reads - PLACEHOLDER.
++ *
++ * iOS shows the charge level from an "AppleSmartBattery" IOService (an
++ * IOPMPowerSource subclass) whose registry properties are the kIOPMPS*
++ * dictionary; BatteryCenter/powerlogd read them straight from the
++ * registry and the IOKit IOPS* API matches "AppleSmartBatteryManager".
++ * This port had neither, so the status bar showed nothing.
++ *
++ * Why this is a placeholder: on liuqin the battery is measured by the PMIC
++ * ADC, but from the application processor that peripheral cannot be
++ * driven - every SPMI write to it is silently dropped (all three arbiter
++ * write paths, wakeup and reset included; ownership is ours, EE 0, and
++ * TWRP's own vendor kernel cannot configure it either), its DATA register
++ * is frozen, and the PM8350B charger block reads back a static shadow
++ * (byte-identical over two independent 6-minute sampling runs).  The real
++ * numbers are produced by the ADSP charger firmware and published over
++ * pmic_glink, which this port does not run.
++ *
++ * So this service reports a fixed, sane level instead of a measurement:
++ * a value that keeps the UI usable and does not trip low-battery
++ * behaviour.  Nothing here is a reading - do not trust it for power
++ * management.
++ *
++ * Boot args:
++ *   liuqinbattpct=N      reported level, 1..100 (default 50)
++ *   liuqinbattcharging=1 report external power / charging
++ *   liuqinbatt=0         do not publish the service at all
++ */
++#include <IOKit/IOLib.h>
++#include <IOKit/IOService.h>
++#include <IOKit/pwr_mgt/IOPMPowerSource.h>
++#include <pexpert/pexpert.h>
++#include <libkern/c++/OSBoolean.h>
++#include <libkern/c++/OSNumber.h>
++#include <libkern/c++/OSSymbol.h>
++
++extern "C" {
++#include <sys/systm.h>
++#include <kern/clock.h>
++#include <kern/thread.h>
++kern_return_t kernel_thread_start(thread_continue_t, void *, thread_t *);
++void thread_deallocate(thread_t);
++}
++
++#define LIUQIN_BATT_MAX_MAH     8600u   /* BM58, datasheet typical */
++#define LIUQIN_BATT_DEFAULT_PCT 50
++
++static const OSSymbol *gKeyNominal;
++
++static int
++liuqin_batt_pct(void)
++{
++	int pct = 0;
++
++	if (PE_parse_boot_argn("liuqinbattpct", &pct, sizeof(pct)) &&
++	    pct >= 1 && pct <= 100) {
++		return pct;
++	}
++	return LIUQIN_BATT_DEFAULT_PCT;
++}
++
++static bool
++liuqin_batt_charging(void)
++{
++	int on = 0;
++
++	return PE_parse_boot_argn("liuqinbattcharging", &on, sizeof(on)) &&
++	    on != 0;
++}
++
++/* ---------------------------------------------------------------- classes */
++
++class AppleSmartBattery : public IOPMPowerSource {
++	OSDeclareDefaultStructors(AppleSmartBattery);
++public:
++	virtual bool start(IOService *provider) APPLE_KEXT_OVERRIDE;
++};
++
++class AppleSmartBatteryManager : public IOService {
++	OSDeclareDefaultStructors(AppleSmartBatteryManager);
++public:
++	virtual bool start(IOService *provider) APPLE_KEXT_OVERRIDE;
++	virtual void stop(IOService *provider) APPLE_KEXT_OVERRIDE;
++};
++
++/* The manager first: its methods need super == IOService. */
++#define super IOService
++OSDefineMetaClassAndStructors(AppleSmartBatteryManager, IOService);
++
++bool
++AppleSmartBatteryManager::start(IOService *provider)
++{
++	AppleSmartBattery *batt;
++
++	if (!super::start(provider)) {
++		return false;
++	}
++	batt = OSTypeAlloc(AppleSmartBattery);
++	if (batt == NULL || !batt->init() || !batt->attach(this) ||
++	    !batt->start(this)) {
++		printf("LIUQIN BATT: battery child failed\n");
++		if (batt != NULL) {
++			batt->release();
++		}
++		return true;   /* the manager itself is still up */
++	}
++	registerService();
++	printf("LIUQIN BATT: AppleSmartBatteryManager published (id 0x%llx)\n",
++	    (unsigned long long)getRegistryEntryID());
++	return true;
++}
++
++void
++AppleSmartBatteryManager::stop(IOService *provider)
++{
++	super::stop(provider);
++}
++#undef super
++
++/* The battery: super == IOPMPowerSource from here to the end. */
++#define super IOPMPowerSource
++OSDefineMetaClassAndStructors(AppleSmartBattery, IOPMPowerSource);
++
++bool
++AppleSmartBattery::start(IOService *provider)
++{
++	const int pct = liuqin_batt_pct();
++	const bool ext = liuqin_batt_charging();
++	const unsigned mAh = (unsigned)((unsigned long)LIUQIN_BATT_MAX_MAH *
++	    (unsigned long)pct / 100u);
++
++	if (!super::start(provider)) {
++		return false;
++	}
++
++	setBatteryInstalled(true);
++	setExternalConnected(ext);
++	setExternalChargeCapable(true);
++	setIsCharging(ext && pct < 100);
++	setAtWarnLevel(false);      /* never - the value is not a measurement */
++	setAtCriticalLevel(false);
++	setCurrentCapacity(mAh);
++	setMaxCapacity(LIUQIN_BATT_MAX_MAH);
++	setTimeRemaining(-1);       /* computing runtime would be fiction */
++	setAmperage(0);
++	setVoltage(3900);           /* nominal only, not measured */
++	setCycleCount(1);
++	setAdapterInfo(0);
++	setLocation(0);
++	setErrorCondition(const_cast<OSSymbol *>(OSSymbol::withCString("Normal")));
++	setManufacturer(const_cast<OSSymbol *>(OSSymbol::withCString("SMP")));
++	setModel(const_cast<OSSymbol *>(OSSymbol::withCString("BM58")));
++	setSerial(const_cast<OSSymbol *>(OSSymbol::withCString("LIUQIN")));
++	gKeyNominal = OSSymbol::withCString("NominalChargeCapacity");
++	setPSProperty(OSSymbol::withCString("FullyCharged"),
++	    OSBoolean::withBoolean(pct >= 100));
++	setPSProperty(OSSymbol::withCString("BatteryType"),
++	    const_cast<OSSymbol *>(OSSymbol::withCString("InternalBattery")));
++	setPSProperty(OSSymbol::withCString("DesignCapacity"),
++	    OSNumber::withNumber((unsigned long long)LIUQIN_BATT_MAX_MAH, 32));
++	setPSProperty(gKeyNominal,
++	    OSNumber::withNumber((unsigned long long)mAh, 32));
++	setPSProperty(OSSymbol::withCString("PermanentFailureStatus"),
++	    OSNumber::withNumber(0ull, 32));
++	updateStatus();
++
++	registerService();
++	printf("LIUQIN BATT: AppleSmartBattery published (id 0x%llx): "
++	    "PLACEHOLDER %d%% (no fuel gauge reachable from the AP)\n",
++	    (unsigned long long)getRegistryEntryID(), pct);
++	return true;
++}
++#undef super
++
++/* ---------------------------------------------------------------- bring-up */
++
++static void
++liuqin_battery_thread(__unused void *arg, __unused wait_result_t wr)
++{
++	IOService *res;
++	AppleSmartBatteryManager *mgr;
++
++	res = IOService::waitForService(IOService::serviceMatching("IOResources"));
++	if (res == NULL) {
++		printf("LIUQIN BATT: no IOResources\n");
++		return;
++	}
++	mgr = OSTypeAlloc(AppleSmartBatteryManager);
++	if (mgr == NULL || !mgr->init() || !mgr->attach(res) || !mgr->start(res)) {
++		printf("LIUQIN BATT: manager start failed\n");
++		if (mgr != NULL) {
++			mgr->release();
++		}
++		return;
++	}
++	printf("LIUQIN BATT: up\n");
++}
++
++extern "C" void
++liuqin_battery_start(void);
++extern "C" void
++liuqin_battery_start(void)
++{
++	int off = 0;
++	thread_t thread;
++
++	if (PE_parse_boot_argn("liuqinbatt", &off, sizeof(off)) && off == 0) {
++		printf("LIUQIN BATT: disabled by boot arg\n");
++		return;
++	}
++	if (kernel_thread_start(liuqin_battery_thread, NULL, &thread) ==
++	    KERN_SUCCESS) {
++		thread_deallocate(thread);
++	}
++}
+
+diff --git a/iokit/conf/files.arm64 b/iokit/conf/files.arm64
+--- a/iokit/conf/files.arm64
++++ b/iokit/conf/files.arm64
+@@ -7,2 +7,3 @@
+ iokit/Kernel/arm/AppleARMSMP.cpp    					optional iokitcpp
++iokit/Kernel/arm/LiuqinBattery.cpp                               optional iokitcpp
+ iokit/Kernel/arm/LiuqinCPU.cpp                                    optional iokitcpp
+--- a/bsd/dev/liuqin_touch.c
++++ b/bsd/dev/liuqin_touch.c
+@@ -59,6 +59,8 @@
+ extern int liuqin_console_force;
+ /* iokit/Kernel/arm/hid/LiuqinHID.cpp: a no-op when the HID service is absent. */
+ extern void liuqin_hid_touch(int finger, int down, int x, int y);
++/* iokit/Kernel/arm/LiuqinBattery.cpp: the AppleSmartBattery the UI reads. */
++extern void liuqin_battery_start(void);
+ 
+ #define GCC_PA          0x00100000
+ #define GCC_SIZE        0x00100000
+@@ -5532,6 +5534,8 @@
+ 
+ 	/* Buttons live on the PMICs and need nothing from the touch engine. */
+ 	liuqin_keys_start();
++	/* The battery: same SPMI arbiter, its own thread, no bring-up shift. */
++	liuqin_battery_start();
+ 
+ 	/* --- stage 3: SPI master, Novatek chip id, report thread --- */
+ 	if (level >= 3) {

@@ -3424,7 +3424,7 @@
 +};
 --- /dev/null
 +++ b/bsd/dev/liuqin_dylib.c
-@@ -0,0 +1,206 @@
+@@ -0,0 +1,210 @@
 +/*
 + * LIUQIN: put the touch library into the root image at boot, then tell
 + * kern_exec.c to insert it into backboardd.
@@ -3458,17 +3458,18 @@
 + */
 +
 +#include <sys/param.h>
-+#include <sys/imgact.h>
++#include <sys/systm.h>
 +#include <sys/kernel.h>
++#include <sys/proc.h>
++#include <sys/proc_internal.h>
 +#include <sys/mount.h>
 +#include <sys/namei.h>
-+#include <sys/proc.h>
 +#include <sys/time.h>
 +#include <sys/vnode.h>
 +#include <sys/vnode_internal.h>
 +#include <sys/fcntl.h>
-+#include <sys/systm.h>
 +#include <sys/uio_internal.h>
++#include <kern/task.h>
 +#include <kern/thread.h>
 +#include <libkern/libkern.h>
 +
@@ -3476,6 +3477,9 @@
 +
 +/* Published by kern_exec.c (same kernel). */
 +extern void liuqin_exec_inject_set(const char *conf);
++
++/* Called from liuqin_ufs.c right after the root is mounted. */
++void liuqin_dylib_start(void);
 +
 +/* Where the library is written: the first one that accepts it wins.  mobile's
 + * own cache directory exists as soon as the root is up and is writable by the

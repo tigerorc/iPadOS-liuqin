@@ -1,6 +1,6 @@
 --- a/bsd/kern/kern_exec.c
 +++ b/bsd/kern/kern_exec.c
-@@ -5572,6 +5572,94 @@
+@@ -5572,6 +5572,98 @@
   * Note:	The argument and environment vectors are user space pointers
   *		to arrays of user space pointers.
   */
@@ -45,7 +45,8 @@
 +exec_inject_env(struct image_params *imgp, char *env, size_t size)
 +{
 +	const char *name, *p = exec_inject_conf;
-+	size_t namelen, used;
++	size_t used;
++	int namelen;
 +	bool any = false;
 +
 +	if (*p == '\0' || imgp->ip_ndp == NULL) {
@@ -53,6 +54,9 @@
 +	}
 +	name = imgp->ip_ndp->ni_cnd.cn_nameptr;
 +	namelen = imgp->ip_ndp->ni_cnd.cn_namelen;
++	if (name == NULL || namelen <= 0) {
++		return false;
++	}
 +	used = strlcpy(env, "DYLD_INSERT_LIBRARIES=", size);
 +	while (*p != '\0') {
 +		const char *library;
@@ -73,8 +77,8 @@
 +			while (*p != '\0' && *p != ' ' && *p != ';') {
 +				p++;
 +			}
-+			if (!matched && (size_t)(p - word) == namelen && namelen != 0 &&
-+			    liblen != 0 && strncmp(word, name, namelen) == 0) {
++			if (!matched && (int)(p - word) == namelen &&
++			    liblen != 0 && strncmp(word, name, (size_t)namelen) == 0) {
 +				matched = true;         /* this group names this program */
 +			}
 +		}
@@ -95,7 +99,7 @@
  __attribute__((noinline))
  static int
  exec_extract_strings(struct image_params *imgp)
-@@ -5745,6 +5833,27 @@
+@@ -5745,6 +5837,27 @@
  		imgp->ip_envc++;
  	}
  

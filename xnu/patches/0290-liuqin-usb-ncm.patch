@@ -54,7 +54,7 @@
  	5, 0x24, 0x00, 0x10, 0x01,                      /* header, CDC 1.10 */
  	5, 0x24, 0x06, 0, 1,                            /* union: control 0, data 1 */
  	13, 0x24, 0x0f, 4, 0, 0, 0, 0, 0xea, 0x05, 0, 0, 0, /* ethernet: MAC string 4, max segment 1514 */
-+	6, 0x24, 0x1a, 0x00, 0x01, 0,                   /* NCM functional descriptor */
++	6, 0x24, 0x1a, 0x00, 0x01, 0x00,                /* NCM: bcdNcmVersion 1.00, no caps */
  	7, 5, 0x82, 0x03, 16, 0, 9,                     /* ep 0x82 interrupt IN, 16 bytes, 2^(9-1) uframes */
  	9, 4, 1, 0, 0, 0x0a, 0x00, 0x00, 0,             /* data interface 1 alt 0: no endpoints */
  	9, 4, 1, 1, 2, 0x0a, 0x00, 0x00, 0,             /* data interface 1 alt 1: two bulk endpoints */
@@ -85,18 +85,18 @@
 +			 * Only the NTB16 send format is offered, so the host frames
 +			 * nothing it expects us to parse.
 +			 */
-+			static const uint8_t ntb_params[28] = {
-+				28, 0,                          /* wLength */
++			static const uint8_t ntb_params[30] = {
++				30, 0,                          /* wLength */
 +				0x01, 0x00,                     /* bmNtbFormatsSupported: NTB16 only */
-+				0x00, 0x10,                     /* wNtbInMaxSize: 4096 */
-+				0x00, 0x10,                     /* wNdpInDivisor / wNdpInPayloadRemainder */
-+				0x00, 0x00,
-+				0x00, 0x04,                     /* wNdpInAlignment: 4 */
++				0x00, 0x10, 0x00, 0x00,         /* dwNtbInMaxSize: 4096 (4 bytes) */
++				0x04, 0x00,                     /* wNdpInDivisor: 4 */
++				0x00, 0x00,                     /* wNdpInPayloadRemainder: 0 */
++				0x04, 0x00,                     /* wNdpInAlignment: 4 */
 +				0x00, 0x00,                     /* reserved */
-+				0x00, 0x10,                     /* wNtbOutMaxSize: 4096 */
-+				0x00, 0x04,                     /* wNdpOutDivisor: 4 */
-+				0x00, 0x00,                     /* wNdpOutPayloadRemainder */
-+				0x00, 0x04,                     /* wNdpOutAlignment: 4 */
++				0x00, 0x10, 0x00, 0x00,         /* dwNtbOutMaxSize: 4096 (4 bytes) */
++				0x04, 0x00,                     /* wNdpOutDivisor: 4 */
++				0x00, 0x00,                     /* wNdpOutPayloadRemainder: 0 */
++				0x04, 0x00,                     /* wNdpOutAlignment: 4 */
 +				0x00, 0x00,                     /* reserved */
 +				0x08, 0x00,                     /* wNtbOutMaxDatagrams: 8 */
 +			};
@@ -164,7 +164,7 @@
 +		 */
 +		uint32_t overhead = NCM_NTB_HDR + NCM_NDP_HDR +
 +		    (NCM_MAX_DGRAM + 1) * 8 + NCM_NDP_TERM;
-+		uint32_t off = overhead;
++		uint32_t pos = overhead;
 +		uint32_t ndp_off = NCM_NTB_HDR;
 +
 +		while (count < NCM_MAX_DGRAM && ud.txq_count > 0) {
@@ -178,20 +178,20 @@
 +				continue;
 +			}
 +			uint32_t padded = ((uint32_t)len + 3) & ~3u;
-+			if (off + padded > UD_TX_SPACE) {
++			if (pos + padded > UD_TX_SPACE) {
 +				break;          /* the rest waits for the next NTB */
 +			}
 +			ud.txq_head = (ud.txq_head + 1) % UD_TXQ;
 +			ud.txq_count--;
-+			mbuf_copydata(m, 0, len, out + off);
++			mbuf_copydata(m, 0, len, out + pos);
  			mbuf_freem(m);
 +
 +			uint32_t e = ndp_off + NCM_NDP_HDR + count * 8;
-+			out[e + 0] = (uint8_t)off;     out[e + 1] = (uint8_t)(off >> 8);
++			out[e + 0] = (uint8_t)pos;     out[e + 1] = (uint8_t)(pos >> 8);
 +			out[e + 2] = (uint8_t)len;     out[e + 3] = (uint8_t)(len >> 8);
 +			out[e + 4] = 0;                out[e + 5] = 0;
 +
-+			off += padded;
++			pos += padded;
 +			count++;
 +		}
 +		if (count == 0) {
@@ -220,29 +220,29 @@
 +			out[e + 2] = 0xff; out[e + 3] = 0xff;
 +			out[e + 4] = 0;    out[e + 5] = 0;
 +		}
-+		while (off & 3) {
-+			out[off++] = 0;
++		while (pos & 3) {
++			out[pos++] = 0;
 +		}
 +		out[0] = (uint8_t)ndp_off;  out[1] = 0;
 +		out[2] = 0;                 out[3] = 0;
 +		out[4] = (uint8_t)NCM_NTB_HDR; out[5] = 0;
 +		out[6] = (uint8_t)ud.ntb_seq;  out[7] = (uint8_t)(ud.ntb_seq >> 8);
 +		ud.ntb_seq++;
-+		out[8] = (uint8_t)off;      out[9] = (uint8_t)(off >> 8);
++		out[8] = (uint8_t)pos;      out[9] = (uint8_t)(pos >> 8);
 +		out[10] = 0xff;             out[11] = 0xff;   /* wFpIndex: no padding */
 +
 +		/*
 +		 * A transfer of a multiple of 512 bytes needs a zero-length packet
 +		 * to end it; one pad byte does the same and NCM ignores the slack.
 +		 */
-+		if ((off % 512) == 0 && off < UD_TX_SPACE) {
-+			out[off++] = 0;
++		if ((pos % 512) == 0 && pos < UD_TX_SPACE) {
++			out[pos++] = 0;
  		}
  		ud.tx_busy = true;
 -		ud.tx_frames++;
 -		ud_start_trb(EP_TX, UD_TRB_TX, UD_TX, (uint32_t)len, TRBCTL_NORMAL);
 +		ud.tx_frames += count;
-+		ud_start_trb(EP_TX, UD_TRB_TX, UD_TX, off, TRBCTL_NORMAL);
++		ud_start_trb(EP_TX, UD_TRB_TX, UD_TX, pos, TRBCTL_NORMAL);
  	}
  }
  

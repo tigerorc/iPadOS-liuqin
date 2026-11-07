@@ -48,8 +48,8 @@
 -static const uint8_t ud_cfg_desc[80] = {
 -	9, 2, 80, 0, 2, 1, 0, 0x80, 250,                /* config: 2 interfaces, 500 mA */
 -	9, 4, 0, 0, 1, 0x02, 0x06, 0x00, 0,             /* comm interface 0: CDC ECM, 1 endpoint */
-+static const uint8_t ud_cfg_desc[90] = {
-+	9, 2, 90, 0, 2, 1, 0, 0x80, 250,                /* config: 2 interfaces, 500 mA */
++static const uint8_t ud_cfg_desc[86] = {
++	9, 2, 86, 0, 2, 1, 0, 0x80, 250,                /* config: 2 interfaces, 500 mA */
 +	9, 4, 0, 0, 1, 0x02, 0x0d, 0x00, 0,             /* comm interface 0: CDC NCM, 1 endpoint */
  	5, 0x24, 0x00, 0x10, 0x01,                      /* header, CDC 1.10 */
  	5, 0x24, 0x06, 0, 1,                            /* union: control 0, data 1 */

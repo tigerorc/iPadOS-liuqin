@@ -1,0 +1,248 @@
+--- a/bsd/dev/liuqin_usb.c
++++ b/bsd/dev/liuqin_usb.c
+@@ -311,7 +311,9 @@
+ #define UD_DATA         0x1100          /* ep0 data stage, 512 bytes */
+ #define UD_NOTIFY       0x1300          /* 16-byte notification */
+ #define UD_RX           0x2000          /* one received frame */
+-#define UD_TX           0x2800          /* one frame to send */
++#define UD_RX_SPACE     0x800
++#define UD_TX           0x2800          /* one NCM transfer block to send */
++#define UD_TX_SPACE     0x1800          /* room for the NTB header + datagrams */
+ #define UD_FRAME_MAX    0x800
+ #define UD_SIZE         0x4000
+ 
+@@ -341,6 +343,7 @@
+ 	unsigned    txq_head, txq_count;
+ 	bool        tx_busy;
+ 	uint64_t    rx_frames, tx_frames;
++	uint16_t    ntb_seq;            /* NCM NTB sequence, wraps */
+ } ud;
+ 
+ static inline void
+@@ -434,20 +437,32 @@
+ }
+ 
+ /*
+- * USB descriptors: a CDC-ECM (Ethernet) function, which Linux (cdc_ether)
+- * and macOS drive without extra drivers. VID 0x1209 / PID 0x0001 =
+- * pid.codes test ID, not a product.
++ * USB descriptors: a CDC-NCM (Network Control Model) function.
++ *
++ * This used to be CDC-ECM (SubClass 0x06), which Linux's cdc_ether and macOS
++ * drive with no extra software.  Windows has no ECM driver at all, so the
++ * console channel could never be read on the machine this port is developed
++ * on.  Windows 11 ships usbncm.inf, and its match list is
++ *   USB\Class_02&SubClass_0d&Prot_00
++ * - a plain class match, unlike netrndis.inf which only matches the private
++ * id "ms_rndisusb" that needs a Microsoft OS descriptor to obtain.  NCM is
++ * therefore the shortest way to a driver-free link on Windows.
++ *
++ * The host driver picks the device up from class/subclass/protocol alone; the
++ * functional descriptors below only say how the data transfers are framed.
++ * VID 0x1209 / PID 0x0001 = pid.codes test ID, not a product.
+  */
+ static const uint8_t ud_dev_desc[18] = {
+ 	18, 1, 0x00, 0x02, 0x02, 0x00, 0x00, 64,
+ 	0x09, 0x12, 0x01, 0x00, 0x00, 0x01, 1, 2, 3, 1,
+ };
+-static const uint8_t ud_cfg_desc[80] = {
+-	9, 2, 80, 0, 2, 1, 0, 0x80, 250,                /* config: 2 interfaces, 500 mA */
+-	9, 4, 0, 0, 1, 0x02, 0x06, 0x00, 0,             /* comm interface 0: CDC ECM, 1 endpoint */
++static const uint8_t ud_cfg_desc[90] = {
++	9, 2, 90, 0, 2, 1, 0, 0x80, 250,                /* config: 2 interfaces, 500 mA */
++	9, 4, 0, 0, 1, 0x02, 0x0d, 0x00, 0,             /* comm interface 0: CDC NCM, 1 endpoint */
+ 	5, 0x24, 0x00, 0x10, 0x01,                      /* header, CDC 1.10 */
+ 	5, 0x24, 0x06, 0, 1,                            /* union: control 0, data 1 */
+ 	13, 0x24, 0x0f, 4, 0, 0, 0, 0, 0xea, 0x05, 0, 0, 0, /* ethernet: MAC string 4, max segment 1514 */
++	6, 0x24, 0x1a, 0x00, 0x01, 0,                   /* NCM functional descriptor */
+ 	7, 5, 0x82, 0x03, 16, 0, 9,                     /* ep 0x82 interrupt IN, 16 bytes, 2^(9-1) uframes */
+ 	9, 4, 1, 0, 0, 0x0a, 0x00, 0x00, 0,             /* data interface 1 alt 0: no endpoints */
+ 	9, 4, 1, 1, 2, 0x0a, 0x00, 0x00, 0,             /* data interface 1 alt 1: two bulk endpoints */
+@@ -535,9 +550,52 @@
+ 
+ 	printf("LIUQIN USB: setup %02x %02x %04x %04x len %u\n", type, req, value, index, length);
+ 	ud.data_in = (type & 0x80) != 0;
+-	if ((type & 0x60) == 0x20) {    /* class request (e.g. SET_ETHERNET_PACKET_FILTER) */
+-		ok = (length == 0);
++	if ((type & 0x60) == 0x20) {
++		/*
++		 * CDC class request on the comm interface.  NCM's host driver asks
++		 * for the NTB parameters and sets the packet filter; both have to
++		 * be answered or it never brings the link up.
++		 */
++		switch (req) {
++		case 0x01:              /* SET_ETHERNET_PACKET_FILTER */
++			ok = (length == 0);
++			break;
++		case 0x02:              /* GET_ETHERNET_STATISTIC */
++			memset(data, 0, 4);
++			n = 4;
++			break;
++		case 0x40: {            /* GET_NTB_PARAMETERS (CDC-NCM 6.2.1) */
++			/*
++			 * 28 bytes: length, NTB formats, alignment, max datagram,
++			 * and the per-direction max NTB / max datagram counts.
++			 * Only the NTB16 send format is offered, so the host frames
++			 * nothing it expects us to parse.
++			 */
++			static const uint8_t ntb_params[28] = {
++				28, 0,                          /* wLength */
++				0x01, 0x00,                     /* bmNtbFormatsSupported: NTB16 only */
++				0x00, 0x10,                     /* wNtbInMaxSize: 4096 */
++				0x00, 0x10,                     /* wNdpInDivisor / wNdpInPayloadRemainder */
++				0x00, 0x00,
++				0x00, 0x04,                     /* wNdpInAlignment: 4 */
++				0x00, 0x00,                     /* reserved */
++				0x00, 0x10,                     /* wNtbOutMaxSize: 4096 */
++				0x00, 0x04,                     /* wNdpOutDivisor: 4 */
++				0x00, 0x00,                     /* wNdpOutPayloadRemainder */
++				0x00, 0x04,                     /* wNdpOutAlignment: 4 */
++				0x00, 0x00,                     /* reserved */
++				0x08, 0x00,                     /* wNtbOutMaxDatagrams: 8 */
++			};
++			memcpy(data, ntb_params, sizeof(ntb_params));
++			n = sizeof(ntb_params);
++			break;
++		}
++		default:
++			ok = (length == 0);
++			break;
++		}
+ 	} else if ((type & 0x60) != 0) {
++
+ 		ok = false;
+ 	} else if (req == 6) {          /* GET_DESCRIPTOR */
+ 		switch (value >> 8) {
+@@ -638,28 +696,119 @@
+ }
+ 
+ /* Start the next queued frame if the IN endpoint is idle. ud.lock held. */
++/*
++ * NCM framing (CDC-NCM 1.0, section 3): the bulk endpoints carry NTBs, not
++ * bare Ethernet frames.  An NTB16 is a 12-byte header, then NDP16 descriptors
++ * that say where each datagram sits, then the datagrams, all padded to a
++ * 4-byte boundary.
++ *
++ *   NTB header (12 bytes, little endian)
++ *     0  wNDPIndex       offset of the first NDP, from the NTB start
++ *     4  wHeaderLength   length of the NTB header
++ *     6  wSequence       wraps at 65535
++ *     8  wBlockLength    whole NTB length
++ *    10  wFpIndex        offset of the datagram area (0xffff = no padding)
++ *
++ *   NDP16 entry (8 bytes per datagram, plus a 4-byte terminator)
++ *     0  wDatagramIndex  offset of the datagram from the NTB start
++ *     2  wDatagramLength
++ *     4  wNextNdpIndex   offset of the next NDP, 0 = last
++ *
++ * Only the send direction is framed: this link carries the console, so the
++ * phone transmits and the host does not have to answer.
++ */
++#define NCM_NTB_HDR     12
++#define NCM_NDP_HDR     8
++#define NCM_NDP_TERM    4
++#define NCM_MAX_DGRAM   8               /* datagrams per NTB */
++
+ static void
+ ud_tx_kick_locked(void)
+ {
+ 	while (!ud.tx_busy && ud.txq_count > 0 && ud.configured) {
+-		mbuf_t m = ud.txq[ud.txq_head];
+-		ud.txq_head = (ud.txq_head + 1) % UD_TXQ;
+-		ud.txq_count--;
+-		size_t len = mbuf_pkthdr_len(m);
+-		if (len > ETHER_MAX_LEN - ETHER_CRC_LEN) {
++		uint8_t *out = (uint8_t *)(ud.dma + UD_TX);
++		uint32_t count = 0;
++
++		/*
++		 * Collect as many queued frames as fit in one NTB.  The datagram
++		 * area starts after the header and the NDP, so what is left of
++		 * UD_TX_SPACE bounds the payloads.  Frames are copied straight
++		 * into their place in the block: a staging array of one frame per
++		 * datagram would put 12 KiB on the kernel stack.
++		 */
++		uint32_t overhead = NCM_NTB_HDR + NCM_NDP_HDR +
++		    (NCM_MAX_DGRAM + 1) * 8 + NCM_NDP_TERM;
++		uint32_t off = overhead;
++		uint32_t ndp_off = NCM_NTB_HDR;
++
++		while (count < NCM_MAX_DGRAM && ud.txq_count > 0) {
++			mbuf_t m = ud.txq[ud.txq_head];
++			size_t len = mbuf_pkthdr_len(m);
++
++			if (len > ETHER_MAX_LEN - ETHER_CRC_LEN) {
++				ud.txq_head = (ud.txq_head + 1) % UD_TXQ;
++				ud.txq_count--;
++				mbuf_freem(m);
++				continue;
++			}
++			uint32_t padded = ((uint32_t)len + 3) & ~3u;
++			if (off + padded > UD_TX_SPACE) {
++				break;          /* the rest waits for the next NTB */
++			}
++			ud.txq_head = (ud.txq_head + 1) % UD_TXQ;
++			ud.txq_count--;
++			mbuf_copydata(m, 0, len, out + off);
+ 			mbuf_freem(m);
++
++			uint32_t e = ndp_off + NCM_NDP_HDR + count * 8;
++			out[e + 0] = (uint8_t)off;     out[e + 1] = (uint8_t)(off >> 8);
++			out[e + 2] = (uint8_t)len;     out[e + 3] = (uint8_t)(len >> 8);
++			out[e + 4] = 0;                out[e + 5] = 0;
++
++			off += padded;
++			count++;
++		}
++		if (count == 0) {
+ 			continue;
+ 		}
+-		mbuf_copydata(m, 0, len, (void *)(ud.dma + UD_TX));
+-		mbuf_freem(m);
+-		/* A frame of a multiple of 512 bytes would need a zero-length
+-		 * packet to end it; one pad byte does the same (IP ignores it). */
+-		if ((len % 512) == 0) {
+-			((uint8_t *)(ud.dma + UD_TX))[len++] = 0;
++
++		/* NDP header, terminator, then the block length and the NTB header */
++		{
++			uint32_t ndp_len = NCM_NDP_HDR + (count + 1) * 8 + NCM_NDP_TERM;
++
++			out[ndp_off + 0] = (uint8_t)ndp_len;
++			out[ndp_off + 1] = (uint8_t)(ndp_len >> 8);
++			out[ndp_off + 2] = 0; out[ndp_off + 3] = 0;
++			out[ndp_off + 4] = 0; out[ndp_off + 5] = 0;
++			out[ndp_off + 6] = 0; out[ndp_off + 7] = 0;
++		}
++		{
++			uint32_t e = ndp_off + NCM_NDP_HDR + count * 8;
++			out[e + 0] = 0xff; out[e + 1] = 0xff;
++			out[e + 2] = 0xff; out[e + 3] = 0xff;
++			out[e + 4] = 0;    out[e + 5] = 0;
++		}
++		while (off & 3) {
++			out[off++] = 0;
++		}
++		out[0] = (uint8_t)ndp_off;  out[1] = 0;
++		out[2] = 0;                 out[3] = 0;
++		out[4] = (uint8_t)NCM_NTB_HDR; out[5] = 0;
++		out[6] = (uint8_t)ud.ntb_seq;  out[7] = (uint8_t)(ud.ntb_seq >> 8);
++		ud.ntb_seq++;
++		out[8] = (uint8_t)off;      out[9] = (uint8_t)(off >> 8);
++		out[10] = 0xff;             out[11] = 0xff;   /* wFpIndex: no padding */
++
++		/*
++		 * A transfer of a multiple of 512 bytes needs a zero-length packet
++		 * to end it; one pad byte does the same and NCM ignores the slack.
++		 */
++		if ((off % 512) == 0 && off < UD_TX_SPACE) {
++			out[off++] = 0;
+ 		}
+ 		ud.tx_busy = true;
+-		ud.tx_frames++;
+-		ud_start_trb(EP_TX, UD_TRB_TX, UD_TX, (uint32_t)len, TRBCTL_NORMAL);
++		ud.tx_frames += count;
++		ud_start_trb(EP_TX, UD_TRB_TX, UD_TX, off, TRBCTL_NORMAL);
+ 	}
+ }
+ 

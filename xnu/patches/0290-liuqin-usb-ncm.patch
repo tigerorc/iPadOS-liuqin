@@ -58,7 +58,7 @@
  	7, 5, 0x82, 0x03, 16, 0, 9,                     /* ep 0x82 interrupt IN, 16 bytes, 2^(9-1) uframes */
  	9, 4, 1, 0, 0, 0x0a, 0x00, 0x00, 0,             /* data interface 1 alt 0: no endpoints */
  	9, 4, 1, 1, 2, 0x0a, 0x00, 0x00, 0,             /* data interface 1 alt 1: two bulk endpoints */
-@@ -535,9 +550,52 @@
+@@ -535,9 +550,60 @@
  
  	printf("LIUQIN USB: setup %02x %02x %04x %04x len %u\n", type, req, value, index, length);
  	ud.data_in = (type & 0x80) != 0;
@@ -70,15 +70,23 @@
 +		 * for the NTB parameters and sets the packet filter; both have to
 +		 * be answered or it never brings the link up.
 +		 */
++		/*
++		 * Request numbers are CDC 1.2 Table 47 / CDC-NCM 6.2.  They are not
++		 * 1, 2, 3: SET_ETHERNET_PACKET_FILTER is 0x43, GET_ETHERNET_STATISTIC
++		 * is 0x44, GET_NTB_PARAMETERS is 0x80.  Answering the wrong number
++		 * makes the driver's request fall through to the default, which
++		 * stalls any request that carries data - the NCM driver then fails
++		 * with STATUS_INVALID_PARAMETER.
++		 */
 +		switch (req) {
-+		case 0x01:              /* SET_ETHERNET_PACKET_FILTER */
++		case 0x43:              /* SET_ETHERNET_PACKET_FILTER */
 +			ok = (length == 0);
 +			break;
-+		case 0x02:              /* GET_ETHERNET_STATISTIC */
++		case 0x44:              /* GET_ETHERNET_STATISTIC */
 +			memset(data, 0, 4);
 +			n = 4;
 +			break;
-+		case 0x40: {            /* GET_NTB_PARAMETERS (CDC-NCM 6.2.1) */
++		case 0x80: {            /* GET_NTB_PARAMETERS (CDC-NCM 6.2.1) */
 +			/*
 +			 * 28 bytes: length, NTB formats, alignment, max datagram,
 +			 * and the per-direction max NTB / max datagram counts.
@@ -113,7 +121,7 @@
  		ok = false;
  	} else if (req == 6) {          /* GET_DESCRIPTOR */
  		switch (value >> 8) {
-@@ -638,28 +696,119 @@
+@@ -638,28 +704,119 @@
  }
  
  /* Start the next queued frame if the IN endpoint is idle. ud.lock held. */

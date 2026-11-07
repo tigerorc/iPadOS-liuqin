@@ -3645,23 +3645,26 @@
  bsd/dev/liuqin_usb.c			standard
  bsd/dev/mem.c				standard
  bsd/dev/munge.c 			optional config_requires_u32_munging
---- a/bsd/dev/liuqin_ufs.c
-+++ b/bsd/dev/liuqin_ufs.c
-@@ -91,6 +91,7 @@
- static void liuqin_log_dump(void);
- static void liuqin_fw_load(void);
- extern void liuqin_adreno_init(void);
-+extern void liuqin_dylib_start(void);
- /* The native Adreno IOKit services (iokit/NativeAdreno); absent from
-  * images built without iokitcpp. */
- extern void liuqin_adreno_services_start(void) __attribute__((weak));
-@@ -1807,6 +1808,9 @@
- 	liuqin_boot_mark("firmware area loaded");
- 	liuqin_adreno_init();
- 	liuqin_input_init();
-+	/* The touch library goes on disk here, and kern.exec_inject learns about
-+	 * it, so it is in place long before launchd starts backboardd. */
-+	liuqin_dylib_start();
- 	liuqin_boot_mark("gpu ladder done");
- 	if (liuqin_adreno_services_start) {
- 		liuqin_adreno_services_start();
+--- a/bsd/kern/bsd_init.c
++++ b/bsd/kern/bsd_init.c
+@@ -1064,6 +1064,20 @@
+ 	}
+ #endif
+ 
++#if defined(ARM64_BOARD_CONFIG_LIUQIN)
++	/*
++	 * The touch library has to be written after the root is mounted, not when
++	 * the UFS partition becomes readable: until vfs_mountroot() succeeds there
++	 * is no root vnode, and every vnode_open() in the /var paths returns ENOENT
++	 * ("rootnode is not set" in the log).  This point is after that, and still
++	 * well before launchd execs backboardd.
++	 */
++	{
++		extern void liuqin_dylib_start(void);
++		liuqin_dylib_start();
++	}
++#endif
++
+ #if 0 /* not yet */
+ 	consider_zone_gc(FALSE);
+ #endif

@@ -1,11 +1,19 @@
 --- a/bsd/dev/liuqin_usb.c
 +++ b/bsd/dev/liuqin_usb.c
-@@ -147,7 +147,17 @@
+@@ -13,6 +13,8 @@
+ #if defined(ARM64_BOARD_CONFIG_LIUQIN)
+ #include <sys/param.h>
+ #include <sys/systm.h>
++#include <sys/kernel.h>      /* hz */
++#include <sys/time.h>        /* tsleep */
+ #include <kern/clock.h>
+ #include <kern/thread.h>
+ #include <kern/sched_prim.h>
+@@ -147,6 +149,16 @@
  	return ok;
  }
  
 +
- void
 +/* LIUQIN: USB bring-up stage tracker (defined at the end of this file). */
 +static void usb_diag_start(void);
 +static volatile uint32_t usb_stage;
@@ -15,10 +23,10 @@
 +#define USB_FAIL(n, what, err) do { usb_stage = (n); usb_last_what = (what); \
 +	usb_last_errno = (uint32_t)(err); } while (0)
 +
+ void
  liuqin_usb_probe(void)
  {
- 	int enabled = 1;
-@@ -157,13 +167,20 @@
+@@ -157,13 +169,20 @@
  	/* liuqinusb=0 off, 1 (default) report state only, 2 also start the USB device */
  	PE_parse_boot_argn("liuqinusb", &enabled, sizeof(enabled));
  	if (!enabled) {
@@ -39,7 +47,7 @@
  	gdscr = usb_rd(gcc, GCC_USB30_PRIM_GDSCR);
  	printf("LIUQIN USB: GDSC usb30_prim 0x%08x (%s)\n", gdscr, (gdscr & (1u << 31)) ? "on" : "off");
  	for (unsigned i = 0; i < sizeof(usb_cbcr) / sizeof(usb_cbcr[0]); i++) {
-@@ -179,6 +196,7 @@
+@@ -179,6 +198,7 @@
  		const unsigned count = sizeof(usb_cbcr) / sizeof(usb_cbcr[0]);
  		if (!usb_power_up(gcc, gdscr, cbcr, count)) {
  			printf("LIUQIN USB: controller could not be powered; DWC3 not read\n");
@@ -47,7 +55,7 @@
  			return;
  		}
  		gdscr = usb_rd(gcc, GCC_USB30_PRIM_GDSCR);
-@@ -189,6 +207,7 @@
+@@ -189,6 +209,7 @@
  	}
  	if (!clocks_on) {
  		printf("LIUQIN USB: controller unpowered or unclocked; DWC3 not read\n");
@@ -55,7 +63,7 @@
  		return;
  	}
  	/* Touching DWC3 is opt-in: a register access to a block whose clocks are not
-@@ -197,11 +216,13 @@
+@@ -197,11 +218,13 @@
  	PE_parse_boot_argn("liuqinusbdwc", &dwc_try, sizeof(dwc_try));
  	if (!dwc_try) {
  		printf("LIUQIN USB: DWC3 probe skipped (liuqinusbdwc=1 to try)\n");
@@ -69,7 +77,7 @@
  		return;
  	}
  	printf("LIUQIN USB: DWC3 GSNPSID 0x%08x GCTL 0x%08x GSTS 0x%08x GUSB2PHYCFG 0x%08x\n",
-@@ -212,8 +233,10 @@
+@@ -212,8 +235,10 @@
  	printf("LIUQIN USB: DWC3 GEVNTADR 0x%08x%08x GEVNTSIZ 0x%08x GEVNTCOUNT 0x%08x GHWPARAMS0 0x%08x\n",
  	    usb_rd(dwc, 0xc404), usb_rd(dwc, 0xc400), usb_rd(dwc, 0xc408), usb_rd(dwc, 0xc40c),
  	    usb_rd(dwc, 0xc140));
@@ -80,7 +88,7 @@
  	}
  	/* The QUSB2 PHY block at sweet's 0x088e2000 does not exist on SM8475: reading it
  	 * data-aborted the boot once (worth the bring-up's only probe fault).  The phone uses
-@@ -222,10 +245,12 @@
+@@ -222,10 +247,12 @@
  	PE_parse_boot_argn("liuqinusbphy", &phy_try, sizeof(phy_try));
  	if (!phy_try) {
  		printf("LIUQIN USB: QUSB2 PHY probe skipped (liuqinusbphy=1 to try)\n");
@@ -93,7 +101,7 @@
  		return;
  	}
  	vm_offset_t phy = ml_io_map(QUSB2_PA, QUSB2_SIZE);
-@@ -512,12 +537,14 @@
+@@ -512,12 +539,14 @@
  	    ud_epcmd(EP_INT, DEPCMD_SETEPCONFIG, (3u << 1) | (16u << 3) | (2u << 17),
  	    (1u << 8) | (8u << 16) | ((uint32_t)EP_INT << 25), 0) ||
  	    ud_epcmd(EP_INT, DEPCMD_SETTRANSFRESOURCE, 1, 0, 0)) {
@@ -108,7 +116,7 @@
  	printf("LIUQIN USB: ECM endpoints configured\n");
  }
  
-@@ -554,6 +581,7 @@
+@@ -554,6 +583,7 @@
  		if (value == 1) {
  			ud_configure();
  		}
@@ -116,7 +124,7 @@
  		printf("LIUQIN USB: configured (%u)\n", value);
  	} else if (req == 8) {          /* GET_CONFIGURATION */
  		data[0] = ud.configured ? 1 : 0; n = 1;
-@@ -765,6 +793,7 @@
+@@ -765,6 +795,7 @@
  	init.broadcast_addr = etherbroadcastaddr;
  	init.broadcast_len = ETHER_ADDR_LEN;
  	if (ifnet_allocate_extended(&init, &ud.ifp) != 0) {
@@ -124,7 +132,7 @@
  		printf("LIUQIN USB: ifnet_allocate failed\n");
  		ud.ifp = NULL;
  		return;
-@@ -775,6 +804,7 @@
+@@ -775,6 +806,7 @@
  	ifnet_set_baudrate(ud.ifp, 480000000);
  	ifnet_set_flags(ud.ifp, IFF_BROADCAST | IFF_SIMPLEX | IFF_MULTICAST, 0xffff);
  	if (ifnet_attach(ud.ifp, NULL) != 0) {
@@ -132,7 +140,7 @@
  		printf("LIUQIN USB: ifnet_attach failed\n");
  		ud.ifp = NULL;
  		return;
-@@ -806,6 +836,7 @@
+@@ -806,6 +838,7 @@
  		sock_close(so);
  	}
  	ifnet_set_flags(ud.ifp, IFF_UP | IFF_RUNNING, IFF_UP | IFF_RUNNING);
@@ -140,7 +148,7 @@
  	printf("LIUQIN USB: ue0 192.168.7.2/24 %s (err %d)\n", err ? "NOT configured" : "up", err);
  }
  
-@@ -816,6 +847,7 @@
+@@ -816,6 +849,7 @@
  		uint32_t type = (ev >> 8) & 0xf;
  		if (type == 1) {        /* USB reset */
  			dwc_wr(DCFG, dwc_rd(DCFG) & ~(0x7fu << 3));
@@ -148,7 +156,7 @@
  			printf("LIUQIN USB: bus reset\n");
  		} else if (type == 2) { /* connect done */
  			uint32_t speed = dwc_rd(DSTS) & 7;
-@@ -824,6 +856,7 @@
+@@ -824,6 +858,7 @@
  			    (1u << 8) | (1u << 10) | (0u << 25), 0);
  			ud_epcmd(1, DEPCMD_SETEPCONFIG, (0u << 1) | (64u << 3) | (2u << 30),
  			    (1u << 8) | (1u << 10) | (1u << 25), 0);
@@ -156,7 +164,7 @@
  			printf("LIUQIN USB: connected, speed %u\n", speed);
  		} else if (type == 0) {
  			printf("LIUQIN USB: disconnect\n");
-@@ -961,6 +994,7 @@
+@@ -961,6 +996,7 @@
  	ud.dwc = dwc;
  	if (kmem_alloc_contig(kernel_map, &ud.dma, UD_SIZE, PAGE_MASK, 0, 0,
  	    KMA_DATA | KMA_ZERO | KMA_PERMANENT, VM_KERN_MEMORY_IOKIT) != KERN_SUCCESS) {
@@ -164,7 +172,7 @@
  		printf("LIUQIN USB: no DMA memory\n");
  		return;
  	}
-@@ -977,6 +1011,7 @@
+@@ -977,6 +1013,7 @@
  	for (i = 0; i < 500 && (dwc_rd(DCTL) & DCTL_CSFTRST); i++) {
  		delay(1000);
  	}
@@ -172,7 +180,7 @@
  	printf("LIUQIN USB: soft reset %s after %d ms, GCTL 0x%08x DCFG 0x%08x\n",
  	    (dwc_rd(DCTL) & DCTL_CSFTRST) ? "STUCK" : "done", i, dwc_rd(GCTL), dwc_rd(DCFG));
  	if (dwc_rd(DCTL) & DCTL_CSFTRST) {
-@@ -1001,6 +1036,7 @@
+@@ -1001,6 +1038,7 @@
  	    ud_epcmd(0, DEPCMD_SETTRANSFRESOURCE, 1, 0, 0) ||
  	    ud_epcmd(1, DEPCMD_SETEPCONFIG, (0u << 1) | (512u << 3), (1u << 8) | (1u << 10) | (1u << 25), 0) ||
  	    ud_epcmd(1, DEPCMD_SETTRANSFRESOURCE, 1, 0, 0)) {
@@ -180,7 +188,7 @@
  		printf("LIUQIN USB: endpoint 0 setup failed\n");
  		return;
  	}
-@@ -1023,6 +1059,7 @@
+@@ -1023,6 +1061,7 @@
  	for (i = 0; i < 500 && (dwc_rd(DSTS) & DSTS_DEVCTRLHLT); i++) {
  		delay(1000);
  	}
@@ -188,7 +196,7 @@
  	printf("LIUQIN USB: running (DSTS 0x%08x after %d ms), DMA at 0x%llx\n", dwc_rd(DSTS), i, ud.dma_pa);
  	if (kernel_thread_start(ud_thread, NULL, &thread) == KERN_SUCCESS) {
  		thread_deallocate(thread);
-@@ -1033,4 +1070,68 @@
+@@ -1033,4 +1072,68 @@
  		thread_deallocate(thread);
  	}
  }

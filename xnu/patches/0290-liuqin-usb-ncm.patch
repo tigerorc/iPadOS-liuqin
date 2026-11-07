@@ -88,10 +88,10 @@
 +			break;
 +		case 0x80: {            /* GET_NTB_PARAMETERS (CDC-NCM 6.2.1) */
 +			/*
-+			 * 28 bytes: length, NTB formats, alignment, max datagram,
-+			 * and the per-direction max NTB / max datagram counts.
-+			 * Only the NTB16 send format is offered, so the host frames
-+			 * nothing it expects us to parse.
++			 * 30 bytes (CDC-NCM 6.2.1): wLength, the NTB formats we
++			 * support, and the per-direction NTB size, NDP divisor,
++			 * payload remainder and alignment.  Only NTB16 is offered, so
++			 * the host never frames anything we would have to parse.
 +			 */
 +			static const uint8_t ntb_params[30] = {
 +				30, 0,                          /* wLength */

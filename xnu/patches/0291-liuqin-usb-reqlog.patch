@@ -10,7 +10,7 @@
  static volatile uint32_t usb_stage;
  static volatile uint32_t usb_last_errno;
  static const char *volatile usb_last_what = "boot";
-@@ -578,7 +581,20 @@
+@@ -578,7 +581,19 @@
  	uint32_t n = 0;
  	bool ok = true;
  
@@ -26,13 +26,12 @@
 +		    ((uint32_t)type << 24) | ((uint32_t)req << 16) | (length & 0xffffu);
 +		usb_req_log_count = ++nreq;
 +	}
-+	printf("LIUQIN USB: setup #%u %02x %02x %04x %04x len %u
-+",
++	printf("LIUQIN USB: setup #%u %02x %02x %04x %04x len %u\n",
 +	    usb_req_log_count, type, req, value, index, length);
  	ud.data_in = (type & 0x80) != 0;
  	if ((type & 0x60) == 0x20) {
  		/*
-@@ -1285,6 +1301,26 @@
+@@ -1285,6 +1300,25 @@
  		    (void *)ud.ifp, (unsigned long long)ud.dma_pa, ud.events,
  		    (int)ud.configured,
  		    (unsigned long long)ud.rx_frames, (unsigned long long)ud.tx_frames);
@@ -41,19 +40,18 @@
 +		 * it made is the one the driver stopped after.
 +		 */
 +		{
-+			uint32_t total = usb_req_log_count;
-+			uint32_t show = total < USB_REQ_LOG ? total : USB_REQ_LOG;
-+			uint32_t start = total - show;
++			uint32_t nreqs = usb_req_log_count;
++			uint32_t show = nreqs < USB_REQ_LOG ? nreqs : USB_REQ_LOG;
++			uint32_t start = nreqs - show;
 +
 +			if (show) {
-+				printf("LIUQIN USBREQ %u: last %u of %u:", n, show, total);
++				printf("LIUQIN USBREQ %u: last %u of %u:", n, show, nreqs);
 +				for (uint32_t k = 0; k < show; k++) {
 +					uint32_t e = usb_req_log[(start + k) & (USB_REQ_LOG - 1)];
 +					printf(" %02x.%02x/%u", (e >> 24) & 0xff, (e >> 16) & 0xff,
 +					    e & 0xffff);
 +				}
-+				printf("
-+");
++				printf("\n");
 +			}
 +		}
  		liuqin_console_force = 0;

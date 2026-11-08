@@ -11,15 +11,16 @@
  #define UD_FRAME_MAX    0x800
  #define UD_SIZE         0x4000
  
-@@ -341,6 +343,7 @@
+@@ -341,6 +343,8 @@
  	unsigned    txq_head, txq_count;
  	bool        tx_busy;
  	uint64_t    rx_frames, tx_frames;
 +	uint16_t    ntb_seq;            /* NCM NTB sequence, wraps */
++	bool        filter_set;         /* host sent SET_ETHERNET_PACKET_FILTER */
  } ud;
  
  static inline void
-@@ -434,20 +437,32 @@
+@@ -434,20 +438,32 @@
  }
  
  /*
@@ -58,7 +59,7 @@
  	7, 5, 0x82, 0x03, 16, 0, 9,                     /* ep 0x82 interrupt IN, 16 bytes, 2^(9-1) uframes */
  	9, 4, 1, 0, 0, 0x0a, 0x00, 0x00, 0,             /* data interface 1 alt 0: no endpoints */
  	9, 4, 1, 1, 2, 0x0a, 0x00, 0x00, 0,             /* data interface 1 alt 1: two bulk endpoints */
-@@ -535,9 +550,60 @@
+@@ -535,9 +551,71 @@
  
  	printf("LIUQIN USB: setup %02x %02x %04x %04x len %u\n", type, req, value, index, length);
  	ud.data_in = (type & 0x80) != 0;
@@ -81,6 +82,17 @@
 +		switch (req) {
 +		case 0x43:              /* SET_ETHERNET_PACKET_FILTER */
 +			ok = (length == 0);
++			/*
++			 * The host enables the link after it has set the filter and
++			 * selected the data interface's alternate setting; announcing
++			 * it earlier leaves the driver waiting for a second event it
++			 * never gets.
++			 */
++			ud.filter_set = true;
++			if (ud.data_alt == 1 && ud.configured) {
++				ud_notify_connected();
++				ud_link_event(true);
++			}
 +			break;
 +		case 0x44:              /* GET_ETHERNET_STATISTIC */
 +			memset(data, 0, 4);
@@ -101,12 +113,12 @@
 +				0x00, 0x00,                     /* wNdpInPayloadRemainder: 0 */
 +				0x04, 0x00,                     /* wNdpInAlignment: 4 */
 +				0x00, 0x00,                     /* reserved */
-+				0x00, 0x10, 0x00, 0x00,         /* dwNtbOutMaxSize: 4096 (4 bytes) */
++				0x00, 0x08, 0x00, 0x00,         /* dwNtbOutMaxSize: 2048, UD_RX_SPACE */
 +				0x04, 0x00,                     /* wNdpOutDivisor: 4 */
 +				0x00, 0x00,                     /* wNdpOutPayloadRemainder: 0 */
 +				0x04, 0x00,                     /* wNdpOutAlignment: 4 */
 +				0x00, 0x00,                     /* reserved */
-+				0x08, 0x00,                     /* wNtbOutMaxDatagrams: 8 */
++				0x01, 0x00,                     /* wNtbOutMaxDatagrams: 1 */
 +			};
 +			memcpy(data, ntb_params, sizeof(ntb_params));
 +			n = sizeof(ntb_params);
@@ -121,7 +133,16 @@
  		ok = false;
  	} else if (req == 6) {          /* GET_DESCRIPTOR */
  		switch (value >> 8) {
-@@ -638,28 +704,119 @@
+@@ -562,7 +640,7 @@
+ 	} else if (req == 11) {         /* SET_INTERFACE */
+ 		if (index == 1) {
+ 			ud.data_alt = (uint8_t)value;
+-			if (value == 1 && ud.configured) {
++			if (value == 1 && ud.configured && ud.filter_set) {
+ 				ud_notify_connected();
+ 				ud_link_event(true);
+ 			}
+@@ -638,28 +716,119 @@
  }
  
  /* Start the next queued frame if the IN endpoint is idle. ud.lock held. */
